@@ -1,0 +1,23 @@
+.body{
+	background-color: #d6b656;
+	
+}
+
+<!-- HomeLogin page -->
+
+.employbar{
+	Background-color: white;
+	padding: 30px;
+	position: absolute;
+	width: 100%;
+	top: 60%;
+}
+
+<!-- Tenant Home page -->
+
+#stats{
+	
+background-color: white;
+padding: 50px;
+right: 10px;
+}

@@ -1,4 +1,4 @@
-package GC.Capstone6.Pojo;
+package RealEstateApp.Pojo;
 
 import java.time.LocalDate;
 

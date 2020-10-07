@@ -1,4 +1,4 @@
-package GC.Capstone6;
+package RealEstateApp;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
