@@ -9,65 +9,80 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
-<link href="/style.css" rel="stylesheet" />
+<link href="/styles.css" rel="stylesheet" />
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
+<body class="body">
 <%@ include file="navbar.jsp"%>
-<H1>Welcome Back </H1>
+
 <p class="message"><c:out value="${message }"/></p>
 
-<div>
-	<h3>Employee Admin Portal</h3>
-				<p>Employee Name:</p>
+    <div class="associnfo">
+	<h3> Associate Portal</h3>
+				<p>Profile:</p>
 				<c:forEach var="user1" items="${user}">
+				
 				<ul>
-					<dd> ${user1.firstname} ${user1.lastname}</dd>
-					<dd> ${user1.hireDate} </dd>
-					<dd> ${user1.payRate} </dd>
-					<dd> ${user1.position} </dd>
+					<dd>Name: ${user1.firstname} ${user1.lastname}</dd>
+					<dd>Hire Date: ${user1.hireDate} </dd>
+					<dd> Pay Rate:${user1.payRate} </dd>
+					<dd> Position:${user1.position} </dd>
 					
 				</ul>
+				<div class="line1"> <p> h </p>
+					</div>
+				</div>
 				</c:forEach>  
-				<div class = "container">
+				<div class = "dash">
 				<h3> DASHBOARD</h3>
-				<ul>
-				<dd><a href="/propertylist"> View Property List</a> </dd>
-				<dd><a href="/newtenant"> Add New Tenant</a> </dd>
+				<dd><a href="/propertylist">Property/Tenant List</a> </dd>
+				<dd><a href="/view/expense">View Expenses</a></dd>
 				<dd><a href="/recordexpense"> Record Expense</a> </dd>
 				<dd><a href="/repairs"> Schedule Repairs</a> </dd>
 				<dd><a href="/edocuments">E-Documents</a> </dd>
 				<dd><a href="/directory"> Vendor Directory</a> </dd>
-				<dd><a href="/Calendar"> View Calendar</a> </dd>
-				
-				</ul>
+				<dd><a href="/calendar"> View Calendar</a> </dd>
 				</div>
 				
-				<div>
+					<div class="profile">
+					<a href= "/viewprofile">View Profile</a>
+					<a href= "/">Attendance/Vacation</a>
+					<a href= "/">Payroll</a><br>
+					<a href= "/">logout</a>
+					</div>
+					
+				<div class="subdash">
 				<ul>
-				<dd><a href="/viewroster"> Employee Roster</a> </dd>
+				<dd><a href="/viewroster"> Associate Roster</a> </dd>
 				
 				<dd><a href="/schedule"> Create Schedules</a> </dd>
 				<dd><a href="/updateemployee"> Update employee status</a> </dd>
 				</ul>
 				</div>
-				<dd><a href="/policy"> Policy and Procedures</a> </dd>
-				<a href="/"> Return Home</a> 
 				
-				<div>
+				
+				
+				<div class="feedback">
 			
-				<p> Real Time FeedBack:</p>
+				<h5 align="center"> Real Time Tenant FeedBack:</h5>
 				
 				<c:forEach var="comments" items="${comment}">
 				<c:if test = "${comments.comments.contains('')}" >
-				<ul>
+				<div class="feedback-separation"><ul>
 					<dd> ${comments.comments}</dd>
 					<dd>-${comments.firstname}</dd>
 				</ul>
+				</div>
 				</c:if>
 				</c:forEach> 
 				
+				</div>
+				<br></br>
+				
+				<div class="footer">
+				<h5><a href="/policy"> Policy and Procedures</a> </h5>
+				<a href="/"> Return Home</a> 
 				</div>
 </body>
 </html>

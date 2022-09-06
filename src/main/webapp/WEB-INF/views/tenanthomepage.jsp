@@ -25,11 +25,8 @@
 				<ul>
 					<dd> ${user1.firstname}</dd>
 					<dd> ${user1.lastname}</dd>
-					<dd> ${user1.rentalAddress}</dd>
-					<dd> ${user1.leasePeriod}</dd>
-					<dd> ${user1.rentDueDate}</dd>
-					<dd> ${user1.rentAmount}</dd>
-					<dd> ${user1.lateFee}</dd>
+					
+				
 				</ul>
 				</c:forEach>   
 					
@@ -38,7 +35,7 @@
 </div>
 
 
-<div class= "container">
+<div class= "comments">
 <h3>Tell us how we are doing.</h3>
 <form action= "/comments" method="post">
 <dd> <textarea cols="35" rows="10" name="comments"> Enter your comments.</textarea></dd>
@@ -46,7 +43,10 @@
 <button>Submit</button>
 </form>
 </div>
-<div>
+<dd><a href="/viewprofile"> View Profile</a></dd> 
+
+<div class="dash">
+<h3> Dash Board</h3>
 <dd><a href="/"> Make Payment</a></dd> 
 <dd><a href="/">Payment History</a> </dd> 
 <dd> <a href="/"> E-Documents</a> </dd> 

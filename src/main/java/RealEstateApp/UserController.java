@@ -2,6 +2,7 @@ package RealEstateApp;
 
 
 	import java.util.Base64;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpSession;
 	import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import RealEstateApp.Pojo.User;
+import RealEstateApp.Pojo.Property;
+import RealEstateApp.dao.PropertyDao;
 import RealEstateApp.dao.UserDao;
 
 	@Controller
@@ -21,6 +24,8 @@ import RealEstateApp.dao.UserDao;
 
 		@Autowired
 		UserDao userDao;
+		@Autowired
+		private PropertyDao propDao;
 
 		@Autowired
 		HttpSession session;
@@ -57,7 +62,8 @@ import RealEstateApp.dao.UserDao;
 
 			String encodePass = Base64.getEncoder().encodeToString(password.getBytes());
 			user.setPasscode(encodePass);
-			
+		
+		
 			userDao.save(user);
 			
 			session.setAttribute("user", user);
@@ -108,6 +114,54 @@ import RealEstateApp.dao.UserDao;
 			return "redirect:/index";
 		}
 
+		@RequestMapping("/updateinfo")
+		public String updateUserForm() {
+			
+			return "userprofileupdate";
+		}
+		
+		
+		@RequestMapping("/updateProfile")
+		public String updateProfile(Model model, @RequestParam ("username") String username,
+				@RequestParam ("email") String email,
+				@RequestParam ("password") String password,
+				@RequestParam ("password2") String password2,
+				RedirectAttributes redirect) {
+			
+			User currentUser= (User)session.getAttribute("user");
+			Long id =  currentUser.getId();
+			User user= userDao.findUserById(id);
+			
+			System.out.println(user);
+			if (!password2.contentEquals(password)) {
+				model.addAttribute("message", "The passwords you entered do not match. Please try again.");
+				return "userprofileupdate";
+			}
+			if (password2.contentEquals(password)) {
+
+			String encodePass = Base64.getEncoder().encodeToString(password.getBytes());
+			user.setPasscode(encodePass);
+			
+			}
+			user.setEmail(email);
+			user.setUsername(username);
+			
+			userDao.save(user);
+			session.setAttribute("user", user);
+			model.addAttribute("user", user);
+			return "userprofile";
+	
 	}
-
-
+		
+		@RequestMapping("/viewprofile")
+		public String viewprofile(Model model) {
+			User currentUser= (User)session.getAttribute("user");
+			Long id =  currentUser.getId();
+			User user= userDao.findUserById(id);
+		
+			model.addAttribute("user", user);
+			
+			
+			return("userprofile");
+		}
+	}

@@ -3,7 +3,20 @@
 	
 }
 
-<!-- HomeLogin page -->
+.one{
+	position: absolute;
+	left: 30px;
+}
+.newtenant{
+	border: dotted ;
+	padding: 10px;
+	width: 60%;
+}
+
+.associnfo{
+	position: relative;
+	left:10px;
+}
 
 .employbar{
 	Background-color: white;
@@ -13,11 +26,82 @@
 	top: 60%;
 }
 
-<!-- Tenant Home page -->
+
 
 #stats{
 	
 background-color: white;
 padding: 50px;
+position: absolute;
+Width: 400px;
+right:30%;
+
 right: 10px;
+}
+
+.dash{
+	Background-color: white;
+	padding: 10px;
+	font-family: San Serif;
+	text-align: center;
+	border: solid 10px;
+	width: 25%;
+	position: absolute;
+	left: 5%;
+}
+.profile{
+	Background-color: white;
+	padding: 20px;
+	font-family: San Serif;
+	text-align: center;
+	border: solid;
+	width: 25%;
+	position: absolute;
+	top: 10%;
+	right: 5%;
+}
+
+.subdash{
+	
+	position:absolute;
+	top: 40%;
+	right: 40%;
+}
+.feedback{
+	Background-color: #825e2a;
+	font-family: San Serif;
+	color: white;
+	border: solid;
+	position:absolute;
+	width: 25%;
+	lenght: 50%;
+	top: 32%;
+	right: 5%;
+}
+
+.feedback-separation{
+	border: 1px solid;
+	
+}
+
+.footer{
+	background-color: white;
+	text-align:center;
+	postion: absolute;
+	
+}
+
+.line1{
+	Background-color: white;
+	color:white;
+	heigth: 1%;
+	width: 80%;
+	
+}
+.comments{
+	position: absolute;
+	top: 80%;
+	left: 5%;
+	
+	
 }

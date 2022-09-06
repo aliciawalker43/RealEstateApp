@@ -6,9 +6,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Sign Up Here</title>
 </head>
-<body>
+<body class="body">
+<%@ include file="navbar.jsp"%>
 
 <h2> Welcome New Tenant Register Here</h2>
 
@@ -16,7 +17,7 @@
 
 
 <h3>Create New Account</h3>
-<p>Enter Desired username.</p>
+<p>Enter Desired Username.</p>
 <div>
 <form action="/signup" method="post"/>
 <input type="username" name="username" placeholder="username"/> 

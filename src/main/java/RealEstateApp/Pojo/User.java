@@ -1,13 +1,14 @@
 package RealEstateApp.Pojo;
 
-import java.util.Set;
 
-import javax.persistence.Column;
+
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -25,17 +26,15 @@ public class User {
 	@Value("${level1}")
 	private String accessStatus;
 	
-	//Rental Statistics
-	private String leasePeriod;
-	private String rentalAddress;
-	private String rentDueDate;
-	private Double rentAmount;
-	private Double lateFee;
+	//Rental Communication
 	private String comments;
+	@ManyToOne 
+	@JoinColumn(name= "property_Id", unique = true)
+	private Property property;
 	
 	//Employee Statistics
 	private String hireDate;
-	private String payRate;
+	private Double payRate;
 	private String position;
 	
 	
@@ -46,8 +45,8 @@ public class User {
 	}
 	
 	public User(Long id, String firstname, String lastname, String username, String passcode, String email,
-			String accessStatus, String leasePeriod, String rentalAddress, String rentDueDate, Double rentAmount,
-			Double lateFee, String comments, String hireDate, String payRate, String position) {
+			String accessStatus, String leasePeriod, String address, String rentDueDate, Double rentAmount,
+			Double lateFee, String comments, String hireDate, Double payRate, String position) {
 		super();
 		this.id = id;
 		this.firstname = firstname;
@@ -56,11 +55,7 @@ public class User {
 		this.passcode = passcode;
 		this.email = email;
 		this.accessStatus = accessStatus;
-		this.leasePeriod = leasePeriod;
-		this.rentalAddress = rentalAddress;
-		this.rentDueDate = rentDueDate;
-		this.rentAmount = rentAmount;
-		this.lateFee = lateFee;
+		
 		this.comments = comments;
 		this.hireDate = hireDate;
 		this.payRate = payRate;
@@ -88,10 +83,10 @@ public class User {
 	public void setHireDate(String hireDate) {
 		this.hireDate = hireDate;
 	}
-	public String getPayRate() {
+	public Double getPayRate() {
 		return payRate;
 	}
-	public void setPayRate(String payRate) {
+	public void setPayRate( Double payRate) {
 		this.payRate = payRate;
 	}
 	public String getPosition() {
@@ -136,49 +131,33 @@ public class User {
 	public void setAccessStatus(String accessStatus) {
 		this.accessStatus = accessStatus;
 	}
-	public String getLeasePeriod() {
-		return leasePeriod;
+
+	public Property getProperty() {
+		return property;
 	}
-	public void setLeasePeriod(String leasePeriod) {
-		this.leasePeriod = leasePeriod;
-	}
-	public String getRentalAddress() {
-		return rentalAddress;
-	}
-	public void setRentalAddress(String rentalAddress) {
-		this.rentalAddress = rentalAddress;
-	}
-	public String getRentDueDate() {
-		return rentDueDate;
-	}
-	public void setRentDueDate(String rentDueDate) {
-		this.rentDueDate = rentDueDate;
-	}
-	public Double getRentAmount() {
-		return rentAmount;
-	}
-	public void setRentAmount(Double rentAmount) {
-		this.rentAmount = rentAmount;
-	}
-	public Double getLateFee() {
-		return lateFee;
-	}
-	public void setLateFee(Double lateFee) {
-		this.lateFee = lateFee;
+
+	public void setProperty(Property property) {
+		this.property = property;
 	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", username=" + username
-				+ ", passcode=" + passcode + ", email=" + email + ", accessStatus=" + accessStatus + ", leasePeriod="
-				+ leasePeriod + ", rentalAddress=" + rentalAddress + ", rentDueDate=" + rentDueDate + ", rentAmount="
-				+ rentAmount + ", lateFee=" + lateFee + ", comments=" + comments + ", hireDate=" + hireDate
-				+ ", payRate=" + payRate + ", position=" + position + "]";
+				+ ", passcode=" + passcode + ", email=" + email + ", accessStatus=" + accessStatus + ", comments="
+				+ comments + ", property=" + property + ", hireDate=" + hireDate + ", payRate=" + payRate
+				+ ", position=" + position + "]";
+	}
+
+
+	
 	}
 	
+
+
 	
 	
-}
+	
+
 	
 	
 	

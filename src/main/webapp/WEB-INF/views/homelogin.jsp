@@ -17,7 +17,7 @@
 <%@ include file="navbar.jsp"%>
 
 
-
+<div class="one">
 <h1>Welcome!</h1>
 <p class="message"><c:out value="${message }"/></p>
 <br></br>
@@ -31,13 +31,13 @@ Password
 <input type="password" name="password"><c:out value= "${msg }"/>
 <button>Login</button>
 </div>
-
-<div>
+<br></br>
+<div class="newtenant">
 <h3>New Tenant Register Here</h3>
 <a href="/signup"> Create New Account</a>
 </div>
 
-
+</div>
 
 
 </body>

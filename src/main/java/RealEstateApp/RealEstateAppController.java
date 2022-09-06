@@ -1,22 +1,25 @@
 package RealEstateApp;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpSession;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import RealEstateApp.Pojo.User;
-
+import RealEstateApp.dao.ExpensesDao;
+import RealEstateApp.dao.PropertyDao;
 import RealEstateApp.dao.UserDao;
+import RealEstateApp.Pojo.Expenses;
+import RealEstateApp.Pojo.Property;
 
 @Controller
 public class RealEstateAppController {
@@ -24,6 +27,10 @@ public class RealEstateAppController {
 
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private PropertyDao propDao;
+	@Autowired
+	private ExpensesDao expenseDao;
 	@Autowired
 	HttpSession session;
 	
@@ -33,6 +40,8 @@ public class RealEstateAppController {
 	public String showLogin() {
 		return "homelogin";
 	}
+	
+
 	
 	@RequestMapping("/index")
 	public String showLoginHome(Model model) {
@@ -58,6 +67,7 @@ public class RealEstateAppController {
 	}
 	
 	
+	// Tenant Methods
 	
 	@PostMapping("/comments")
 	public String addComments(Model model, @RequestParam ("comments") String comments) {
@@ -67,19 +77,200 @@ public class RealEstateAppController {
 		return "redirect:index";
 	}
 	
+	//Associate Methods	
 	
-		 
-		
-		
-	
-	/*@RequestMapping("/createTask")
-	public String addTask(Task task) {
-		taskDao.save(task);
-		return ("redirect:usertask");
+	@RequestMapping("/viewroster")
+	public String listEmployees (Model model) {
+		List<User>users= userDao.findAllByAccessStatus("level2");
+		 model.addAttribute("employee", users);
+	return "employeeroster";
 	}
 	
-	@PostMapping("/deletetask")
-	public String deleteTask(Task task) {
-	taskDao.delete(task);
-	return ("Redirect:/usertask");*/
+	
+	@RequestMapping("/user/update{id}")
+	public String updateUserForm(Model model, @PathVariable("id") Long id) {
+	
+		List<User>user= userDao.findAllById(id);
+		 System.out.println(user);
+		 model.addAttribute("employee", user);
+		// model.addAttribute("employeeid", id);
+	return "updateuser";
+	}
+	
+	@PostMapping("/user/update{id}")
+	public String updateUser( @RequestParam("id") Long id,
+			 @RequestParam ("hiredate") String hireDate,
+			  @RequestParam ("payrate") Double payRate,
+			   @RequestParam ("position") String position,
+			   @RequestParam ("accessstatus") String accessStatus) {
+	
+		User use= userDao.findUserById(id);
+	use.setPayRate(payRate);
+	use.setHireDate(hireDate);
+	use.setPosition(position);
+	use.setAccessStatus(accessStatus);
+	userDao.save(use);
+	
+	//System.out.println(use);
+	return "redirect:/viewroster";
+}
+	@RequestMapping("/user/add")
+	public String addEmployeeForm(User user) {
+	return "addemployee";	
+	}
+	
+	@PostMapping("/addemployee")
+	public String addEmployee( @RequestParam ("firstname") String first,
+			@RequestParam ("lastname") String last,
+			@RequestParam ("hiredate") String date,
+			@RequestParam ("accessstatus")String status,
+			@RequestParam ("position")String position,
+			@RequestParam ("payrate") Double payrate) {
+		
+		User use= new User();
+		use.setAccessStatus(status);
+		use.setLastname(last);
+		use.setFirstname(first);
+		use.setPayRate(payrate);
+		use.setHireDate(date);
+		use.setPosition(position);
+		
+		userDao.save(use);
+	return "redirect:/viewroster";	
+	}
+	
+	@RequestMapping("/user/delete{id}")
+	public String removeUser(@RequestParam("id") Long id) {
+		userDao.deleteById(id);
+		return "redirect:/viewroster";
+	}
+	
+	@RequestMapping("/view/expense")
+	public String viewExpensePage(Model model) {
+		List<Expenses> list= expenseDao.findAll();
+		model.addAttribute("expense", list);
+		return "expense";
+	}
+	
+	@RequestMapping("/recordexpense")
+	public String addExpense(Model model) {
+		List<Property> prop= propDao.findAll(); 
+		//System.out.println(prop);
+		 model.addAttribute("propertys", prop);
+		return "expenseform";
+	}
+	
+	@PostMapping("/addexpense")
+	public String recordExpense(Model model, Property prop, 
+			@RequestParam ("property") Long id,
+			@RequestParam ("expense") String expense,
+			@RequestParam ("amount") Double amount,
+			@RequestParam ("date") String date) {
+		
+		 prop= propDao.findPropertyById(id);
+		Expenses ex= new Expenses();
+		ex.setExpenseAmount(amount);
+		ex.setExpenseName(expense);
+		ex.setDate(date);
+		 ex.setProperty(prop);
+		
+		 expenseDao.save(ex);
+		 
+		 List<Expenses> list =expenseDao.findAll();
+		// System.out.println(ex);
+		//System.out.println(list);
+		
+		model.addAttribute("property", prop);
+		model.addAttribute("expense", list);
+		return "redirect:/view/expense";
+	}
+	
+	@RequestMapping("/expense/delete{id}")
+	public String deleteExpense(@RequestParam Long id) {
+		expenseDao.deleteById(id);
+		return "redirect:/view/expense";
+	}
+	
+
+	@RequestMapping("/propertylist")
+	public String viewPropertyList(Model model) {
+		
+		List<Property> prop= propDao.findAll();
+		
+		model.addAttribute("property", prop);
+		return "propertychart";
+	}
+	
+	@RequestMapping("/property/add")
+    public String addPropertyForm(Model model) {
+		List<User> user= userDao.findAll();
+		
+		model.addAttribute( "user", user);
+		return "propertyaddform";
+	}
+	
+	
+	@RequestMapping("/property/delete{id}")
+		public String removeProperty (@RequestParam("id") Long id) {
+		propDao.deleteById(id);
+		return "redirect:/propertylist";
+	}
+	
+	
+	@PostMapping("/addproperty")
+	public String addProperty(@RequestParam ("property") String address,
+			@RequestParam ("tenant") User user,
+			@RequestParam ("Lease Date") String leaseDate) {
+	
+		
+		Property prop= new Property();
+		prop.setLeaseEndDate(leaseDate);
+		prop.setRentAddress(address);
+		propDao.save(prop);
+		
+		user.setProperty(prop);
+		userDao.save(user);
+		
+		return "redirect:/propertylist";
+	}
+	
+	   @RequestMapping("/property/update{id}")
+		   public String updatePropertyForm(Model model, @RequestParam ("id") Long id) { 
+				  
+		   Property prop= propDao.findPropertyById(id);
+		   List<User> user= userDao.findAll();
+			
+			model.addAttribute( "user", user);
+	      model.addAttribute("property", prop);
+		   return "updatepropertyform";
+	   }
+	   
+	   
+	   @PostMapping("/updateproperty")
+	   public String updateProperty(@RequestParam ("id") Long id, 
+			   @RequestParam ("tenant")User user,
+			   @RequestParam ("leaseEndDate") String leaseEndDate,
+			   @RequestParam ("dueDate")String rentDueDate,
+	          @RequestParam ("rentAmount") Double rentAmount,
+              @RequestParam ("lateFeeAmount") Double lateFee) {
+	   
+	   Property prop= propDao.findPropertyById(id);
+	   prop.setLeaseEndDate(leaseEndDate);
+	   prop.setLateFee(lateFee);
+	   prop.setRentAmount(rentAmount);
+	   prop.setRentDueDate(rentDueDate);
+	   
+	   propDao.save(prop);
+	   user.setProperty(prop);
+	   
+	   userDao.save(user);
+	   return "redirect:/propertylist";
+	   }
+	   
+	
+@RequestMapping("/calendar")
+public String viewCalendar() {
+	
+	return "calendar";
+}
 }
