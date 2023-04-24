@@ -2,6 +2,8 @@ package RealEstateApp.Pojo;
 
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -28,9 +30,9 @@ public class Property {
 	@OneToMany( mappedBy="property")
 	private List<User> user;
 	
-	private String rentDueDate;
-	private Double rentAmount;
-	private Double lateFee;
+	private int rentDueDate;
+	private double rentAmount;
+	private double lateFee;
 	
 	
 	
@@ -38,7 +40,7 @@ public class Property {
 		super();
 	}
 	public Property(Long id, String tenant, String leaseDate, String rentAddress, String scheduleRepairs,
-			String thumbnail, List<Expenses> expenses, String rentDueDate, Double rentAmount, Double lateFee) {
+			String thumbnail, List<Expenses> expenses, int rentDueDate, double rentAmount, double lateFee) {
 		super();
 		this.id = id;
 		
@@ -88,22 +90,22 @@ public class Property {
 	public void setExpenses(List<Expenses> expenses) {
 		this.expenses = expenses;
 	}*/
-	public String getRentDueDate() {
+	public int getRentDueDate() {
 		return rentDueDate;
 	}
-	public void setRentDueDate(String rentDueDate) {
+	public void setRentDueDate(int rentDueDate) {
 		this.rentDueDate = rentDueDate;
 	}
-	public Double getRentAmount() {
+	public double getRentAmount() {
 		return rentAmount;
 	}
-	public void setRentAmount(Double rentAmount) {
+	public void setRentAmount(double rentAmount) {
 		this.rentAmount = rentAmount;
 	}
-	public Double getLateFee() {
+	public double getLateFee() {
 		return lateFee;
 	}
-	public void setLateFee(Double lateFee) {
+	public void setLateFee(double lateFee) {
 		this.lateFee = lateFee;
 	}
 	
@@ -123,7 +125,34 @@ public class Property {
 				+ ", rentDueDate=" + rentDueDate + ", rentAmount=" + rentAmount + ", lateFee=" + lateFee + "]";
 	}
 	
-	
-	
+	//Check the due date and add late fee if past due.
+	public static double amountDue( User user, LocalDateTime myObj) {
 		
+		DateTimeFormatter myFormatObj2 = DateTimeFormatter.ofPattern("dd");
+	    String formattedDate2 = myObj.format(myFormatObj2);
+	    
+	    double amount=0;
+	    
+	    
+	    if(Integer.valueOf( formattedDate2) <= user.getProperty().getRentDueDate()) {
+	    	amount=  user.getProperty().getRentAmount();
+	    }
+	    else if(Integer.valueOf( formattedDate2) > user.getProperty().getRentDueDate()) {
+		   amount = user.getProperty().getRentAmount()+ user.getProperty().getLateFee(); 
+		}
+		
+		
+		return amount;
+	}
+		
+	// convert price input from string to double
+	public static double convertAmount  (String price) {
+		double  amount=0;
+		try {
+		amount= Double.parseDouble(price);
+		}catch (NumberFormatException e) {
+			 e.printStackTrace() ; 
+		}
+		return amount;
+	}
 }

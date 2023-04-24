@@ -16,10 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import RealEstateApp.Pojo.User;
 import RealEstateApp.dao.ExpensesDao;
+import RealEstateApp.dao.PaymentHistoryDao;
 import RealEstateApp.dao.PropertyDao;
 import RealEstateApp.dao.UserDao;
 import RealEstateApp.Pojo.Expenses;
+import RealEstateApp.Pojo.PaymentHistory;
 import RealEstateApp.Pojo.Property;
+
+import com.paypal.api.payments.Payment;
+
 
 @Controller
 public class RealEstateAppController {
@@ -31,6 +36,9 @@ public class RealEstateAppController {
 	private PropertyDao propDao;
 	@Autowired
 	private ExpensesDao expenseDao;
+	@Autowired
+	private PaymentHistoryDao payHistoryDao;
+	
 	@Autowired
 	HttpSession session;
 	
@@ -250,7 +258,7 @@ public class RealEstateAppController {
 	   public String updateProperty(@RequestParam ("id") Long id, 
 			   @RequestParam ("tenant")User user,
 			   @RequestParam ("leaseEndDate") String leaseEndDate,
-			   @RequestParam ("dueDate")String rentDueDate,
+			   @RequestParam ("dueDate")int rentDueDate,
 	          @RequestParam ("rentAmount") Double rentAmount,
               @RequestParam ("lateFeeAmount") Double lateFee) {
 	   
@@ -272,5 +280,29 @@ public class RealEstateAppController {
 public String viewCalendar() {
 	
 	return "calendar";
+}
+// payment history for management
+@RequestMapping("/view/payments")
+public String viewPayments(Model model) {
+	List <PaymentHistory> payHistory= payHistoryDao.findAll();
+	
+	
+	model.addAttribute("payHistory", payHistory);
+	return "paymenthistory";
+}
+
+//tenant pay history view
+@RequestMapping("/showpayments")
+public String showPayments(Model model) {
+	
+	User currentUser= (User)session.getAttribute("user");
+	Long id =  currentUser.getId();
+	User user= userDao.findUserById(id);
+	
+	List <PaymentHistory> payHistory= payHistoryDao.findAllByProperty(user.getProperty().getRentAddress());
+	
+	model.addAttribute( "user", user);
+	model.addAttribute("payHistory", payHistory);
+	return "tenantpayhistory";
 }
 }

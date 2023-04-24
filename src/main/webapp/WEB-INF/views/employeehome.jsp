@@ -10,33 +10,43 @@
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
 <link href="/styles.css" rel="stylesheet" />
+<script src="https://kit.fontawesome.com/a9ee283879.js" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body class="body">
 <%@ include file="navbar.jsp"%>
+<%@ include file="footbar.jsp"%>
+<div class="decorline1">  </div>
+<div class="decorline2">   </div>
 
 <p class="message"><c:out value="${message }"/></p>
 
-    <div class="associnfo">
-	<h3> Associate Portal</h3>
-				<p>Profile:</p>
+    <div id="emstats">
+    <div style="text-align: center;">
+
+				<i class="far fa-user-circle fa-8x" ></i>
 				<c:forEach var="user1" items="${user}">
 				
-				<ul>
-					<dd>Name: ${user1.firstname} ${user1.lastname}</dd>
-					<dd>Hire Date: ${user1.hireDate} </dd>
-					<dd> Pay Rate:${user1.payRate} </dd>
-					<dd> Position:${user1.position} </dd>
+					<h3><b>${user1.firstname} ${user1.lastname}</b></h3>
+					<br>
+					<p>Hire Date: ${user1.hireDate} <br>
+					 Pay Rate: $${user1.payRate}0 <br>
+					 Position: ${user1.position} </p>
 					
-				</ul>
+				
 				<div class="line1"> <p> h </p>
 					</div>
-				</div>
+				
+				
 				</c:forEach>  
-				<div class = "dash">
+				</div>
+				</div>
+				
+				<div class = "emdash">
 				<h3> DASHBOARD</h3>
 				<dd><a href="/propertylist">Property/Tenant List</a> </dd>
+				<dd><a href="/view/payments">View Payments</a> </dd>
 				<dd><a href="/view/expense">View Expenses</a></dd>
 				<dd><a href="/recordexpense"> Record Expense</a> </dd>
 				<dd><a href="/repairs"> Schedule Repairs</a> </dd>
@@ -49,10 +59,10 @@
 					<a href= "/viewprofile">View Profile</a>
 					<a href= "/">Attendance/Vacation</a>
 					<a href= "/">Payroll</a><br>
-					<a href= "/">logout</a>
 					</div>
 					
 				<div class="subdash">
+				<h5><u>Update Employee Infomation</u></h5>
 				<ul>
 				<dd><a href="/viewroster"> Associate Roster</a> </dd>
 				
@@ -65,7 +75,7 @@
 				
 				<div class="feedback">
 			
-				<h5 align="center"> Real Time Tenant FeedBack:</h5>
+				<h5 align="center"><b> Real Time Tenant FeedBack:</b></h5>
 				
 				<c:forEach var="comments" items="${comment}">
 				<c:if test = "${comments.comments.contains('')}" >
@@ -80,9 +90,6 @@
 				</div>
 				<br></br>
 				
-				<div class="footer">
-				<h5><a href="/policy"> Policy and Procedures</a> </h5>
-				<a href="/"> Return Home</a> 
-				</div>
+				
 </body>
 </html>

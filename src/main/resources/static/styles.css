@@ -1,22 +1,69 @@
 .body{
+	background-color: #ffffff;
+	
+}
+.homebody{
+	background-image: url("Sreklawheaderphoto.jpg");
+	background-size: cover;
+	background-border: solid;
+	background-color:#d6b656;
+	background-repeat: no-repeat;
+	
+}
+
+
+.login{
 	background-color: #d6b656;
+	height: 200%;
+    width: 40%;
+    border-radius: 25px;
+    padding: 25px;
+    border: 10%;
+    opacity: 0.7;
+	
+}
+.motto{
+	font-family: Brush Script MT;
+	color: #d6b656;
+	position: absolute;
+	
+}
+
+.username {
+	postion: relative;
+	
+}
+
+.username i{
+	postion: relative;
+	
+	
+}
+
+.password {
+	position: relative;
+}
+
+.password i{
+	position: relative;
 	
 }
 
 .one{
-	position: absolute;
-	left: 30px;
+	position: relative;
+	width: 50%;
+	left: 50%;
+	top: 40%;
 }
 .newtenant{
-	border: dotted ;
-	padding: 10px;
-	width: 60%;
+	background-color: #ffffff;
+	height: 200%;
+    width: 40%;
+    border-radius: 25px;
+    padding: 25px;
+    opacity: 0.6;
 }
 
-.associnfo{
-	position: relative;
-	left:10px;
-}
 
 .employbar{
 	Background-color: white;
@@ -28,27 +75,89 @@
 
 
 
+.decorline1{
+	background-color: #d6b656;
+	width:100%;
+	height:200px;
+	position: relative;
+	
+	
+}
+.decorline2{
+	background-color: lightgrey;
+	width:200px;
+	height: 800px;
+	position: relative;
+	
+	
+}
+
+/* tenant home page */
 #stats{
 	
-background-color: white;
+background-color: #ffffff;
 padding: 50px;
 position: absolute;
 Width: 400px;
-right:30%;
-
-right: 10px;
+alignment: center;
+left: 35%;
+top:15%;
+opacity:0.9;
+border: solid 5px;
 }
+
 
 .dash{
 	Background-color: white;
 	padding: 10px;
 	font-family: San Serif;
 	text-align: center;
-	border: solid 10px;
-	width: 25%;
+	font-size: 30px;
+	border: solid 5px;
+	width: 45%;
 	position: absolute;
-	left: 5%;
+	left: 27%;
+	top:65%;
+	opacity:0.9;
+	
 }
+.comments{
+	Background-color:#d6b656;
+	padding: 15px;
+	font-family: San Serif;
+	text-align: center;
+	font-size: 100%;
+	border: solid 5px ;
+	width: 45%;
+	height:35%;
+	position: absolute;
+	left: 27%;
+	top: 110%;
+	opacity:0.8;
+ 	
+}
+
+.payhistory{
+	padding: 15px;
+	background-color: #ffffff;
+	position: absolute;
+	top: 20%;
+	left: 10%;
+	width: 75%;
+	opacity:0.8;
+}
+
+.payform{
+	padding: 15px;
+	background-color: #ffffff;
+	position: absolute;
+	top: 20%;
+	left: 10%;
+	width: 75%;
+	opacity:0.8;
+}
+
+/* Employee Home css*/
 .profile{
 	Background-color: white;
 	padding: 20px;
@@ -57,26 +166,55 @@ right: 10px;
 	border: solid;
 	width: 25%;
 	position: absolute;
-	top: 10%;
-	right: 5%;
+	top:70%;
+	left: 5%;
+}
+
+#emstats{
+	
+background-color: #ffffff;
+padding: 50px;
+position: absolute;
+Width: 25%;
+alignment: center;
+left: 5%;
+top:10%;
+opacity:0.9;
+border: solid 5px;
+}
+
+
+.emdash{
+	Background-color: white;
+	padding: 10px;
+	font-family: San Serif;
+	text-align: center;
+	font-size: 30px;
+	border: solid 5px;
+	width: 45%;
+	position: absolute;
+	left: 40%;
+	top:10%;
+	opacity:0.9;
 }
 
 .subdash{
 	
 	position:absolute;
-	top: 40%;
-	right: 40%;
+	top: 75%;
+	left: 55%;
 }
 .feedback{
-	Background-color: #825e2a;
+	Background-color: #d6b656;
 	font-family: San Serif;
 	color: white;
 	border: solid;
-	position:absolute;
 	width: 25%;
-	lenght: 50%;
-	top: 32%;
-	right: 5%;
+	height:30%;
+	position: absolute;
+	left: 5%;
+	top: 90%;
+	opacity: 0.9;
 }
 
 .feedback-separation{
@@ -85,10 +223,17 @@ right: 10px;
 }
 
 .footer{
-	background-color: white;
+	background-color: lightgrey ;
 	text-align:center;
-	postion: absolute;
-	
+	postion: fixed;
+	padding: 10px;
+	width: 100%;
+	border: ;
+	position: fixed;
+    left: 0%;
+    bottom: 0%;
+    color: white;
+  
 }
 
 .line1{
@@ -98,10 +243,104 @@ right: 10px;
 	width: 80%;
 	
 }
-.comments{
-	position: absolute;
-	top: 80%;
-	left: 5%;
-	
-	
+
+/* payment form */
+
+
+body {
+  font-family: Arial;
+  font-size: 17px;
+  padding: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+
+.col-25 {
+  -ms-flex: 25%; /* IE10 */
+  flex: 25%;
+}
+
+.col-50 {
+  -ms-flex: 50%; /* IE10 */
+  flex: 50%;
+}
+
+.col-75 {
+  -ms-flex: 75%; /* IE10 */
+  flex: 75%;
+}
+
+.col-25,
+.col-50,
+.col-75 {
+  padding: 0 16px;
+}
+
+.container {
+  background-color: #f2f2f2;
+  padding: 5px 20px 15px 20px;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+}
+
+input[type=text] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+  padding: 7px 0;
+  font-size: 24px;
+}
+
+.btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  width: 100%;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
+
+a {
+  color: #2196F3;
+}
+
+hr {
+  border: 1px solid lightgrey;
+}
+
+span.price {
+  float: right;
+  color: grey;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (also change the direction - make the "cart" column go on top) */
+@media (max-width: 800px) {
+  .row {
+    flex-direction: column-reverse;
+  }
+  .col-25 {
+    margin-bottom: 20px;
+  }
 }

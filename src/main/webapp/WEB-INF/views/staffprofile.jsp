@@ -1,8 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,12 +12,17 @@
 <title>Insert title here</title>
 </head>
 <body>
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="#">
-    <img src="sreklawllclogo.png" width="30" height="40" class="d-inline-block align-top" alt="" loading="lazy">
-    S.Reklaw LLC
-  </a>
-</nav>
+<%@ include file="navbar.jsp"%>
+<p> Username: ${user.username }</p>
+<p>First name:  ${user.firstname }</p>
+<p>Last name:  ${user.lastname }</p>
+<p>Email Address:  ${user.email }</p>
+
+<p>Hire Date: ${user.hireDate }</p>
+<p>Pay Rate:  ${user.payRate }</p>
+<p>Position:  ${user.position }</p>
+
+
 
 </body>
 </html>

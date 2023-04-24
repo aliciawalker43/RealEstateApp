@@ -11,30 +11,55 @@
 	crossorigin="anonymous">
 <link href="styles.css" rel="stylesheet" />
 <meta charset="UTF-8">
+<script src="https://kit.fontawesome.com/a9ee283879.js" crossorigin="anonymous"></script>
 <title>Real Estate App</title>
 </head>
-<body class="body">
-<%@ include file="navbar.jsp"%>
+<body class="homebody">
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <img src="sreklawllclogo.png" width="30" height="40" class="d-inline-block align-top" alt="" loading="lazy">
+    S.Reklaw LLC
+  </a>
+</nav>
 
+<div >
+<h1 class="motto">Renovating and Reviving Communities</h1>
+
+</div>
+<br>
+<br>
 
 <div class="one">
-<h1>Welcome!</h1>
-<p class="message"><c:out value="${message }"/></p>
-<br></br>
- <h2>Tenant Login here.</h2>
-<div>Username
+
+<div class="login">
+ <h3>Sign-in here </h3>
+
 <form action="/login" method="post"/>
-<input type="username" name="username"/>
+
+<div class="username">
+<label><b>Username</b></label>
+<i class="fa fa-user fa-lg"></i><input type="username" name="username" required>
 </div>
-Password
-<div>
-<input type="password" name="password"><c:out value= "${msg }"/>
+ <br>
+
+<div class="password">
+<label><b>Password</b></label>
+<i class="fa fa-key fa-lg"></i><input type="password" name="password" required> 
+
+</div>
+
+
+
 <button>Login</button>
-</div>
+</form>
+<p class="message"><c:out value="${message }"/></p>
+<div><c:out value= "${msg }"/></div>
+</div> 
+
 <br></br>
 <div class="newtenant">
-<h3>New Tenant Register Here</h3>
-<a href="/signup"> Create New Account</a>
+<h5><b>Don't have an account?</b></h5>
+<h2><a href="/signup"> Register Here</a></h2>
 </div>
 
 </div>

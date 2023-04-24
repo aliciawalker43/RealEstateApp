@@ -45,6 +45,16 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+	<groupId>com.paypal.sdk</groupId>
+	<artifactId>rest-api-sdk</artifactId>
+	<version>1.4.2</version>
+</dependency>
 		<!-- Added for JSP Rendering -->
 <dependency>
 	<groupId>javax.servlet</groupId>

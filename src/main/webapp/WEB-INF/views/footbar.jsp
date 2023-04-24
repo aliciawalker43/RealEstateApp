@@ -1,8 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,15 +9,16 @@
 	crossorigin="anonymous">
 <link href="/styles.css" rel="stylesheet" />
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>footer</title>
 </head>
 <body>
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="#">
-    <img src="sreklawllclogo.png" width="30" height="40" class="d-inline-block align-top" alt="" loading="lazy">
-    S.Reklaw LLC
-  </a>
-</nav>
-
+<footer>
+<div class="footer">
+				<span><h5><a href="/policy"> Terms of Service</a> </h5></span>
+				<span><a href="/"> Return Home</a> </span>
+				<span><p>Copyright © 2023 S.Reklaw LLC</p></span>
+				</div>
+</footer>
 </body>
+
 </html>

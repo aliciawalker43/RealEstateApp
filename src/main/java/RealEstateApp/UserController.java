@@ -1,7 +1,9 @@
 package RealEstateApp;
 
 
-	import java.util.Base64;
+	import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -16,7 +18,9 @@ import javax.servlet.http.HttpSession;
 
 import RealEstateApp.Pojo.User;
 import RealEstateApp.Pojo.Property;
+
 import RealEstateApp.dao.PropertyDao;
+
 import RealEstateApp.dao.UserDao;
 
 	@Controller
@@ -26,6 +30,7 @@ import RealEstateApp.dao.UserDao;
 		UserDao userDao;
 		@Autowired
 		private PropertyDao propDao;
+
 
 		@Autowired
 		HttpSession session;
@@ -81,7 +86,7 @@ import RealEstateApp.dao.UserDao;
 		public String submitLogin(@RequestParam("username") String username, @RequestParam("password") String password,
 				Model model, RedirectAttributes redirect) {
 			User user = userDao.findByUsername(username);
-
+       //System.out.println("user"+ user);
 			if (user == null) {
 				model.addAttribute("message", "Incorrect username. Please try again.");
 				return "homelogin";
@@ -158,10 +163,61 @@ import RealEstateApp.dao.UserDao;
 			User currentUser= (User)session.getAttribute("user");
 			Long id =  currentUser.getId();
 			User user= userDao.findUserById(id);
+			
+			//if(user.getAccessStatus() == "level2") {
+		           
+				model.addAttribute("user", user);
+				return("staffprofile");
+		//	}else 
+		
+			//model.addAttribute("user", user);
+		//	return("userprofile");
+		}
+		
+		@RequestMapping("/makepayment")
+		public String showPaymentForm(Model model) {
+			User currentUser= (User)session.getAttribute("user");
+			Long id =  currentUser.getId();
+			User user= userDao.findUserById(id);
+			
+			LocalDateTime myObj = LocalDateTime.now();
+			DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String formattedDate = myObj.format(myFormatObj);
+			
+			//Check if Date is after due date, if true add late fee
+			 double amount= Property.amountDue(user, myObj);
+			 
+			 
+		    // look for prior balance due
+			//if partial payment created, deduct from total and add to past due
+		    
 		
 			model.addAttribute("user", user);
+			model.addAttribute("amount", amount);
+			model.addAttribute("date", formattedDate);
 			
 			
-			return("userprofile");
+			
+			return "paymentform";
+		}
+		
+		
+		@RequestMapping("/payAmount")
+		public String chooseAmount(Model model, @RequestParam ("price") String price) {
+			User currentUser= (User)session.getAttribute("user");
+			Long id =  currentUser.getId();
+			User user= userDao.findUserById(id);
+			
+			System.out.println(price);
+	    	double amount= Property.convertAmount(price);
+				
+			//System.out.println(amount);
+			model.addAttribute("user", user);
+			model.addAttribute("amount", amount);
+			
+			return "paymethod";
 		}
 	}
+	
+	
+	
