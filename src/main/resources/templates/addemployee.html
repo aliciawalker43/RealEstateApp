@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gem Shopping App</title>
+	
+	<!-- Bootstrap CSS from CDN -->
+	   <link rel="stylesheet" 
+	         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+	         integrity="sha384-..." 
+	         crossorigin="anonymous">
+			 
+			 <link rel="stylesheet" th:href="@{/styles.css}" />
+			 <title> Add Employee</title>
+</head>
+
+<body class="body">
+
+<div class= "container">
+<table>
+<tr>
+<form th:action= "@{/addemployee}" method="post">
+<td> <input type="text" name = "firstname" placeholder="First Name"/></td>
+<td> <input type="text" name = "lastname" placeholder="Last Name"/></td>
+<td> <input type="text" name = "hiredate" placeholder="Hire Date"/></td>
+<td> <input type="text" name = "payrate" placeholder="Pay Rate"/></td>
+<td> <input type="text" name = "position" placeholder="Position"/></td>
+<td> <input type="text" name = "accessstatus" placeholder="Access Status"/></td>
+<button>Submit</button>
+</form>
+</tr>
+</table>
+</div>
+	
+	<div class="footer"><a th:href="@{/}">Return Home</a></div>
+
+</div>
+</body>
+</html>
