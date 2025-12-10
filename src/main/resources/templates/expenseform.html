@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Expense</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Record Expense</h2>
+    <form th:action="@{/addexpense}" method="post">
+        <label>Property</label>
+        <select name="property" class="form-select">
+            <option th:each="prop : ${propertys}" th:value="${prop.id}" th:text="${prop.rentAddress}"></option>
+        </select>
+        <label>Expense</label>
+        <input type="text" name="expense" required />
+        <label>Amount</label>
+        <input type="number" step="0.01" name="amount" required />
+        <label>Date</label>
+        <input type="date" name="date" required />
+        <button type="submit">Save</button>
+    </form>
+</div>
+</body>
+</html>

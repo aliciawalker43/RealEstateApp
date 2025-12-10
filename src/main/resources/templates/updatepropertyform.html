@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Property</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Update Property</h2>
+    <form th:action="@{/updateproperty}" method="post">
+        <input type="hidden" name="id" th:value="${property.id}" />
+        <label>Tenant</label>
+        <select name="tenant" class="form-select">
+            <option th:each="user : ${user}" th:value="${user.id}" th:text="${user.firstname} + ' ' + ${user.lastname}"></option>
+        </select>
+        <label>Lease End Date</label>
+        <input type="text" name="leaseEndDate" th:value="${property.leaseEndDate}" />
+        <label>Rent Due Date</label>
+        <input type="number" name="dueDate" th:value="${property.rentDueDate}" />
+        <label>Rent Amount</label>
+        <input type="number" step="0.01" name="rentAmount" th:value="${property.rentAmount}" />
+        <label>Late Fee Amount</label>
+        <input type="number" step="0.01" name="lateFeeAmount" th:value="${property.lateFee}" />
+        <button type="submit">Update</button>
+    </form>
+</div>
+</body>
+</html>

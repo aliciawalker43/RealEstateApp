@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tenant Home</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Welcome</h2>
+    <div th:each="u : ${user}">
+        <p th:text="${u.firstname} + ' ' + ${u.lastname}"></p>
+    </div>
+    <a th:href="@{/makepayment}">Make a Payment</a>
+    </div>
+	
+	<div>
+	    <h2>Welcome Back</h2>
+	    <p class="message" th:text="${message}"></p>
+	</div>
+
+	<div class="decorline1"></div>
+	<div class="decorline2"></div>
+
+	<div id="stats">
+	    <div style="text-align: center;">
+	        <i class="far fa-user-circle fa-8x"></i>
+
+	        <!-- Loop over users -->
+	        <div th:each="user1 : ${user}">
+	            <h3>
+	                <b th:text="|${user1.firstname} ${user1.lastname}|"></b>
+	            </h3>
+
+	            <p>
+	                Property Address:<br>
+	                <span th:text="${user1.property.rentAddress}"></span>
+	            </p>
+	        </div>
+
+	        <div>
+	            <a th:href="@{/viewprofile}">View Profile</a>
+	        </div>
+	    </div>
+	</div>
+
+	<br>
+
+	<div class="dash">
+	    <h2><u>Dash Board</u></h2>
+	    <dd><a th:href="@{/makepayment}">Make Payment</a></dd>
+	    <dd><a th:href="@{/showpayments}">Payment History</a></dd>
+	    <dd><a th:href="@{/}">E-Documents</a></dd>
+	    <dd><a th:href="@{/}">Contact Us</a></dd>
+	    <dd><a th:href="@{/logout}">Log Out</a></dd> <!-- adjust path if needed -->
+	</div>
+
+	<div class="comments center">
+	    <h4>Tell us how we are doing. Leave a comment.</h4>
+	    <form th:action="@{/comments}" method="post">
+	        <dd>
+	            <textarea cols="35" rows="5" name="comments"
+	                      placeholder="Enter your comments."></textarea>
+	        </dd>
+	        <button type="submit">Submit</button>
+	    </form>
+	</div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 	
 }
 .homebody{
-	background-image: url("Sreklawheaderphoto.jpg");
+	background-image: url("/images/Sreklawheaderphoto.jpg");
 	background-size: cover;
 	background-border: solid;
 	background-color:#d6b656;
@@ -30,12 +30,12 @@
 }
 
 .username {
-	postion: relative;
+	position: relative;
 	
 }
 
 .username i{
-	postion: relative;
+	position: relative;
 	
 	
 }

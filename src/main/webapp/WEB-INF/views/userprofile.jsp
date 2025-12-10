@@ -12,19 +12,18 @@
 <title>Insert title here</title>
 </head>
 <body>
-<%@ include file="navbar.jsp"%>
-<p> Username: ${user.username }</p>
-<p>First name:  ${user.firstname }</p>
-<p>Last name:  ${user.lastname }</p>
-<p>Email Address:  ${user.email }</p>
+	<p>Username: <span th:text="${user.username}"></span></p>
+	<p>First name: <span th:text="${user.firstname}"></span></p>
+	<p>Last name: <span th:text="${user.lastname}"></span></p>
+	<p>Email Address: <span th:text="${user.email}"></span></p>
 
+	<p>Lease End Date: <span th:text="${user.property.leaseEndDate}"></span></p>
+	<p>Rental Address: <span th:text="${user.property.rentAddress}"></span></p>
+	<p>Monthly Rent Amount: $<span th:text="${user.property.rentAmount}"></span></p>
+	<p>Day of Month Rent Due: <span th:text="${user.property.rentDueDate}"></span></p>
+	<p>Late Fee Amount: $<span th:text="${user.property.lateFee}"></span></p>
 
-<p>Lease End Date:  ${user.property.leaseEndDate }</p>
-<p>Rental Address:  ${user.property.rentAddress }</p>
-<p>Monthly Rent Amount:  $${user.property.rentAmount }</p>
-<p>Day of Month Rent Due: ${user.property.rentDueDate }</p>
-<p> Late Fee Amount: $${user.property.lateFee }</p>
-<a href="/updateinfo"> Update</a> </dd>
-<a href="/"> Return Home</a> </dd>
+	<dd><a th:href="@{/updateinfo}">Update</a></dd>
+	<dd><a th:href="@{/}">Return Home</a></dd>
 </body>
 </html>

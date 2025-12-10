@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous">
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>Footer</title>
+</head>
+<body>
+<footer class="footer" th:fragment="footbar">
+    <span><h5><a th:href="@{/policy}">Terms of Service</a></h5></span>
+    <span><a th:href="@{/}">Return Home</a></span>
+    <span><p>Copyright © 2023 S.Reklaw LLC</p></span>
+</footer>
+</body>
+</html>

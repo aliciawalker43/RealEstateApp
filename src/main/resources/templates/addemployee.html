@@ -1,38 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Gem Shopping App</title>
-	
-	<!-- Bootstrap CSS from CDN -->
-	   <link rel="stylesheet" 
-	         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
-	         integrity="sha384-..." 
-	         crossorigin="anonymous">
-			 
-			 <link rel="stylesheet" th:href="@{/styles.css}" />
-			 <title> Add Employee</title>
+	<link rel="stylesheet"
+	        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	        crossorigin="anonymous">
+	  <link th:href="@{/css/styles.css}" rel="stylesheet" />
+	  <meta charset="UTF-8">
+	  <title>Add Employee</title>
 </head>
 
 <body class="body">
 
-<div class= "container">
-<table>
-<tr>
-<form th:action= "@{/addemployee}" method="post">
-<td> <input type="text" name = "firstname" placeholder="First Name"/></td>
-<td> <input type="text" name = "lastname" placeholder="Last Name"/></td>
-<td> <input type="text" name = "hiredate" placeholder="Hire Date"/></td>
-<td> <input type="text" name = "payrate" placeholder="Pay Rate"/></td>
-<td> <input type="text" name = "position" placeholder="Position"/></td>
-<td> <input type="text" name = "accessstatus" placeholder="Access Status"/></td>
-<button>Submit</button>
-</form>
-</tr>
-</table>
-</div>
-	
-	<div class="footer"><a th:href="@{/}">Return Home</a></div>
-
+	<div class="container mt-4">
+	    <h2>Add Employee</h2>
+	    <form th:action="@{/addemployee}" method="post" class="row g-2">
+	        <div class="col"><input class="form-control" type="text" name="firstname" placeholder="First Name" required></div>
+	        <div class="col"><input class="form-control" type="text" name="lastname" placeholder="Last Name" required></div>
+	        <div class="col"><input class="form-control" type="text" name="hiredate" placeholder="Hire Date" required></div>
+	        <div class="col"><input class="form-control" type="text" name="payrate" placeholder="Pay Rate" required></div>
+	        <div class="col"><input class="form-control" type="text" name="position" placeholder="Position" required></div>
+	        <div class="col"><input class="form-control" type="text" name="accessstatus" placeholder="Access Status" required></div>
+	        <div class="col-auto"><button class="btn btn-primary" type="submit">Submit</button></div>
+	    </form>
+	    <div class="footer"><a th:href="@{/}">Return Home</a></div>
 </div>
 </body>
 </html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment History</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Payment History</h2>
+    <table class="table">
+        <thead><tr><th>Property</th><th>Amount</th><th>Time</th></tr></thead>
+        <tbody>
+        <tr th:each="payment : ${payHistory}">
+            <td th:text="${payment.property}"></td>
+            <td th:text="${payment.amount}"></td>
+            <td th:text="${payment.time}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

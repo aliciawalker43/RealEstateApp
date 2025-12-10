@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Expenses</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Expenses</h2>
+    <table class="table">
+        <thead>
+        <tr><th>Property</th><th>Name</th><th>Amount</th><th>Date</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="ex : ${expense}">
+            <td th:text="${ex.property.rentAddress}"></td>
+            <td th:text="${ex.expenseName}"></td>
+            <td th:text="${ex.expenseAmount}"></td>
+            <td th:text="${ex.date}"></td>
+            <td><a th:href="@{'/expense/delete'(id=${ex.id})}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/recordexpense}">Record Expense</a>
+</div>
+</body>
+</html>

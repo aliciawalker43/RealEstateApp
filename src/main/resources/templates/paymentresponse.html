@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Status</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Payment Status</h2>
+    <p th:if="${message} == 'success'">Payment approved!</p>
+    <p th:if="${message} == 'cancel'">Payment canceled.</p>
+</div>
+</body>
+</html>

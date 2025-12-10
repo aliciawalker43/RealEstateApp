@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update User</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>Update User</h2>
+    <div th:each="emp : ${employee}">
+        <form th:action="@{'/user/update'(id=${emp.id})}" method="post">
+            <input type="hidden" name="id" th:value="${emp.id}" />
+            <label>Hire Date</label><input type="text" name="hiredate" th:value="${emp.hireDate}" />
+            <label>Pay Rate</label><input type="number" name="payrate" th:value="${emp.payRate}" />
+            <label>Position</label><input type="text" name="position" th:value="${emp.position}" />
+            <label>Access Status</label><input type="text" name="accessstatus" th:value="${emp.accessStatus}" />
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

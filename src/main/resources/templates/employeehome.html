@@ -1,97 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Gem Shopping App</title>
-	
-	<!-- Bootstrap CSS from CDN -->
-	   <link rel="stylesheet" 
-	         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
-	         integrity="sha384-..." 
-	         crossorigin="anonymous">
-			 
-			 <link rel="stylesheet" th:href="@{/css/styles.css}" />
-			 <title> Employee Home</title>
+	<link rel="stylesheet"
+	          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	          crossorigin="anonymous">
+	    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+	    <script src="https://kit.fontawesome.com/a9ee283879.js" crossorigin="anonymous"></script>
+	    <meta charset="UTF-8">
+	    <title>Employee Home</title>
 </head>
 <body class="body">
 	
-	<div th:replace="~{navbar :: navbar}"></div> 
-	<div th:replace="~{headerfootbar :: footbar}"></div> 
-	
-<%@ include file="navbar.html"%>
-<%@ include file="footbar.html"%>
-<div class="decorline1">  </div>
-<div class="decorline2">   </div>
-
-<p class="message"><span th:text="${message }"></span></p>
-
-    <div id="emstats">
-    <div style="text-align: center;">
-
-				<i class="far fa-user-circle fa-8x" ></i>
-				<div th:each ="user1 : ${user}">
-				
-					<h3><b><span th:text= "${user1.firstname} ${user1.lastname}"></span></b></h3>
-					<br>
-					<p>Hire Date: <spam th:text=" ${user1.hireDate}"> <br>
-					 Pay Rate: $$<span th:text="{user1.payRate}"></span>0 <br>
-					 Position: <span th:text="${user1.position}"></span> </p>
-					
-				
-				<div class="line1"> <p> h </p>
-					</div>
-				
-				
-				</div>
-				</div>
-				
-				<div class = "emdash">
-				<h3> DASHBOARD</h3>
-				<dd><a th:href="@{/propertylist}">Property/Tenant List</a> </dd>
-				<dd><a th:href="@{/view/payments}">View Payments</a> </dd>
-				<dd><a th:href="@{/view/expense}">View Expenses</a></dd>
-				<dd><a th:href="@{/recordexpense}"> Record Expense</a> </dd>
-				<dd><a th:href="@{/repairs}"> Schedule Repairs</a> </dd>
-				<dd><a th:href="@{/edocuments}">E-Documents</a> </dd>
-				<dd><a th:href="@{/directory}"> Vendor Directory</a> </dd>
-				<dd><a th:href="@{/calendar}"> View Calendar</a> </dd>
-				</div>
-				
-					<div class="profile">
-					<a th:href= "@{/viewprofile}">View Profile</a>
-					<a th:href= "@{/}">Attendance/Vacation</a>
-					<a th:href= "@{/}">Payroll</a><br>
-					</div>
-					
-				<div class="subdash">
-				<h5><u>Update Employee Information</u></h5>
-				<ul>
-				<dd><a th:href="@{/viewroster}"> Associate Roster</a> </dd>
-			
-				
-				<dd><a th:href="@{/schedule}"> Create Schedules</a> </dd>
-				<dd><a th:href="@{/updateemployee}"> Update employee status</a> </dd>
-				</ul>
-				</div>
-				
-				
-				
-				<div class="feedback">
-			
-				<h5 align="center"><b> Real Time Tenant FeedBack:</b></h5>
-				
-				<div th:each ="comments: ${comment}">
-				<div th:if= "${comments.comments.contains('')}" >
-				<div class="feedback-separation"><ul>
-					<dd> <span th:text="${comments.comments}"></span></dd>
-					<dd><span th: text="${comments.firstname}"></span></dd>
-				</ul>
-				</div>
-				</div>
-				</div> 
-				
-				</div>
-				<br></br>
-				
+	<div th:replace="~{navbar :: navbar}"></div>
+	<div th:replace="~{footbar :: footbar}"></div>
+	<div class="decorline1"></div>
+	<div class="decorline2"></div>
+	<p class="message" th:text="${message}"></p>
+	<div id="emstats" class="text-center">
+	    <i class="far fa-user-circle fa-8x"></i>
+	    <div th:each="user1 : ${user}">
+	        <h3><b th:text="${user1.firstname} + ' ' + ${user1.lastname}"></b></h3>
+	        <p>Hire Date: <span th:text="${user1.hireDate}"></span><br>
+	            Pay Rate: $<span th:text="${user1.payRate}"></span><br>
+	            Position: <span th:text="${user1.position}"></span></p>
+	    </div>
+	</div>
+	<div class="emdash">
+	    <h3>DASHBOARD</h3>
+	    <dd><a th:href="@{/propertylist}">Property/Tenant List</a></dd>
+	    <dd><a th:href="@{/view/payments}">View Payments</a></dd>
+	    <dd><a th:href="@{/view/expense}">View Expenses</a></dd>
+	    <dd><a th:href="@{/recordexpense}">Record Expense</a></dd>
+	    <dd><a th:href="@{/repairs}">Schedule Repairs</a></dd>
+	    <dd><a th:href="@{/edocuments}">E-Documents</a></dd>
+	    <dd><a th:href="@{/directory}">Vendor Directory</a></dd>
+	    <dd><a th:href="@{/calendar}">View Calendar</a></dd>
+	</div>
+	<div class="profile">
+	    <a th:href="@{/viewprofile}">View Profile</a>
+	    <a th:href="@{/}">Attendance/Vacation</a>
+	    <a th:href="@{/}">Payroll</a>
+	</div>
+	<div class="subdash">
+	    <h5><u>Update Employee Information</u></h5>
+	    <ul>
+	        <dd><a th:href="@{/viewroster}">Associate Roster</a></dd>
+	        <dd><a th:href="@{/schedule}">Create Schedules</a></dd>
+	        <dd><a th:href="@{/updateemployee}">Update employee status</a></dd>
+	    </ul>
+	</div>
+	<div class="feedback">
+	    <h5 class="text-center"><b>Real Time Tenant Feedback:</b></h5>
+	    <div class="feedback-separation" th:each="comments : ${comment}" th:if="${comments.comments} != null">
+	        <ul>
+	            <dd th:text="${comments.comments}"></dd>
+	            <dd th:text="'- ' + ${comments.firstname}"></dd>
+	        </ul>
+	    </div>
+	</div>
 				
 </body>
 </html>

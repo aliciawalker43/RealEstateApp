@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+	<link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container">
+    <h2>User Profile</h2>
+    <div th:if="${user != null}">
+        <p>Name: <span th:text="${user.firstname} + ' ' + ${user.lastname}"></span></p>
+        <p>Email: <span th:text="${user.email}"></span></p>
+        <p>Username: <span th:text="${user.username}"></span></p>
+    </div>
+</div>
+</body>
+</html>
