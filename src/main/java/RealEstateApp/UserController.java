@@ -102,12 +102,12 @@ import RealEstateApp.dao.UserDao;
 			
 			try { if(user.getAccessStatus().contains("level2")) {
 				//employee access level
-				return "redirect:/index2";
+				return "redirect:/admin/dashboard";
 			}
 			}catch(NullPointerException e) {
 				
 			}
-		    return "redirect:/index";
+		    return "redirect:/tenant/dashboard";
 		}
 		
 		// LOGOUT METHOD

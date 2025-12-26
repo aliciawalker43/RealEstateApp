@@ -1,5 +1,6 @@
 package RealEstateApp;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import RealEstateApp.Pojo.User;
-import RealEstateApp.dao.ExpensesDao;
+import RealEstateApp.dao.ExpenseDao;
 import RealEstateApp.dao.PaymentHistoryDao;
 import RealEstateApp.dao.PropertyDao;
 import RealEstateApp.dao.UserDao;
-import RealEstateApp.Pojo.Expenses;
+import RealEstateApp.Pojo.Expense;
 import RealEstateApp.Pojo.PaymentHistory;
 import RealEstateApp.Pojo.Property;
 
@@ -35,7 +36,7 @@ public class RealEstateAppController {
 	@Autowired
 	private PropertyDao propDao;
 	@Autowired
-	private ExpensesDao expenseDao;
+	private ExpenseDao expenseDao;
 	@Autowired
 	private PaymentHistoryDao payHistoryDao;
 	
@@ -155,7 +156,7 @@ public class RealEstateAppController {
 	
 	@RequestMapping("/view/expense")
 	public String viewExpensePage(Model model) {
-		List<Expenses> list= expenseDao.findAll();
+		List<Expense> list= expenseDao.findAll();
 		model.addAttribute("expense", list);
 		return "expense";
 	}
@@ -173,18 +174,18 @@ public class RealEstateAppController {
 			@RequestParam ("property") Long id,
 			@RequestParam ("expense") String expense,
 			@RequestParam ("amount") Double amount,
-			@RequestParam ("date") String date) {
+			@RequestParam ("date") LocalDate date) {
 		
 		 prop= propDao.findPropertyById(id);
-		Expenses ex= new Expenses();
-		ex.setExpenseAmount(amount);
-		ex.setExpenseName(expense);
+		Expense ex= new Expense();
+		ex.setAmount(amount);
+		ex.setExpenseType(expense);
 		ex.setDate(date);
 		 ex.setProperty(prop);
 		
 		 expenseDao.save(ex);
 		 
-		 List<Expenses> list =expenseDao.findAll();
+		 List<Expense> list =expenseDao.findAll();
 		// System.out.println(ex);
 		//System.out.println(list);
 		

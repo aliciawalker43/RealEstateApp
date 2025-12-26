@@ -5,7 +5,7 @@ package RealEstateApp.Pojo;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,16 +19,21 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Property {
 
-	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String leaseEndDate;
- 	private String rentAddress;
-	private String scheduleRepairs;
-	private String thumbnail;
-	//@OneToMany(mappedBy="property")
-	//private List<Expenses> expenses;
-	@OneToMany( mappedBy="property")
-	private List<User> user;
+	   @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
+       private Long id;
+       private String name;
+       private String leaseEndDate;
+       private String rentAddress;
+       private String scheduleRepairs;
+       private String thumbnail;
+       //@OneToMany(mappedBy="property")
+       //private List<Expenses> expenses;
+       @OneToMany( mappedBy="property")
+       private List<User> user;
+
+       @ManyToOne
+       @JoinColumn(name = "company_id")
+       private RealEstateApp.Pojo.Company company;
 	
 	private int rentDueDate;
 	private double rentAmount;
@@ -40,7 +45,7 @@ public class Property {
 		super();
 	}
 	public Property(Long id, String tenant, String leaseDate, String rentAddress, String scheduleRepairs,
-			String thumbnail, List<Expenses> expenses, int rentDueDate, double rentAmount, double lateFee) {
+			String thumbnail, List<Expense> expenses, int rentDueDate, double rentAmount, double lateFee) {
 		super();
 		this.id = id;
 		
@@ -53,12 +58,20 @@ public class Property {
 		this.rentAmount = rentAmount;
 		this.lateFee = lateFee;
 	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+}
+public void setId(Long id) {
+        this.id = id;
+}
+
+public String getName() {
+        return name;
+}
+
+public void setName(String name) {
+        this.name = name;
+}
 
 	public String getLeaseEndDate() {
 		return leaseEndDate;
@@ -111,19 +124,28 @@ public class Property {
 	
 	
 	
+    public List <User> getUser() {
+        return user;
+}
+public void setUser(List<User> user) {
+        this.user = user;
+}
+
+public RealEstateApp.Pojo.Company getCompany() {
+        return company;
+}
+
+public void setCompany(RealEstateApp.Pojo.Company company) {
+        this.company = company;
+}
+@Override
+public String toString() {
+        return "Property [id=" + id + ", name=" + name + ", leaseEndDate=" + leaseEndDate + ", rentAddress="
+                        + rentAddress + ", scheduleRepairs=" + scheduleRepairs + ", thumbnail=" + thumbnail + ", user=" + user
+                        + ", rentDueDate=" + rentDueDate + ", rentAmount=" + rentAmount + ", lateFee=" + lateFee + "]";
+}
 	
-	public List <User> getUser() {
-		return user;
-	}
-	public void setUser(List<User> user) {
-		this.user = user;
-	}
-	@Override
-	public String toString() {
-		return "Property [id=" + id + ", leaseEndDate=" + leaseEndDate + ", rentAddress="
-				+ rentAddress + ", scheduleRepairs=" + scheduleRepairs + ", thumbnail=" + thumbnail + ", user=" + user
-				+ ", rentDueDate=" + rentDueDate + ", rentAmount=" + rentAmount + ", lateFee=" + lateFee + "]";
-	}
+	
 	
 	//Check the due date and add late fee if past due.
 	public static double amountDue( User user, LocalDateTime myObj) {
