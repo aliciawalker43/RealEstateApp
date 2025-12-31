@@ -1,4 +1,4 @@
-package RealEstateApp;
+package RealEstateApp.Controllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,8 +22,10 @@ import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.PayPalRESTException;
 
 import RealEstateApp.Pojo.ApprovalResponse;
+import RealEstateApp.Pojo.Order;
 import RealEstateApp.Pojo.PaymentHistory;
 import RealEstateApp.Pojo.User;
+import RealEstateApp.Service.PayPalService;
 import RealEstateApp.dao.PaymentHistoryDao;
 import RealEstateApp.dao.UserDao;
 

@@ -1,5 +1,9 @@
 package RealEstateApp.Pojo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
@@ -8,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,26 +25,78 @@ public class Company {
 
     private String name;
 
-    private String logoUrl;
+    private String logoUrl; //path
 
     private String primaryColor;
 
     private String secondaryColor;
 
     private String backgroundImageUrl;
-
-    private String contactEmail;
-
-    private String contactPhone;
-
-    @ManyToOne
-    @JoinColumn(name = "subscription_plan_id")
-    private SubscriptionPlan subscriptionPlan;
+    
+    @OneToMany(mappedBy = "company")
+    private List<User> users = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "company")
+    private List<Property> properties = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private SubscriptionStatus subscriptionStatus = SubscriptionStatus.TRIAL;
+    @Column(nullable=false)
+    private SubscriptionPlan plan = SubscriptionPlan.STARTER;
 
-    public Long getId() {
+    @Column(nullable=false)
+    private String subscriptionStatus = "PENDING"; // PENDING, ACTIVE, PAST_DUE, CANCELED
+
+    private String stripeCustomerId;
+    private String stripeSubscriptionId;
+    
+
+    
+    
+    public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	public List<Property> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(List<Property> properties) {
+		this.properties = properties;
+	}
+
+	public SubscriptionPlan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(SubscriptionPlan plan) {
+		this.plan = plan;
+	}
+
+	public String getStripeCustomerId() {
+		return stripeCustomerId;
+	}
+
+	public void setStripeCustomerId(String stripeCustomerId) {
+		this.stripeCustomerId = stripeCustomerId;
+	}
+
+	public String getStripeSubscriptionId() {
+		return stripeSubscriptionId;
+	}
+
+	public void setStripeSubscriptionId(String stripeSubscriptionId) {
+		this.stripeSubscriptionId = stripeSubscriptionId;
+	}
+
+	public void setSubscriptionStatus() {
+		this.subscriptionStatus = subscriptionStatus;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -87,35 +144,13 @@ public class Company {
         this.backgroundImageUrl = backgroundImageUrl;
     }
 
-    public String getContactEmail() {
-        return contactEmail;
-    }
+	public String getSubscriptionStatus() {
+		return subscriptionStatus;
+	}
 
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
+	public void setSubscriptionStatus(String subscriptionStatus) {
+		this.subscriptionStatus = subscriptionStatus;
+	}
 
-    public String getContactPhone() {
-        return contactPhone;
-    }
-
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
-    }
-
-    public SubscriptionPlan getSubscriptionPlan() {
-        return subscriptionPlan;
-    }
-
-    public void setSubscriptionPlan(SubscriptionPlan subscriptionPlan) {
-        this.subscriptionPlan = subscriptionPlan;
-    }
-
-    public SubscriptionStatus getSubscriptionStatus() {
-        return subscriptionStatus;
-    }
-
-    public void setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
-        this.subscriptionStatus = subscriptionStatus;
-    }
+   
 }

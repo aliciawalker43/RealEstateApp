@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Inbox</title>
+    <link rel="stylesheet" th:href="@{/css/messages.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="inbox-container">
+
+    <!-- HEADER -->
+    <header class="inbox-header">
+        <h2>Company Inbox</h2>
+        <p>All tenant messages in one place</p>
+    </header>
+
+    <div class="inbox-body">
+
+        <!-- LEFT: CONVERSATION LIST -->
+        <aside class="conversation-list">
+            <div th:each="conv : ${conversations}"
+                 th:classappend="${conv.id == activeConversation?.id} ? 'active'"
+                 class="conversation-item">
+
+                <a th:href="@{/company/messages/{id}(id=${conv.id})}">
+                    <div class="conversation-title">
+                        <strong th:text="${conv.tenant.firstname + ' ' + conv.tenant.lastname}"></strong>
+                    </div>
+                    <div class="conversation-sub">
+                        <span th:text="${conv.tenant.property != null ? conv.tenant.property.rentAddress : 'No property assigned'}"></span>
+                    </div>
+                </a>
+            </div>
+        </aside>
+
+        <!-- RIGHT: MESSAGE THREAD -->
+        <section class="message-thread">
+
+            <div th:if="${activeConversation == null}" class="empty-state">
+                <p>Select a conversation to view messages</p>
+            </div>
+
+            <div th:if="${activeConversation != null}">
+
+                <!-- THREAD HEADER -->
+                <div class="thread-header">
+                    <h3 th:text="${activeConversation.tenant.firstname + ' ' + activeConversation.tenant.lastname}"></h3>
+                </div>
+
+                <!-- MESSAGES -->
+                <div class="messages">
+                    <div th:each="msg : ${messages}"
+                         th:class="'message ' + (${msg.sender.role.name() == 'TENANT'} ? 'from-tenant' : 'from-company')">
+
+                        <div class="bubble">
+                            <p th:text="${msg.content}"></p>
+                            <span class="timestamp"
+                                  th:text="${#temporals.format(msg.sentAt, 'MMM d, h:mm a')}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REPLY BOX -->
+                <form th:action="@{/company/messages/send}" method="post" class="reply-form">
+                    <input type="hidden" name="conversationId" th:value="${activeConversation.id}">
+                    <textarea name="content" placeholder="Type your reply..." required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+
+            </div>
+        </section>
+
+    </div>
+</div>
+
+</body>
+</html>

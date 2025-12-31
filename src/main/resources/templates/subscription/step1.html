@@ -1,0 +1,76 @@
+
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" th:href="@{/css/subscribe.css}">
+  <title>Subscribe</title>
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <div class="header">
+      <div class="title">Start your Company Subscription</div>
+      <div class="sub">Create your account, choose a plan, and unlock your company dashboard (branding, properties, tenants, billing).</div>
+    </div>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form th:action="@{/subscribe/step1}" method="post" th:object="${form}">
+      <label>Company name</label>
+      <input type="text" th:field="*{companyName}" placeholder="Walker Property Group" required>
+
+	  <div class="grid">
+	        <div>
+	          <label>First Name</label>
+	          <input type="text" th:field="*{FirstName}" placeholder="First Name" required>
+	        </div>
+	        <div>
+	          <label>Last Name</label>
+	          <input type="text" th:field="*{LastName}" placeholder="Last Name" required>
+	        </div>
+	      </div>
+      <div class="grid">
+        <div>
+          <label>Owner email</label>
+          <input type="email" th:field="*{ownerEmail}" placeholder="owner@company.com" required>
+        </div>
+        <div>
+          <label>Create password</label>
+          <input type="password" th:field="*{password}" placeholder="••••••••" required>
+        </div>
+      </div>
+
+      <label>Plan</label>
+      <select th:field="*{plan}" required>
+        <option th:value="STARTER">Starter (1–10 units)</option>
+        <option th:value="GROWTH">Growth (11–50 units)</option>
+        <option th:value="PRO">Pro (51–200 units)</option>
+      </select>
+
+      <div class="plans">
+        <div class="plan">
+          <div class="planTitle">Starter</div>
+          <div class="planMeta">Perfect for small landlords. Branding + basic messaging + payments.</div>
+        </div>
+        <div class="plan">
+          <div class="planTitle">Growth</div>
+          <div class="planMeta">Multiple properties, automation, document center, analytics.</div>
+        </div>
+        <div class="plan">
+          <div class="planTitle">Pro</div>
+          <div class="planMeta">Larger teams, advanced automation, priority support.</div>
+        </div>
+      </div>
+
+      <button class="cta" type="submit">Continue to secure payment →</button>
+
+      <div class="fine">
+        By continuing, you agree to recurring billing until you cancel. After payment, you’ll be redirected back to your company dashboard.
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

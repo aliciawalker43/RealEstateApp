@@ -7,13 +7,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
-
+import jakarta.persistence.OneToOne;
 
 
 @Entity
@@ -28,12 +28,16 @@ public class Property {
        private String thumbnail;
        //@OneToMany(mappedBy="property")
        //private List<Expenses> expenses;
-       @OneToMany( mappedBy="property")
-       private List<User> user;
+       
+       @OneToOne(fetch = FetchType.LAZY)
+       @JoinColumn(name="tenant_user_id", unique = true)
+       private User tenant;
 
        @ManyToOne
        @JoinColumn(name = "company_id")
-       private RealEstateApp.Pojo.Company company;
+       private Company company;
+       
+     
 	
 	private int rentDueDate;
 	private double rentAmount;
@@ -44,6 +48,7 @@ public class Property {
 	public Property() {
 		super();
 	}
+	
 	public Property(Long id, String tenant, String leaseDate, String rentAddress, String scheduleRepairs,
 			String thumbnail, List<Expense> expenses, int rentDueDate, double rentAmount, double lateFee) {
 		super();
@@ -58,7 +63,18 @@ public class Property {
 		this.rentAmount = rentAmount;
 		this.lateFee = lateFee;
 	}
-    public Long getId() {
+	
+	
+	
+    public User getTenant() {
+		return tenant;
+	}
+
+	public void setTenant(User tenant) {
+		this.tenant = tenant;
+	}
+
+	public Long getId() {
         return id;
 }
 public void setId(Long id) {
@@ -124,12 +140,7 @@ public void setName(String name) {
 	
 	
 	
-    public List <User> getUser() {
-        return user;
-}
-public void setUser(List<User> user) {
-        this.user = user;
-}
+
 
 public RealEstateApp.Pojo.Company getCompany() {
         return company;
@@ -138,15 +149,10 @@ public RealEstateApp.Pojo.Company getCompany() {
 public void setCompany(RealEstateApp.Pojo.Company company) {
         this.company = company;
 }
-@Override
-public String toString() {
-        return "Property [id=" + id + ", name=" + name + ", leaseEndDate=" + leaseEndDate + ", rentAddress="
-                        + rentAddress + ", scheduleRepairs=" + scheduleRepairs + ", thumbnail=" + thumbnail + ", user=" + user
-                        + ", rentDueDate=" + rentDueDate + ", rentAmount=" + rentAmount + ", lateFee=" + lateFee + "]";
-}
+
+
 	
-	
-	
+/* 
 	//Check the due date and add late fee if past due.
 	public static double amountDue( User user, LocalDateTime myObj) {
 		
@@ -156,7 +162,7 @@ public String toString() {
 	    double amount=0;
 	    
 	    
-	    if(Integer.valueOf( formattedDate2) <= user.getProperty().getRentDueDate()) {
+	  if(Integer.valueOf( formattedDate2) <= user.getProperty().getRentDueDate()) {
 	    	amount=  user.getProperty().getRentAmount();
 	    }
 	    else if(Integer.valueOf( formattedDate2) > user.getProperty().getRentDueDate()) {
@@ -165,7 +171,9 @@ public String toString() {
 		
 		
 		return amount;
-	}
+	}*/
+	    
+	    
 		
 	// convert price input from string to double
 	public static double convertAmount  (String price) {

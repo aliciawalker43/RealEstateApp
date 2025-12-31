@@ -1,4 +1,4 @@
-package RealEstateApp;
+package RealEstateApp.Controllers;
 
 
 import org.springframework.stereotype.Controller;

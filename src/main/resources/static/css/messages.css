@@ -1,0 +1,294 @@
+/* ==============================
+   Global Variables (Theme)
+================================ */
+:root {
+  --bg: #0b0f14;
+  --panel: #111827;
+  --card: #0f172a;
+  --line: rgba(255,255,255,.08);
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #22c55e;
+  --tenantBubble: #2563eb;
+  --companyBubble: #16a34a;
+  --bubbleThem: #1f2937;
+  --danger: #ef4444;
+  --shadow: 0 10px 25px rgba(0,0,0,.35);
+  --radius: 16px;
+}
+
+/* ==============================
+   Reset / Base
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #0b0f14 0%, #05070b 100%);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ==============================
+   App Container
+================================ */
+.app {
+  max-width: 820px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==============================
+   Top Bar
+================================ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(17,24,39,.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  font-size: 18px;
+}
+
+.titleWrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.25);
+  color: #bbf7d0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ==============================
+   Content / Messages
+================================ */
+.content {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.error {
+  background: rgba(239,68,68,.12);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #fecaca;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+}
+
+/* ==============================
+   Message Rows
+================================ */
+.msgRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.msgRow.me {
+  justify-content: flex-end;
+}
+
+/* ==============================
+   Avatar
+================================ */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 12px;
+  flex: 0 0 auto;
+}
+
+/* ==============================
+   Message Bubbles
+================================ */
+.bubble {
+  max-width: 78%;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bubbleThem);
+  box-shadow: var(--shadow);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.msgRow.me .bubble {
+  background: linear-gradient(135deg, var(--tenantBubble) 0%, #1d4ed8 100%);
+  border-color: rgba(255,255,255,.1);
+}
+
+.company .msgRow.me .bubble {
+  background: linear-gradient(135deg, var(--companyBubble) 0%, #15803d 100%);
+}
+
+/* ==============================
+   Message Meta
+================================ */
+.meta {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  color: rgba(229,231,235,.7);
+}
+
+.meta .name {
+  font-weight: 700;
+  color: rgba(229,231,235,.9);
+}
+
+/* ==============================
+   Composer (Input Area)
+================================ */
+.composerWrap {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  border-top: 1px solid var(--line);
+  background: rgba(17,24,39,.95);
+  backdrop-filter: blur(10px);
+  padding: 10px 12px 12px;
+}
+
+.composer {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.35;
+  min-height: 40px;
+  max-height: 140px;
+}
+
+textarea::placeholder {
+  color: rgba(156,163,175,.8);
+}
+
+.sendBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(34,197,94,.15);
+  border: 1px solid rgba(34,197,94,.25);
+  display: grid;
+  place-items: center;
+  color: #bbf7d0;
+  cursor: pointer;
+  transition: transform .08s ease;
+}
+
+.sendBtn:active {
+  transform: scale(.96);
+}
+
+/* ==============================
+   Inbox Cards (Company)
+================================ */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.03);
+  box-shadow: var(--shadow);
+}
+
+.card .info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card .name {
+  font-weight: 800;
+}
+
+.card .meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* ==============================
+   Mobile Tweaks
+================================ */
+@media (max-width: 420px) {
+  .bubble {
+    max-width: 86%;
+  }
+  .topbar {
+    padding: 12px;
+  }
+  .content {
+    padding: 12px;
+  }
+}

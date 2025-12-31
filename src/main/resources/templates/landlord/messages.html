@@ -1,0 +1,62 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" th:href="@{/css/messages.css}">
+  <title>Tenant Conversation</title>
+</head>
+
+<body class="company">
+<div class="app">
+
+  <div class="topbar">
+    <a class="back" th:href="@{/company/messages}" aria-label="Back">‹</a>
+    <div class="titleWrap">
+      <div class="title"
+           th:text="${conversation.tenant.firstname} + ' ' + ${conversation.tenant.lastname}">Tenant Name</div>
+      <div class="subtitle">Shared company inbox — visible to all staff</div>
+    </div>
+    <div class="pill">Thread</div>
+  </div>
+
+  <div class="content" id="chatScroll">
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <div th:each="m : ${messages}"
+         th:class="'msgRow ' + (${m.sender.id} == ${session.user.id} ? 'me' : 'them')">
+
+      <div class="avatar" th:if="${m.sender.id} != ${session.user.id}"
+           th:text="${#strings.substring(conversation.tenant.username,0,1)}">T</div>
+
+      <div>
+        <div class="bubble" th:text="${m.content}">Message</div>
+        <div class="meta">
+          <span class="name" th:text="${m.sender.id} == ${session.user.id} ? 'You (Company)' : 'Tenant'">Name</span>
+          <span>•</span>
+          <span class="time" th:text="${#temporals.format(m.sentAt,'MMM d, h:mm a')}">time</span>
+        </div>
+      </div>
+
+      <div class="avatar" th:if="${m.sender.id} == ${session.user.id}"
+           th:text="${#strings.substring(session.user.username,0,1)}">C</div>
+    </div>
+  </div>
+
+  <div class="composerWrap">
+    <form class="composer"
+          th:action="@{/company/messages/{id}/reply(id=${conversation.id})}"
+          method="post">
+      <textarea name="content" placeholder="Reply as company..." required></textarea>
+      <button class="sendBtn" type="submit" aria-label="Send">➤</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  const el = document.getElementById('chatScroll');
+  if (el) el.scrollTop = el.scrollHeight;
+</script>
+</body>
+</html>

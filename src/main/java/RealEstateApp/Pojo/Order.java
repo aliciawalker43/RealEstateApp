@@ -1,4 +1,4 @@
-package RealEstateApp;
+package RealEstateApp.Pojo;
 
 
 import lombok.AllArgsConstructor;

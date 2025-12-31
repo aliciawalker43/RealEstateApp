@@ -1,4 +1,4 @@
-package RealEstateApp;
+package RealEstateApp.Config;
 
 import java.util.HashMap;
 import java.util.Map;

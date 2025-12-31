@@ -15,7 +15,7 @@ public interface UserDao extends JpaRepository<User, Long>{
 	
 	List<User> findAllById(Long id);
 	
-	List<User>  findAllByAccessStatus(String accessStatus);
+	
 	
 
 	

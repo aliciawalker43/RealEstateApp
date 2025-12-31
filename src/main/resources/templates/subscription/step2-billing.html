@@ -1,0 +1,59 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Subscribe - Step 2</title>
+  <link rel="stylesheet" th:href="@{/css/subscribe.css}">
+</head>
+<body>
+<div class="app">
+  <div class="card">
+
+    <div class="header">
+      <div class="title">Billing details</div>
+      <div class="sub">Step 2 of 2 — we’ll redirect you to Stripe for card payment</div>
+    </div>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form th:action="@{/subscribe/start}" method="post" th:object="${draft}">
+      <label>Company phone</label>
+      <input th:field="*{ownerPhone}" type="text" required placeholder="(313) 555-5555"/>
+
+      <label>Billing address</label>
+      <input th:field="*{billingAddress1}" type="text" placeholder="123 Main St" required />
+
+      <div class="grid">
+        <div>
+          <label>City</label>
+          <input th:field="*{billingCity}" type="text" placeholder="Detroit" required />
+        </div>
+        <div>
+          <label>State</label>
+          <input th:field="*{billingState}" type="text" placeholder="MI" required />
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>ZIP</label>
+          <input th:field="*{billingZip}" type="text" placeholder="48201" required />
+        </div>
+        <div>
+          <label>Country</label>
+          <input th:field="*{billingCountry}" type="text" placeholder="US" required />
+        </div>
+      </div>
+
+      <button class="cta" type="submit">Continue to secure payment →</button>
+
+      <div class="fine">
+        Card details are collected securely by Stripe. Your subscription will start immediately after payment.
+      </div>
+    </form>
+
+  </div>
+</div>
+</body>
+</html>

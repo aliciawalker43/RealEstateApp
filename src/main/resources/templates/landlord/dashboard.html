@@ -13,48 +13,11 @@
     <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div>
-                <p class="mb-1 text-white-50">Welcome back  <span th:text=${user.firstname}></span></p>
+                <p class="mb-1 text-white-50">Welcome back</p>
                 <h2 class="fw-bold mb-1">Tenant Dashboard</h2>
                 <p class="mb-0">Pay rent, track maintenance, and keep documents in one place.</p>
             </div>
             <div class="text-end">
-				<div class="profile-image-section" style="text-align:center; margin-bottom:20px;">
-
-				    <!-- PROFILE IMAGE & PLACEHOLDER -->
-					<div style="width:140px; height:140px; margin:0 auto 10px auto;">
-					    <img
-					        th:src="${tenantProfile != null and tenantProfile.profileImageUrl != null
-						    ? tenantProfile.profileImageUrl + '?v=' + #dates.createNow().time
-						    : '/images/profile-placeholder.png'}"
-					        alt="Profile Image"
-					        style="width:140px;
-					               height:140px;
-					               object-fit:cover;
-					               border-radius:50%;
-					               border:2px solid #ddd;" />
-					</div>
-
-				    <!-- UPLOAD FORM -->
-				    <form th:action="@{/tenant/profile/image}"
-				          method="post"
-				          enctype="multipart/form-data"
-				          style="margin-top:10px;">
-
-				        <input type="file"
-				               name="file"
-				               accept="image/*"
-				               required
-				               style="margin-bottom:8px;"/>
-
-				        <br/>
-
-				        <button type="submit"
-				                style="padding:6px 14px; border-radius:4px; border:none; background:#222; color:#fff;">
-				            Update Profile Image
-				        </button>
-				    </form>
-
-				</div>
                 <a class="btn btn-light btn-sm text-primary fw-semibold" href="/admin/dashboard">Admin view</a>
             </div>
         </div>
@@ -78,7 +41,7 @@
             <div class="card dashboard-card p-3 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="mb-0">Maintenance</h6>
-                   <!-- <span class="badge bg-warning text-dark" th:text="${requests.size()}">0</span>-->
+                    <span class="badge bg-warning text-dark" th:text="${requests.size()}">0</span>
                 </div>
                 <p class="small text-muted">Submit new work orders with photos and track updates.</p>
                 <a class="btn btn-outline-primary w-100" href="/maintenance">Request service</a>
@@ -91,7 +54,7 @@
                     <span class="badge bg-info" th:text="${messageCount}">0</span>
                 </div>
                 <p class="small text-muted">Chat with your management team for quick updates.</p>
-                <a class="btn btn-outline-primary w-100" href="/tenant/messages">Open messenger</a>
+                <a class="btn btn-outline-primary w-100" href="/landlord/messages">Open messenger</a>
             </div>
         </div>
     </div>
@@ -125,7 +88,6 @@
                 </tr>
                 </tbody>
             </table>
-			<a class="btn btn-primary w-100" href="/showpayments">View All Pay History</a>
         </div>
     </div>
 
@@ -149,16 +111,11 @@
                 </tr>
                 <tr th:each="doc : ${documents}">
                     <td th:text="${doc.originalFileName}">Lease.pdf</td>
-                    <td th:text="${doc.contentType}">LEASE</td>
+                    <td th:text="${doc.type}">LEASE</td>
                     <td th:text="${doc.uploadedAt}">Today</td>
                 </tr>
                 </tbody>
             </table>
-			<form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
-			   <label>Select file:</label>
-			   <input type="file" name="file" required />
-			   <button type="submit">Upload</button>
-			 </form>
         </div>
     </div>
 </div>

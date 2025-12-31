@@ -25,8 +25,8 @@ public class Payment {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "tenant_id")
-    private User tenant;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "property_id")
@@ -64,12 +64,12 @@ public class Payment {
         this.id = id;
     }
 
-    public User getTenant() {
-        return tenant;
+    public User getUser() {
+        return user;
     }
 
-    public void setTenant(User tenant) {
-        this.tenant = tenant;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Property getProperty() {

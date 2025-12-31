@@ -2,6 +2,7 @@ package RealEstateApp.Pojo;
 
 public enum Role {
     TENANT,
-    ADMIN,
-    EMPLOYEE
+    LANDLORD, //company
+    ADMIN,  //App admin
+    EMPLOYEE //company employee
 }

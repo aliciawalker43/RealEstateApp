@@ -1,4 +1,4 @@
-package RealEstateApp;
+package RealEstateApp.Controllers;
 
 
 	import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpSession;
 
 import RealEstateApp.Pojo.User;
 import RealEstateApp.Pojo.Property;
-
+import RealEstateApp.Pojo.Role;
 import RealEstateApp.dao.PropertyDao;
 
 import RealEstateApp.dao.UserDao;
@@ -100,9 +100,16 @@ import RealEstateApp.dao.UserDao;
 			}
 			session.setAttribute("user", user);
 			
-			try { if(user.getAccessStatus().contains("level2")) {
+			try { if(user.getRole() == Role.ADMIN){
 				//employee access level
 				return "redirect:/admin/dashboard";
+			}
+			}catch(NullPointerException e) {
+				
+			}
+			try { if(user.getRole() == Role.LANDLORD) {
+				//employee access level
+				return "redirect:/landlord/dashboard";
 			}
 			}catch(NullPointerException e) {
 				
@@ -185,7 +192,7 @@ import RealEstateApp.dao.UserDao;
 			String formattedDate = myObj.format(myFormatObj);
 			
 			//Check if Date is after due date, if true add late fee
-			 double amount= Property.amountDue(user, myObj);
+			// double amount= Property.amountDue(user, myObj);
 			 
 			 
 		    // look for prior balance due
@@ -193,7 +200,7 @@ import RealEstateApp.dao.UserDao;
 		    
 		
 			model.addAttribute("user", user);
-			model.addAttribute("amount", amount);
+			//model.addAttribute("amount", amount);
 			model.addAttribute("date", formattedDate);
 			
 			

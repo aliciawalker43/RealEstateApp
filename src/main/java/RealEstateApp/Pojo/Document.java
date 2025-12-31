@@ -1,6 +1,6 @@
 package RealEstateApp.Pojo;
 
-import RealEstateApp.Pojo.Property;
+
 import RealEstateApp.Pojo.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,121 +13,104 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "document")
 public class Document {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private DocumentType type = DocumentType.OTHER;
+	    @ManyToOne(optional = false) @JoinColumn(name="company_id")
+	    private Company company;
 
-    private String originalFileName;
+	    @ManyToOne(optional = false) @JoinColumn(name="user_id")
+	    private User user;
+	   
+	    @Column(nullable=false) 
+	    private String originalFileName;
+	    
+	    @Column(nullable=false) 
+	    private String contentType;
+	    
+	    @Column(nullable=false) 
+	    private long sizeBytes;
 
-    private String storedFilePath;
+	    @Column(nullable=false, length=1000)
+	    private String storagePath;
 
-    @ManyToOne
-    @JoinColumn(name = "uploaded_by")
-    private User uploadedBy;
+	    @Column(nullable=false)
+	    private Instant uploadedAt = Instant.now();
 
-    private LocalDateTime uploadedAt = LocalDateTime.now();
+		public Long getId() {
+			return id;
+		}
 
-    @Enumerated(EnumType.STRING)
-    private DocumentDirection direction = DocumentDirection.FROM_ADMIN;
+		public void setId(Long id) {
+			this.id = id;
+		}
 
-    @ManyToOne
-    @JoinColumn(name = "tenant_id")
-    private User tenant;
+		public Company getCompany() {
+			return company;
+		}
 
-    @ManyToOne
-    @JoinColumn(name = "property_id")
-    private Property property;
+		public void setCompany(Company company) {
+			this.company = company;
+		}
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+		
 
-    public Long getId() {
-        return id;
-    }
+		public User getUser() {
+			return user;
+		}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+		public void setUser(User user) {
+			this.user = user;
+		}
 
-    public DocumentType getType() {
-        return type;
-    }
+		public String getOriginalFileName() {
+			return originalFileName;
+		}
 
-    public void setType(DocumentType type) {
-        this.type = type;
-    }
+		public void setOriginalFileName(String originalFileName) {
+			this.originalFileName = originalFileName;
+		}
 
-    public String getOriginalFileName() {
-        return originalFileName;
-    }
+		public String getContentType() {
+			return contentType;
+		}
 
-    public void setOriginalFileName(String originalFileName) {
-        this.originalFileName = originalFileName;
-    }
+		public void setContentType(String contentType) {
+			this.contentType = contentType;
+		}
 
-    public String getStoredFilePath() {
-        return storedFilePath;
-    }
+		public long getSizeBytes() {
+			return sizeBytes;
+		}
 
-    public void setStoredFilePath(String storedFilePath) {
-        this.storedFilePath = storedFilePath;
-    }
+		public void setSizeBytes(long sizeBytes) {
+			this.sizeBytes = sizeBytes;
+		}
 
-    public User getUploadedBy() {
-        return uploadedBy;
-    }
+		public String getStoragePath() {
+			return storagePath;
+		}
 
-    public void setUploadedBy(User uploadedBy) {
-        this.uploadedBy = uploadedBy;
-    }
+		public void setStoragePath(String storagePath) {
+			this.storagePath = storagePath;
+		}
 
-    public LocalDateTime getUploadedAt() {
-        return uploadedAt;
-    }
+		public Instant getUploadedAt() {
+			return uploadedAt;
+		}
 
-    public void setUploadedAt(LocalDateTime uploadedAt) {
-        this.uploadedAt = uploadedAt;
-    }
-
-    public DocumentDirection getDirection() {
-        return direction;
-    }
-
-    public void setDirection(DocumentDirection direction) {
-        this.direction = direction;
-    }
-
-    public User getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(User tenant) {
-        this.tenant = tenant;
-    }
-
-    public Property getProperty() {
-        return property;
-    }
-
-    public void setProperty(Property property) {
-        this.property = property;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
+		public void setUploadedAt(Instant uploadedAt) {
+			this.uploadedAt = uploadedAt;
+		}
+	    
+	    
 }
+	    
+	    

@@ -1,5 +1,6 @@
 package RealEstateApp.Pojo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,8 +25,8 @@ public class CompanySubscription {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_id")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private SubscriptionPlan currentPlan;
 
     private LocalDate startDate;
@@ -38,6 +39,10 @@ public class CompanySubscription {
 
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus status = SubscriptionStatus.TRIAL;
+    
+    
+    
+    
 
     public Long getId() {
         return id;

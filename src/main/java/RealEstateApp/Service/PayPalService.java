@@ -1,4 +1,4 @@
-package RealEstateApp;
+package RealEstateApp.Service;
 
 import java.net.URI;
 import java.util.List;

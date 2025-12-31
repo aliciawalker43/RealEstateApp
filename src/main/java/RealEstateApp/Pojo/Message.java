@@ -1,7 +1,8 @@
 package RealEstateApp.Pojo;
 
+import java.time.Instant;
 
-import RealEstateApp.Pojo.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,87 +11,88 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "message")
+@Table(name = "messages")
 public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @ManyToOne(optional = false)
+    @JoinColumn(name="conversation_id")
+    private Conversation conversation;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name="sender_user_id")
     private User sender;
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
-
+    @Column(nullable = false, length = 2000)
     private String content;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(nullable = false)
+    private Instant sentAt = Instant.now();
 
-    private LocalDateTime readAt;
+    @Column(nullable = false)
+    private boolean readByCompany = false;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private boolean readByTenant = false;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public Company getCompany() {
-        return company;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setCompany(Company company) {
-        this.company = company;
-    }
+	public Conversation getConversation() {
+		return conversation;
+	}
 
-    public User getSender() {
-        return sender;
-    }
+	public void setConversation(Conversation conversation) {
+		this.conversation = conversation;
+	}
 
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
+	public User getSender() {
+		return sender;
+	}
 
-    public User getReceiver() {
-        return receiver;
-    }
+	public void setSender(User sender) {
+		this.sender = sender;
+	}
 
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
-    }
+	public String getContent() {
+		return content;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public void setContent(String content) {
+		this.content = content;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public Instant getSentAt() {
+		return sentAt;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setSentAt(Instant sentAt) {
+		this.sentAt = sentAt;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public boolean isReadByCompany() {
+		return readByCompany;
+	}
 
-    public LocalDateTime getReadAt() {
-        return readAt;
-    }
+	public void setReadByCompany(boolean readByCompany) {
+		this.readByCompany = readByCompany;
+	}
 
-    public void setReadAt(LocalDateTime readAt) {
-        this.readAt = readAt;
-    }
+	public boolean isReadByTenant() {
+		return readByTenant;
+	}
+
+	public void setReadByTenant(boolean readByTenant) {
+		this.readByTenant = readByTenant;
+	}
+
 }

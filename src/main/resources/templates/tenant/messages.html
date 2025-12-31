@@ -1,0 +1,91 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" th:href="@{/css/messages.css}">
+  <title>Messages</title>
+
+</head>
+<body>
+<div class="app">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <a class="back" th:href="@{/tenant/dashboard}" aria-label="Back">
+      <!-- simple chevron -->
+      <span style="font-size:18px; line-height:1;">‹</span>
+    </a>
+    <div class="titleWrap">
+      <div class="title">Messages</div>
+      <div class="subtitle">Chat with your property team</div>
+    </div>
+    <div class="badge">Company Inbox</div>
+  </div>
+
+  <!-- Messages -->
+  <div class="content" id="chatScroll">
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <!-- Example divider (optional). If you don't group by date yet, you can remove this. -->
+    <!-- <div class="dayDivider">Today</div> -->
+
+    <div th:each="m : ${messages}"
+         th:class="'msgRow ' + (${m.sender.id} == ${session.user.id} ? 'me' : 'them')">
+
+      <!-- Avatar for "them" only -->
+      <div class="avatar" th:if="${m.sender.id} != ${session.user.id}"
+           th:text="${#strings.substring(m.sender.username,0,1)}">C</div>
+
+      <div>
+        <div class="bubble" th:text="${m.content}">Hello</div>
+
+        <div class="meta" th:if="${m.sender.id} != ${session.user.id}">
+          <span class="name">Company</span>
+          <span class="dot">•</span>
+          <span class="time"
+                th:text="${#temporals.format(m.sentAt,'MMM d, h:mm a')}">time</span>
+        </div>
+
+        <div class="meta" th:if="${m.sender.id} == ${session.user.id}">
+          <span class="name">You</span>
+          <span class="dot">•</span>
+          <span class="time"
+                th:text="${#temporals.format(m.sentAt,'MMM d, h:mm a')}">time</span>
+        </div>
+      </div>
+
+      <!-- Avatar for "me" (optional) -->
+      <div class="avatar" th:if="${m.sender.id} == ${session.user.id}"
+           th:text="${#strings.substring(session.user.username,0,1)}">Y</div>
+
+    </div>
+
+  </div>
+
+  <!-- Composer -->
+  <div class="composerWrap">
+    <form class="composer" th:action="@{/tenant/messages/send}" method="post">
+      <textarea name="content" placeholder="Write a message..." required></textarea>
+      <button class="sendBtn" type="submit" aria-label="Send">
+        <!-- paper plane icon -->
+        <span style="font-size:16px;">➤</span>
+      </button>
+    </form>
+
+    <div class="hint">
+      <span>Tip: include dates/times for maintenance issues.</span>
+      <a th:href="@{/tenant/dashboard}" style="color:#93c5fd;">Back to dashboard</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Auto-scroll to bottom on load (simple, works well for chat)
+  const el = document.getElementById('chatScroll');
+  if (el) el.scrollTop = el.scrollHeight;
+</script>
+</body>
+</html>

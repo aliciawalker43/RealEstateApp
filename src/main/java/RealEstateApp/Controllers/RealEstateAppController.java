@@ -1,5 +1,6 @@
-package RealEstateApp;
+package RealEstateApp.Controllers;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,7 +174,7 @@ public class RealEstateAppController {
 	public String recordExpense(Model model, Property prop, 
 			@RequestParam ("property") Long id,
 			@RequestParam ("expense") String expense,
-			@RequestParam ("amount") Double amount,
+			@RequestParam ("amount") BigDecimal amount,
 			@RequestParam ("date") LocalDate date) {
 		
 		 prop= propDao.findPropertyById(id);
@@ -292,18 +293,5 @@ public String viewPayments(Model model) {
 	return "paymenthistory";
 }
 
-//tenant pay history view
-@RequestMapping("/showpayments")
-public String showPayments(Model model) {
-	
-	User currentUser= (User)session.getAttribute("user");
-	Long id =  currentUser.getId();
-	User user= userDao.findUserById(id);
-	
-	List <PaymentHistory> payHistory= payHistoryDao.findAllByProperty(user.getProperty().getRentAddress());
-	
-	model.addAttribute( "user", user);
-	model.addAttribute("payHistory", payHistory);
-	return "tenantpayhistory";
-}
+
 }
