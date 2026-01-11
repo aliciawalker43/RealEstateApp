@@ -104,7 +104,12 @@ public class ImageUploadService {
                     .toOutputStream(out);
         }
 
-    
+        // 3) Store a WEB path (recommended) rather than destination.toString()
+        // /uploads maps to uploadRoot via ResourceHandler
+        String webPath = "/uploads/company/" + company.getId() + "/"
+                + category.name().toLowerCase()
+                + (contextId != null ? "/" + contextId : "")
+                + "/" + storedName;
                 	
         ImageAsset asset = new ImageAsset();
         asset.setCompany(company);
@@ -114,7 +119,7 @@ public class ImageUploadService {
         asset.setOriginalFileName(safeOriginalName);
         asset.setContentType(contentType);
         asset.setSizeBytes(file.getSize());
-        asset.setStoragePath(destination.toString());
+        asset.setStoragePath(webPath);
         asset.setUploadedAt(Instant.now());
       
 

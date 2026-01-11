@@ -1,44 +1,40 @@
-diff --git a/src/main/resources/templates/employeeroster.html b/src/main/resources/templates/employeeroster.html
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..cb1b92db0dd8e8f732a7742f88439fe92e7f18af 100644
---- a/src/main/resources/templates/employeeroster.html
-+++ b/src/main/resources/templates/employeeroster.html
-@@ -0,0 +1,39 @@
-+<!DOCTYPE html>
-+<html xmlns:th="http://www.thymeleaf.org">
-+<head>
-+    <link rel="stylesheet"
-+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-+          crossorigin="anonymous">
-+    <link th:href="@{/styles.css}" rel="stylesheet" />
-+    <meta charset="UTF-8">
-+    <title>Associate Roster</title>
-+</head>
-+<body class="body">
-+<div th:replace="~{navbar :: navbar}"></div>
-+<div class="container mt-4">
-+    <h1>Associate Roster</h1>
-+    <table class="table">
-+        <thead>
-+        <tr>
-+            <th>ID</th><th>Name</th><th>Hire Date</th><th>Pay Rate</th><th>Position Title</th><th colspan="2">Actions</th>
-+        </tr>
-+        </thead>
-+        <tbody>
-+        <tr th:each="user : ${employee}">
-+            <td th:text="${user.id}"></td>
-+            <td th:text="${user.firstname} + ' ' + ${user.lastname}"></td>
-+            <td th:text="${user.hireDate}"></td>
-+            <td th:text="${user.payRate}"></td>
-+            <td th:text="${user.position}"></td>
-+            <td><a th:href="@{'/user/update'(id=${user.id})}">Update</a></td>
-+            <td><a th:href="@{'/user/delete'(id=${user.id})}">Delete</a></td>
-+        </tr>
-+        </tbody>
-+    </table>
-+    <a th:href="@{/user/add}" class="btn btn-secondary">Add Associate</a>
-+</div>
-+<div class="footer"><a th:href="@{/index2}">Return Home</a></div>
-+<div class="footer"><a th:href="@{/}">Exit</a></div>
-+</body>
-+</html>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous">
+    <link th:href="@{/styles.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+   <title>Associate Roster</title>
+</head>
+<body class="body">
+<div th:replace="~{navbar :: navbar}"></div>
+<div class="container mt-4">
+    <h1>Associate Roster</h1>
+   <table class="table">
+        <thead>
+        <tr>
+           <th>ID</th><th>Name</th><th>Hire Date</th><th>Pay Rate</th><th>Position Title</th><th colspan="2">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${employee}">
+           <td th:text="${user.id}"></td>
+            <td th:text="${user.firstname} + ' ' + ${user.lastname}"></td>
+            <td th:text="${user.hireDate}"></td>
+            <td th:text="${user.payRate}"></td>
+            <td th:text="${user.position}"></td>
+            <td><a th:href="@{'/user/update'(id=${user.id})}">Update</a></td>
+            <td><a th:href="@{'/user/delete'(id=${user.id})}">Delete</a></td>
+        </tr>
+       </tbody>
+    </table>
+    <a th:href="@{/user/add}" class="btn btn-secondary">Add Associate</a>
+</div>
+<div class="footer"><a th:href="@{/index2}">Return Home</a></div>
+<div class="footer"><a th:href="@{/}">Exit</a></div>
+</body>
+</html>

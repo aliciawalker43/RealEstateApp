@@ -1,5 +1,7 @@
 package RealEstateApp.Pojo;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,7 +18,7 @@ public class EmployeeProfile {
 	  private User user;
 
     //Employee Statistics
-    private String hireDate;
+    private LocalDate hireDate;
     private Double payRate;
     
     @Column(length=80)
@@ -24,6 +26,10 @@ public class EmployeeProfile {
     
     @Column(length=255)
     private String profileImageUrl;
+    
+    
+    
+    
 
 	public Long getUserId() {
 		return userId;
@@ -41,11 +47,12 @@ public class EmployeeProfile {
 		this.user = user;
 	}
 
-	public String getHireDate() {
+	
+	public LocalDate getHireDate() {
 		return hireDate;
 	}
 
-	public void setHireDate(String hireDate) {
+	public void setHireDate(LocalDate hireDate) {
 		this.hireDate = hireDate;
 	}
 

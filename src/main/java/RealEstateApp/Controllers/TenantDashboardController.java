@@ -1,5 +1,6 @@
 package RealEstateApp.Controllers;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -13,12 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import RealEstateApp.Pojo.Company;
 import RealEstateApp.Pojo.Conversation;
 import RealEstateApp.Pojo.ImageAsset;
 import RealEstateApp.Pojo.ImageCategory;
 import RealEstateApp.Pojo.MaintenanceRequest;
+import RealEstateApp.Pojo.MaintenanceRequestImage;
+import RealEstateApp.Pojo.MaintenanceStatus;
 import RealEstateApp.Pojo.PaymentHistory;
+import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.TenantProfile;
 import RealEstateApp.Pojo.User;
 import RealEstateApp.Service.ImageUploadService;
@@ -27,11 +33,13 @@ import RealEstateApp.dao.ConversationDao;
 import RealEstateApp.dao.DocumentDao;
 import RealEstateApp.dao.ImageAssetDao;
 import RealEstateApp.dao.MaintenanceRequestDao;
+import RealEstateApp.dao.MaintenanceRequestImageDao;
 import RealEstateApp.dao.MessageDao;
 import RealEstateApp.dao.PaymentDao;
 import RealEstateApp.dao.TenantProfileDao;
 import RealEstateApp.dao.UserDao;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/tenant")
@@ -47,6 +55,7 @@ public class TenantDashboardController {
     private final ImageUploadService imageUploadService;
     private final MessagingService messagingService;
     private final ConversationDao conversationDao;
+    private final MaintenanceRequestImageDao maintenanceRequestImageDao;
     //private final PaymentHistory paymentHistoryDao;
 
     public TenantDashboardController(PaymentDao paymentDao, DocumentDao documentDao,
@@ -56,7 +65,8 @@ public class TenantDashboardController {
                                      ImageAssetDao imageAssetDao,
                                      MessagingService messagingService,
                                      ConversationDao conversationDao,
-                                     TenantProfileDao tenantProfileDao) {
+                                     TenantProfileDao tenantProfileDao,
+                                     MaintenanceRequestImageDao maintenanceRequestImageDao) {
         this.tenantProfileDao =tenantProfileDao;
     	this.userDao = userDao;
     	this.paymentDao = paymentDao;
@@ -67,6 +77,7 @@ public class TenantDashboardController {
         this.imageAssetDao = imageAssetDao;
         this.messagingService = messagingService;
         this.conversationDao = conversationDao;
+        this.maintenanceRequestImageDao = maintenanceRequestImageDao;
     }
 
     @GetMapping("/dashboard")
@@ -168,5 +179,78 @@ public class TenantDashboardController {
                     URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
         }
     }
+    
+    //Maintenance Request End points
+    
+    @GetMapping("/maintenance/request")
+    public String newRequestForm() {
+      return "tenant/maintenanceRequestForm";
+    }
+    
+    @PostMapping("/makeRequest")
+    @Transactional
+    public String submitRequest(@RequestParam String title,
+                                @RequestParam String description,
+                                @RequestParam(value="images", required=false) MultipartFile[] images,
+                                HttpSession session,
+                                RedirectAttributes ra) throws IOException {
+
+      User currentUser = (User) session.getAttribute("user");
+      if (currentUser == null) return "redirect:/login";
+
+      Company company = currentUser.getCompany();
+      if (company == null) {
+        ra.addFlashAttribute("error", "You are not associated with a company yet.");
+        return "redirect:/tenant/dashboard";
+      }
+      
+      TenantProfile tp= tenantProfileDao.findByUserId(currentUser.getId());
+    		  if (tp == null || tp.getProperty() == null) {
+    			    ra.addFlashAttribute("error",
+    			        "You must be assigned to a property before submitting a maintenance request.");
+    			    return "redirect:/tenant/dashboard";
+    			}
+      
+       Property property= tp.getProperty();
+      
+      MaintenanceRequest req = new MaintenanceRequest();
+      req.setCompany(company);
+      req.setUser(currentUser);
+      req.setProperty(property); // if tenant has property directly
+      req.setTitle(title);
+      req.setDescription(description);
+      req.setStatus(MaintenanceStatus.OPEN);
+
+      maintenanceRequestDao.save(req);
+
+      // Upload images (optional)
+      if (images != null) {
+        int count = 0;
+        for (MultipartFile file : images) {
+          if (file == null || file.isEmpty()) continue;
+          count++;
+          if (count > 5) break; // simple limit
+
+          // Use category for maintenance images
+          ImageAsset asset = imageUploadService.upload(
+              file,
+              ImageCategory.MAINTENANCE,   // add this enum value
+              req.getId(),                 // contextId ties image to request
+              session
+          );
+
+          MaintenanceRequestImage link = new MaintenanceRequestImage();
+          link.setRequest(req);
+          link.setImageAsset(asset);
+          maintenanceRequestImageDao.save(link);
+        }
+      }
+
+      ra.addFlashAttribute("success", "Maintenance request submitted.");
+      return "redirect:/tenant/dashboard";
+    }
+    
+    
+    
  
 }

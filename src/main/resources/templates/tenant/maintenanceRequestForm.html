@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<link rel="stylesheet"
+	        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	        crossorigin="anonymous">
+	  <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+	  <meta charset="UTF-8">
+	  <title>Maintenance Request Form</title>
+</head>
+
+<body class="body">
+	<div th:replace="~{navbar :: navbar}"></div>
+
+
+	<div class="container py-4">
+	 <div class="dashboard-hero mb-4">
+	 <div class="d-flex align-items-center justify-content-between flex-wrap">	
+	        <h1>Submit a Maintenance Request</h1>
+	        <p>Enter details of the request include images for clarity.</p>
+	    </div>
+	    <a th:href="@{/tenant/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+	</header>
+
+	</div>
+	</div>
+	
+	
+	<div class="row justify-content-center mt-4">
+	  <div class="col-12 col-md-6 col-lg-4">
+
+	    <div class="card shadow-sm">
+	      <div class="card-body p-4">
+
+	        <h2 class="mb-4 text-center">Enter Request</h2>
+
+	        <form th:action="@{/tenant/makeRequest}"  method="post"
+             enctype="multipart/form-data"
+             class="card p-3">
+
+	          <div class="mb-3">
+	            <label class="form-label">Title</label>
+	            <input type="text"
+	                   class="form-control"
+	                   name="Title"
+	                   placeholder="Title"
+	                   required>
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Description</label>
+	            <input type="text"
+	                   class="form-control"
+	                   name="description"
+	                   placeholder="Write a description of the request here."
+	                   required>
+	          </div>
+
+	          
+
+	            <div class="mb-3">
+    <label class="form-label">Upload Photos (optional)</label>
+    <input class="form-control"
+           type="file"
+           name="images"
+           accept="image/*"
+           multiple>
+          <small class="text-muted">Up to 5 images recommended. JPG/PNG/WebP.</small>
+         </div>
+
+	          <button type="submit" class="btn btn-primary w-100">
+	            Submit Request
+	          </button>
+
+	         </form>
+
+	          </div>
+	    </div>
+
+	  </div>
+	</div>
+
+		
+		
+	    <div class="footer"><a th:href="@{/tenant/dashboard}">Return to Dashboard</a></div>
+</div>
+</body>
+</html>

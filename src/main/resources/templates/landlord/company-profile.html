@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Profile</title>
+
+    <!-- Shared SaaS Dashboard Styles -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+</head>
+
+<body class="container">
+	<div th:replace="~{navbar :: navbar}"></div>
+
+	
+<div class="app-shell">
+	<div class="container py-4">
+	    <div class="dashboard-hero mb-4">
+	        <div class="d-flex align-items-center justify-content-between flex-wrap">
+	            <div>
+	                <p class="mb-1 text-white-50">Welcome back</p>
+	                <h2 class="fw-bold mb-1"><h2 th:text="${company.name}">Company Profile</h2>
+	                <p class="mb-0">Update, invite employees and tenants, check calendar, manage brnading and more.</p>
+					<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/dashboard">Return Dashboard</a>
+	            </div>
+				</div>
+				</div>
+	
+	
+	
+	<div class="container-fluid">
+	  <div class="row g-3 mb-3">
+		
+		
+		
+
+	    <!-- BRANDING -->
+	    <div class="col-12 col-md-4">
+	      <div class="card dashboard-card p-3 h-100">
+
+	        <div class="card-header d-flex justify-content-between align-items-center">
+	          <div>
+	            <h2 class="mb-0">Branding</h2>
+	            <small class="muted">Visible to tenants & employees</small>
+	          </div>
+	        </div>
+
+	        <div class="d-flex gap-3 align-items-center mt-3">
+
+	          <!-- LOGO UPLOAD -->
+	          <form th:action="@{/landlord/branding/logo}"
+	                method="post"
+	                enctype="multipart/form-data"
+	                id="companyLogoForm">
+
+	            <label for="logoInput" class="logo-upload" style="cursor:pointer;">
+	              <img th:src="${company != null and company.logoUrl != null
+	                    ? company.logoUrl + '?v=' + #strings.randomAlphanumeric(8)
+	                    : '/images/company-logo-placeholder.png'}"
+	                   alt="Company Logo"
+	                   style="height:60px; width:auto; max-width:160px; object-fit:contain;"/>
+
+	              <div class="logo-overlay">Change</div>
+	            </label>
+
+	            <input id="logoInput"
+	                   type="file"
+	                   name="file"
+	                   accept="image/*"
+	                   hidden
+	                   onchange="document.getElementById('companyLogoForm').submit();">
+	          </form>
+
+	          <div>
+	            <h5 class="mb-1" th:text="${company != null ? company.name : 'Company'}">Company Name</h5>
+	            <p class="muted mb-0">Your logo appears on portals and invoices.</p>
+	          </div>
+			  
+			  <!-- BRAND COLOR FORM -->
+			  <div class="mb-3">
+			  <form class="form-group"
+			        th:action="@{/landlord/branding/color}"
+			        method="post">
+
+			    <label class="form-label">Brand Primary Color</label>
+
+			    <div class="d-flex gap-2 align-items-center">
+			      <input type="color"
+			             id="brandPrimaryPicker"
+			             name="brandPrimary"
+			             th:value="${company.primaryColor != null ? company.primaryColor : '#2563eb'}"
+			             class="form-control form-control-color"
+			             style="width:56px; height:44px; padding:0; cursor:pointer;"/>
+
+			      <input type="text"
+			             id="brandPrimaryText"
+			             name="brandPrimaryText"
+			             th:value="${company.primaryColor != null ? company.primaryColor : '#2563eb'}"
+			             placeholder="#2563eb"
+			             maxlength="7"
+			             class="form-control"
+			             oninput="document.getElementById('brandPrimaryPicker').value=this.value"/>
+			    </div>
+
+			    <small class="text-muted d-block mt-1">
+			      Used for buttons and links across tenant and company pages.
+			    </small>
+
+			    <button type="submit" class="btn btn-outline-primary mt-3">
+			      Save Brand Color
+			    </button>
+			  </form>
+		 
+	        </div>
+</div>
+	      </div>
+	    </div>
+
+	    <!-- COMPANY DETAILS -->
+	    <div class="col-12 col-md-4">
+	      <div class="card dashboard-card p-3 h-100">
+
+	        <div class="card-header">
+	          <h2 class="mb-0">Company Details</h2>
+	          <small class="muted">Update company information</small>
+	        </div>
+
+	        <form th:action="@{/landlord/company/profile}" method="post" class="mt-3">
+
+	          <div class="mb-3">
+	            <label class="form-label">Company Name</label>
+	            <input class="form-control"
+	                   type="text"
+	                   name="name"
+	                   th:value="${company != null ? company.name : ''}"
+	                   required>
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Support Email</label>
+	            <input class="form-control"
+	                   type="email"
+	                   name="email"
+	                   >
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Phone</label>
+	            <input class="form-control"
+	                   type="text"
+	                   name="phone"
+	                  >
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Billing Address</label>
+	            <input class="form-control"
+	                   type="text"
+	                   name="billingAddress"
+	                   >
+	          </div>
+
+	          <button type="submit" class="btn btn-primary w-100">
+	            Save Changes
+	          </button>
+		  <form th:action="@{/landlord/company/billing-settings}" method="post" class="mt-3">
+		    <label class="form-label">Send late invoice after (days past due)</label>
+		    <input class="form-control" type="number" name="lateDays" min="0"
+		           th:value="${company.lateNoticeDaysAfterDue != null ? company.lateNoticeDaysAfterDue : 3}" required>
+		    <small class="text-muted d-block mt-1">Example: 3 means invoices go out on the 3rd day after rent due date if balance remains.</small>
+		    <button class="btn btn-outline-primary mt-3 w-100" type="submit">Save</button>
+		  </form>
+
+	      </div>
+	    </div>
+
+	    <!-- CALENDAR CARD -->
+	    <div class="col-12 col-md-4">
+	      <div class="card dashboard-card p-3 h-100">
+
+	        <div class="card-header d-flex justify-content-between align-items-center">
+	          <div>
+	            <h2 class="mb-0">Calendar</h2>
+	            <small class="muted">Upcoming work & tenant events</small>
+	          </div>
+	          <a class="btn btn-outline-primary btn-sm" th:href="@{/landlord/calendar}">
+	            Full View
+	          </a>
+	        </div>
+
+	        <!-- Mini calendar preview -->
+	        <div class="mt-3">
+
+	          <div class="d-flex justify-content-between align-items-center mb-2">
+	            <span class="fw-semibold" th:text="${monthLabel != null ? monthLabel : 'This Month'}">This Month</span>
+	            <span class="muted" th:text="${todayLabel != null ? todayLabel : ''}"></span>
+	          </div>
+
+	          <!-- Upcoming list preview -->
+	          <div th:if="${events == null or events.isEmpty()}" class="muted">
+	            No upcoming events scheduled.
+	          </div>
+
+	          <ul class="list-unstyled mb-0" th:if="${events != null and !events.isEmpty()}">
+	            <li class="py-2 border-bottom"
+	                th:each="e : ${events}">
+	              <div class="d-flex justify-content-between">
+	                <span class="fw-semibold" th:text="${e.title}">Maintenance</span>
+	                <span class="muted" th:text="${e.dateLabel}">Jan 6</span>
+	              </div>
+	              <div class="muted small" th:text="${e.subtitle}">Unit 2A • 10:00 AM</div>
+	            </li>
+	          </ul>
+
+	        </div>
+
+	      </div>
+	    </div>
+
+	  </div>
+	</div>
+
+	
+	
+    <!-- EMPLOYEES -->
+    <section class="card">
+        <div class="card-header between">
+            <h2>Employees</h2>
+            <a th:href="@{/landlord/employees/new}" class="btn btn-primary">+ Add Employee</a>
+        </div>
+
+        <div th:if="${employees.isEmpty()}" class="empty-state">
+            No employees added yet.
+        </div>
+
+        <div th:if="${!employees.isEmpty()}" class="table-wrapper">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Email</th>
+                    
+                    <th>Hire Date</th>
+                    <th>Pay Rate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${employees}">
+                    <td th:text="${e.user.firstname + ' ' + e.user.lastname}"></td>
+                    <td th:text="${e.position}"></td>
+                    <td th:text="${e.user.email}"></td>
+     
+                    <td th:text="${e.hireDate}"></td>
+                    <td th:text="${e.payRate != null ? '$' + e.payRate : '—'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+  
+	<script>
+	  // sync picker -> text
+	  const picker = document.getElementById('brandPrimaryPicker');
+	  const text = document.getElementById('brandPrimaryText');
+	  if (picker && text) {
+	    picker.addEventListener('input', () => text.value = picker.value);
+	  }
+	</script>
+</div>
+</body>
+</html>

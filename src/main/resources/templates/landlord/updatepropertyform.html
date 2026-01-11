@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous">
+    <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>Update Property</title>
+</head>
+<body>
+<div th:replace="~{navbar :: navbar}"></div>
+
+<div class="container py-4">
+    <div class="dashboard-hero mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div>
+                <p class="mb-1 text-white-50">Update Property </p>
+                
+                <p class="mb-0">Make changes to property. Add tenant and update rental Information. </p>
+				<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/dashboard">Return Dashboard</a>
+            </div>
+	  
+	  
+			</div>
+			</div>
+
+			
+			
+	<div class="row justify-content-center mt-4">
+	 <div class="col-12 col-md-6 col-lg-4">
+
+	<div class="card shadow-sm">
+	 <div class="card-body p-4">
+		
+<div class="container">
+    <h2>Update Property</h2>
+    <form th:action="@{/landlord/updateproperty}" method="post">
+		
+		<div class="mb-3">
+		 <label class="form-label">Choose Tenant </label>
+        <input type="hidden" name="id" th:value="${property.id}" />
+        
+        <select name="tenant" class="form-select">
+            <option th:each="user : ${user}" th:value="${user.id}" th:text="${user.firstname} + ' ' + ${user.lastname}"></option>
+        </select>
+		
+		</div>
+		
+		<div class="mb-3">
+			 <label class="form-label">Lease Start Date</label>
+		     <input type="text" name="leaseStartDate" th:value="${property.leaseStartDate}" />
+		</div>
+			 
+		<div class="mb-3">
+			  <label class="form-label">Lease End Date</label>
+        <input type="text" name="leaseEndDate" th:value="${property.leaseEndDate}" />
+		</div>
+		
+		
+		<div class="mb-3">
+			  <label class="form-label">Due Date</label>
+        
+        <input type="number" name="dueDate" th:value="${property.rentDueDay}" />
+        
+		</div>
+		
+		<div class="mb-3">
+			            <label class="form-label">Rent Amount</label>
+		
+        <input type="number" step="0.01" name="rentAmount" th:value="${property.rentAmount}" />
+		
+		</div>
+		
+		
+		<div class="mb-3">
+			 <label class="form-label">Late Fee Amount</label>
+        <input type="number" step="0.01" name="lateFeeAmount" th:value="${property.lateFee}" />
+		</div>
+		
+        <button class="btn btn-light btn-sm text-primary fw-semibold" type="submit">Update</button>
+    </form>
+	</div>
+	</div>
+
+     </div>
+	</div>
+
+	
+</div>
+</body>
+</html>

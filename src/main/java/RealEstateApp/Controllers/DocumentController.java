@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import RealEstateApp.Pojo.Document;
+import RealEstateApp.Pojo.Role;
 import RealEstateApp.Pojo.User;
 import RealEstateApp.Service.DocumentService;
 import RealEstateApp.dao.DocumentDao;
@@ -63,20 +64,35 @@ public class DocumentController {
 	    
 	    @GetMapping
 	    public String list(Model model, HttpSession session) {
-	    	User currentUser= (User)session.getAttribute("user");
-			Long userId =  currentUser.getId();
-			 User user = userDao.findById(userId)
-		                .orElseThrow(() -> new IllegalStateException("User not found"));
-			 
-			 Long companyId = currentUser.getCompany().getId();
-			 model.addAttribute("docs",
-			     documentRepo.findByCompanyIdOrderByUploadedAtDesc(companyId)
-			 );
-			 
-			 var docs = documentRepo.findByCompanyIdOrderByUploadedAtDesc(companyId);
-			 
-		     model.addAttribute("user", user);
-	        model.addAttribute("docs", documentRepo.findByUser(user));
-	        return "/tenant/dashboard";
-	    }
+	    	 User currentUser = (User) session.getAttribute("user");
+	    	    if (currentUser == null) return "redirect:/login";
+
+	    	    User user = userDao.findById(currentUser.getId())
+	    	            .orElseThrow(() -> new IllegalStateException("User not found"));
+
+	    	    // TENANT: show only their documents
+	    	    if (user.getRole() == Role.TENANT) {
+	    	        model.addAttribute("user", user);
+	    	        model.addAttribute("docs", documentRepo.findByUser(user));
+	    	        return "tenant/dashbboard"; // create templates/tenant/documents.html
+	    	        // OR: return "redirect:/tenant/dashboard";  (if dashboard already shows docs)
+	    	    }
+
+	    	    // LANDLORD / EMPLOYEE: show company documents (optionally grouped by tenant)
+	    	    if (user.getRole() == Role.LANDLORD || user.getRole() == Role.EMPLOYEE) {
+	    	        if (user.getCompany() == null) return "redirect:/login";
+
+	    	        Long companyId = user.getCompany().getId();
+	    	        
+	    	        model.addAttribute("user", user);
+	    	        model.addAttribute("docs", documentRepo.findByCompanyIdOrderByUploadedAtDesc(companyId));
+	    	        return "landlord/dashboard"; // templates/landlord/documents.html
+	    	        // OR: return "redirect:/landlord/dashboard";
+	    	    }
+
+	    	    // APP ADMIN (if you have it)
+	    	    return "redirect:/admin/dashboard";
+	    	}
+	    
+	   
 	}

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Center</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	<link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+</head>
+
+<body>
+	<div th:replace="~{navbar :: navbar}"></div>
+
+<div class="dashboard-wrapper">
+
+	<div class="app-shell">
+		<div class="container py-4">
+		    <div class="dashboard-hero mb-4">
+		        <div class="d-flex align-items-center justify-content-between flex-wrap">
+		            <div>
+		                <p class="mb-1 text-white-50">Welcome to Email Center</p>
+						<h2 class="card-title">
+						       <i class="fa-solid fa-paper-plane"></i> Send Email </h2>
+		                
+		                <p class="mb-0">Send indivdual and group emails directly through the app.</p>
+						<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/dashboard">Return Dashboard</a>
+						</div>
+						<!-- AI button placeholder for later -->
+						     <button type="button" class="btn-outline"
+						             onclick="document.getElementById('aiHint').classList.toggle('hidden')">
+						       <i class="fa-solid fa-wand-magic-sparkles"></i> AI Assist
+						     </button>
+		            </div>
+					<div id="aiHint" class="ai-hint hidden">
+					       <i class="fa-solid fa-lightbulb"></i>
+					       Tip: Soon you’ll be able to auto-generate professional email drafts (late fee notices, reminders, move-in info).
+					     </div>
+					</div>
+					
+
+  <!-- CONTENT -->
+  <main class="dashboard-content">
+
+  
+
+    <!-- MAIN GRID: Compose + Templates -->
+    <section class="grid-2">
+
+      <!-- COMPOSE CARD -->
+      <section class="card dashboard-card p-3">
+        <h3 class="section-title">
+          <i class="fa-solid fa-envelope-open-text"></i> Compose
+        </h3>
+
+        <!-- Flash messages -->
+        <div th:if="${success}" class="alert success">
+          <i class="fa-solid fa-circle-check"></i>
+          <span th:text="${success}">Email sent successfully.</span>
+        </div>
+
+        <div th:if="${error}" class="alert error">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span th:text="${error}">Something went wrong.</span>
+        </div>
+
+		<form th:action="@{/landlord/email/send}" method="post" class="form-stack">
+
+		  <!-- Audience -->
+		  <label class="label">
+		    <i class="fa-solid fa-users"></i> Send To
+		  </label>
+
+		  <select name="audienceId" class="input" required>
+		    <option value="" selected disabled>Select recipient</option>
+
+		    <!-- Bulk options -->
+		    <optgroup label="Groups">
+		      <option value="0">All Employees</option>
+		      <option value="99999">All Tenants</option>
+		      <option value="88888">All Tenants + Employees</option>
+		    </optgroup>
+
+		    <!-- Individuals -->
+		    <optgroup label="Tenants">
+		      <option th:each="t : ${tenants}"
+		              th:value="${t.id}"
+		              th:text="${t.firstname} + ' ' + ${t.lastname}">
+		      </option>
+		    </optgroup>
+
+		    <optgroup label="Employees">
+		      <option th:each="e : ${employees}"
+		              th:value="${e.id}"
+		              th:text="${e.firstname} + ' ' + ${e.lastname}">
+		      </option>
+		    </optgroup>
+		  </select>
+
+		  <!-- Optional: target property -->
+		  <label class="label">
+		    <i class="fa-solid fa-building"></i> Filter by Property (optional)
+		  </label>
+
+		  <select name="propertyId" class="input">
+		    <option value="">All properties</option>
+		    <option th:each="p : ${properties}"
+		            th:value="${p.id}"
+		            th:text="${p.rentalAddress}">
+		    </option>
+		  </select>
+
+		  <!-- Subject -->
+		  <label class="label">
+		    <i class="fa-solid fa-heading"></i> Subject
+		  </label>
+		  <input type="text" name="subject" class="input" placeholder="Example: Rent Reminder" required>
+
+		  <!-- Message -->
+		  <label class="label">
+		    <i class="fa-solid fa-pen-to-square"></i> Message
+		  </label>
+		  <textarea name="message" class="input textarea" rows="8"
+		            placeholder="Write your message here..." required></textarea>
+
+		  <!-- Actions -->
+		  <div class="actions-row">
+		    <button type="submit" class="btn-primary">
+		      <i class="fa-solid fa-paper-plane"></i> Send Email
+		    </button>
+
+		    <a class="btn-outline" href="/landlord/email-center">
+		      <i class="fa-solid fa-rotate-right"></i> Reset
+		    </a>
+		  </div>
+
+		</form>
+
+      <!-- TEMPLATE SHORTCUTS CARD -->
+      <section class="card dashboard-card p-3">
+        <h3 class="section-title">
+          <i class="fa-solid fa-layer-group"></i> Quick Templates
+        </h3>
+
+        <p class="muted">Click a template to auto-fill the compose form (hook this up later with JS or server-side).</p>
+
+        <div class="template-list">
+
+          <div class="template-item">
+            <div class="template-icon">
+              <i class="fa-solid fa-calendar-day"></i>
+            </div>
+            <div class="template-body">
+              <h4>Rent Reminder</h4>
+              <p class="muted small">Friendly reminder before rent due date.</p>
+            </div>
+            <button type="button" class="btn-outline small-btn" disabled>
+              Use
+            </button>
+          </div>
+
+          <div class="template-item">
+            <div class="template-icon">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <div class="template-body">
+              <h4>Late Invoice Notice</h4>
+              <p class="muted small">Balance due + late fee details.</p>
+            </div>
+            <button type="button" class="btn-outline small-btn" disabled>
+              Use
+            </button>
+          </div>
+
+          <div class="template-item">
+            <div class="template-icon">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+            </div>
+            <div class="template-body">
+              <h4>Maintenance Update</h4>
+              <p class="muted small">Status update on repair requests.</p>
+            </div>
+            <button type="button" class="btn-outline small-btn" disabled>
+              Use
+            </button>
+          </div>
+
+          <div class="template-item">
+            <div class="template-icon">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="template-body">
+              <h4>Policy / Notice</h4>
+              <p class="muted small">General announcements and rules.</p>
+            </div>
+            <button type="button" class="btn-outline small-btn" disabled>
+              Use
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </section>
+
+    <!-- OPTIONAL: RECENT SENT EMAILS -->
+    <section class="card dashboard-card p-3 mt-3">
+      <div class="card-header-row">
+        <h3 class="section-title">
+          <i class="fa-solid fa-clock-rotate-left"></i> Recent Activity
+        </h3>
+        <span class="muted small">Optional: add an EmailLog table later</span>
+      </div>
+
+      <div class="empty-state" th:if="${recentEmails == null or recentEmails.isEmpty()}">
+        <i class="fa-solid fa-inbox"></i>
+        <p class="muted">No sent emails yet.</p>
+      </div>
+
+      <div th:if="${recentEmails != null and !recentEmails.isEmpty()}">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Subject</th>
+              <th>Audience</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="e : ${recentEmails}">
+              <td th:text="${#temporals.format(e.sentAt, 'MMM d, yyyy h:mm a')}">Jan 9</td>
+              <td th:text="${e.subject}">Rent Reminder</td>
+              <td th:text="${e.audience}">TENANTS</td>
+              <td><span class="badge success">SENT</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- tiny inline helper (optional) -->
+<script>
+  // keeps page light; your SaaS css handles layout
+</script>
+
+</body>
+</html>

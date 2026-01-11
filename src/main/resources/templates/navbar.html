@@ -10,11 +10,138 @@
     <title>Navigation</title>
 </head>
 <body>
-<nav class="navbar navbar-light bg-light" th:fragment="navbar">
-    <a class="navbar-brand" th:href="@{/}">
-        <img th:src="@{/images/sreklawllclogo.png}" width="30" height="40" class="d-inline-block align-top" alt="" loading="lazy">
-        S.Reklaw LLC
-    </a>
-</nav>
+	<!DOCTYPE html>
+	<html xmlns:th="http://www.thymeleaf.org">
+	<body>
+
+	<!-- Navbar Fragment -->
+	<nav th:fragment="navbar"
+	     class="navbar navbar-expand-lg shadow-sm"
+	     style="background: var(--nav-bg, #0f172a);">
+
+	  <!-- Theme variables (set once here) -->
+	  <style th:if="${company != null}">
+	    :root{
+	      --brand-primary: [[${company.primaryColor != null ? company.primaryColor: '#2563eb'}]];
+	      --nav-bg: #0f172a;
+	      --nav-text: #ffffff;
+	    }
+	  </style>
+
+	  <!-- Optional: if no company, still define defaults -->
+	  <style th:if="${company == null}">
+	    :root{
+	      --brand-primary: #2563eb;
+	      --nav-bg: #0f172a;
+	      --nav-text: #ffffff;
+	    }
+	  </style>
+
+	  <div class="container-fluid">
+
+	    <!-- Logo + Brand -->
+	    <a class="navbar-brand d-flex align-items-center gap-2"
+	       th:href="@{/}"
+	       style="color: var(--nav-text);">
+
+	      <img th:src="${company != null and company.logoUrl != null
+	            ? company.logoUrl + '?v=' + #strings.randomAlphanumeric(8)
+	            : '/images/company-logo-placeholder.png'}"
+	           alt="Company Logo"
+	           style="height:34px; width:auto; max-width:140px; object-fit:contain; background:#fff; border-radius:8px; padding:3px;" />
+
+	      <span class="fw-semibold"
+	            th:text="${company != null ? company.name : 'Property Manager'}">
+	        Property Manager
+	      </span>
+	    </a>
+
+	    <button class="navbar-toggler"
+	            type="button"
+	            data-bs-toggle="collapse"
+	            data-bs-target="#mainNavbar"
+	            aria-controls="mainNavbar"
+	            aria-expanded="false"
+	            aria-label="Toggle navigation"
+	            style="border-color: rgba(255,255,255,.25);">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+
+	    <div class="collapse navbar-collapse" id="mainNavbar">
+
+	      <!-- Left nav links -->
+	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+	        <!-- Example links (tweak to your routes) -->
+	        <li class="nav-item">
+	          <a class="nav-link"
+	             th:href="@{/tenant/dashboard}"
+	             th:if="${currentUser != null and currentUser.role.name() == 'TENANT'}"
+	             style="color: var(--nav-text); opacity:.9;">
+	            Dashboard
+	          </a>
+	        </li>
+
+	        <li class="nav-item">
+	          <a class="nav-link"
+	             th:href="@{/landlord/dashboard}"
+	             th:if="${currentUser != null and (currentUser.role.name() == 'LANDLORD' or currentUser.role.name() == 'EMPLOYEE')}"
+	             style="color: var(--nav-text); opacity:.9;">
+	            Company Dashboard
+	          </a>
+	        </li>
+
+	        <li class="nav-item">
+	          <a class="nav-link"
+	             th:href="@{/documents}"
+	             th:if="${currentUser != null}"
+	             style="color: var(--nav-text); opacity:.9;">
+	            Documents
+	          </a>
+	        </li>
+
+	      </ul>
+
+	      <!-- Right side: user + logout -->
+	      <div class="d-flex align-items-center gap-3">
+
+	        <div th:if="${currentUser != null}" style="color: var(--nav-text); opacity:.9;">
+	          <span class="fw-semibold"
+	                th:text="${currentUser.firstname != null ? currentUser.firstname : currentUser.username}">
+	            User
+	          </span>
+	          <span class="badge ms-2"
+	                th:text="${currentUser.role}"
+	                style="background: var(--brand-primary);">
+	            ROLE
+	          </span>
+	        </div>
+
+	        <!-- Logout (GET version - use if you don't have Spring Security logout POST) -->
+	        <a th:if="${currentUser != null}"
+	           th:href="@{/logout}"
+	           class="btn btn-sm"
+	           style="background: var(--brand-primary); color:#fff; border:none;">
+	          Logout
+	        </a>
+
+	        <!-- If you DO use Spring Security, use POST logout instead:
+	        <form th:action="@{/logout}" method="post" th:if="${currentUser != null}">
+	          <button class="btn btn-sm" type="submit"
+	                  style="background: var(--brand-primary); color:#fff; border:none;">
+	            Logout
+	          </button>
+	        </form>
+	        -->
+
+	      </div>
+
+	    </div>
+	  </div>
+	</nav>
+
+	</body>
+	</html>
+
 </body>
 </html>

@@ -49,8 +49,14 @@ public class Payment {
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod method = PaymentMethod.OTHER;
+    private PaymentMethod method = PaymentMethod.CASH;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PaymentSource source= PaymentSource.MANUAL;
+
+    
+    @Column(length = 120)
     private String transactionId;
 
     @Column(length = 2000)
@@ -136,7 +142,15 @@ public class Payment {
         this.method = method;
     }
 
-    public String getTransactionId() {
+    public PaymentSource getSource() {
+		return source;
+	}
+
+	public void setSource(PaymentSource source) {
+		this.source = source;
+	}
+
+	public String getTransactionId() {
         return transactionId;
     }
 
@@ -151,4 +165,6 @@ public class Payment {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+    
+   
 }

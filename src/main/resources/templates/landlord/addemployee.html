@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<link rel="stylesheet"
+	        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	        crossorigin="anonymous">
+	  <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+	  <meta charset="UTF-8">
+	  <title>Add Employee</title>
+</head>
+
+<body class="body">
+	<div th:replace="~{navbar :: navbar}"></div>
+
+
+	<div class="container py-4">
+	 <div class="dashboard-hero mb-4">
+	 <div class="d-flex align-items-center justify-content-between flex-wrap">	
+	        <h1>New Hire Form- Add Employee</h1>
+	        <p>Enter employee information and invite to change password (Default: changeme123)</p>
+	    </div>
+	    <a th:href="@{/landlord/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
+	</header>
+
+	</div>
+	</div>
+	
+	
+	<div class="row justify-content-center mt-4">
+	  <div class="col-12 col-md-6 col-lg-4">
+
+	    <div class="card shadow-sm">
+	      <div class="card-body p-4">
+
+	        <h2 class="mb-4 text-center">Add Employee</h2>
+
+	        <form th:action="@{/landlord/addEmployee}" method="post">
+
+	          <div class="mb-3">
+	            <label class="form-label">First Name</label>
+	            <input type="text"
+	                   class="form-control"
+	                   name="firstname"
+	                   placeholder="First name"
+	                   required>
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Last Name</label>
+	            <input type="text"
+	                   class="form-control"
+	                   name="lastname"
+	                   placeholder="Last name"
+	                   required>
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Email</label>
+	            <input type="email"
+	                   class="form-control"
+	                   name="email"
+	                   placeholder="Email address"
+	                   required>
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Hire Date</label>
+	            <input type="date"
+	                   class="form-control"
+	                   name="hireDate"
+	                   required>
+	          </div>
+
+	          <div class="mb-3">
+	            <label class="form-label">Pay Rate (Hourly)</label>
+	            <input type="number"
+	                   step="0.01"
+	                   class="form-control"
+	                   name="payRate"
+	                   placeholder="25.00"
+	                   required />
+	          </div>
+
+	          <div class="mb-4">
+	            <label class="form-label">Position</label>
+	            <input type="text"
+	                   class="form-control"
+	                   name="position"
+	                   placeholder="Property Manager"
+	                   required />
+	          </div>
+
+	          <button type="submit" class="btn btn-primary w-100">
+	            Add Employee
+	          </button>
+
+	         </form>
+
+	          </div>
+	    </div>
+
+	  </div>
+	</div>
+
+		
+		
+	    <div class="footer"><a th:href="@{/landlord/dashboard}">Return to Dashboard</a></div>
+</div>
+</body>
+</html>

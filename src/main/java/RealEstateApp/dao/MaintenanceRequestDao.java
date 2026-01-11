@@ -13,4 +13,8 @@ import RealEstateApp.Pojo.User;
 
 public interface MaintenanceRequestDao extends JpaRepository<MaintenanceRequest, Long> {
 	List<MaintenanceRequest> findByUser (User user);
+
+	List<MaintenanceRequest> findAllByCompanyId(Long id);
+	
+	List<MaintenanceRequest> findByCompanyIdOrderByCreatedAtDesc(Long companyId);
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Company Portal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+</head>
+<body class="bg-light">
+	<div th:replace="~{navbar :: navbar}"></div>
+
+	
+<div class="container py-4">
+    <div class="dashboard-hero mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div>
+                <p class="mb-1 text-white-50">Maintenance</p>
+                <h2 class="fw-bold mb-1"><h2 th:text="${company.name}">Dashboard</h2>
+                <p class="mb-0">View maintenance request by property.</p>
+				<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/company/profile">Company Profile</a>
+            </div>
+			</div>
+			</div>
+
+			
+			
+			<div th:if="${requests == null or requests.isEmpty()}"
+			     class="text-center text-muted py-5">
+			  <h5>No maintenance requests at this time</h5>
+			  <p class="small">When tenants submit requests, they will appear here.</p>
+			</div>
+
+			<div th:if="${requests != null and !requests.isEmpty()}">
+			<div th:each="req : ${requests}" class="card p-3 mb-3" >
+
+			  <div class="d-flex justify-content-between">
+			    <div>
+			      <h5 class="mb-1" th:text="${req.title}">Leaking faucet</h5>
+			      <div class="text-muted small">
+			        Tenant:
+			        <span th:text="${req.user.firstname + ' ' + req.user.lastname}">Tenant Name</span>
+			        •
+			        <span th:text="${req.property != null ? req.property.rentalAddress : 'Unassigned'}">Address</span>
+			      </div>
+			    </div>
+
+			    <span class="badge bg-warning text-dark" th:text="${req.status}">OPEN</span>
+			  </div>
+
+			  <p class="mt-2 mb-2" th:text="${req.description}">Description...</p>
+
+			  <!-- Images -->
+			  <div class="row g-2"
+			       th:with="imgs=${imagesByRequestId[req.id]}"
+			       th:if="${imgs != null and !imgs.isEmpty()}">
+
+			    <div class="col-4" th:each="ri : ${imgs}">
+			      <img class="img-fluid rounded"
+			           th:src="@{/image-assets/{id}/view(id=${ri.imageAsset.id})}"
+			           alt="Maintenance photo"/>
+			    </div>
+			  </div>
+
+			</div>
+
+	

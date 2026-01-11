@@ -2,10 +2,16 @@ package RealEstateApp.Pojo;
 
 
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,54 +25,144 @@ import jakarta.persistence.OneToOne;
 @Entity
 public class Property {
 
-	   @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-       private Long id;
-       private String name;
-       private String leaseEndDate;
-       private String rentAddress;
-       private String scheduleRepairs;
-       private String thumbnail;
-       //@OneToMany(mappedBy="property")
-       //private List<Expenses> expenses;
-       
-       @OneToOne(fetch = FetchType.LAZY)
-       @JoinColumn(name="tenant_user_id", unique = true)
-       private User tenant;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-       @ManyToOne
-       @JoinColumn(name = "company_id")
-       private Company company;
+    private LocalDate leaseStartDate;
+    private LocalDate leaseEndDate;
+
+
+    @Column(nullable=false, length=255)
+    private String rentalAddress;
+
+    @Column(nullable = false)
+    private Integer rentDueDay= 1;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal rentAmount;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal lateFee;
+
+    // One property belongs to one company; company has many properties
+    @ManyToOne(optional = false)
+    @JoinColumn(name="company_id", nullable=false)
+    private Company company;
+
+    // One property has many maintenance requests
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MaintenanceRequest> requests = new ArrayList<>();
+
+    // One property has many images (recommended: ImageAsset has property + context)
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageAsset> propertyImages = new ArrayList<>();
+
+    // One property has at most one tenant; tenant can have at most one property/unit
+    @OneToOne
+    @JoinColumn(name = "tenant_user_id", unique = true)
+    private User tenant;
        
      
-	
-	private int rentDueDate;
-	private double rentAmount;
-	private double lateFee;
-	
-	
-	
-	public Property() {
-		super();
-	}
-	
-	public Property(Long id, String tenant, String leaseDate, String rentAddress, String scheduleRepairs,
-			String thumbnail, List<Expense> expenses, int rentDueDate, double rentAmount, double lateFee) {
-		super();
-		this.id = id;
+
+	    
+	    
 		
-		this.leaseEndDate = leaseDate;
-		this.rentAddress = rentAddress;
-		this.scheduleRepairs = scheduleRepairs;
-		this.thumbnail = thumbnail;
-		//this.expenses = expenses;
-		this.rentDueDate = rentDueDate;
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public LocalDate getLeaseStartDate() {
+		return leaseStartDate;
+	}
+
+	public void setLeaseStartDate(LocalDate leaseStartDate) {
+		this.leaseStartDate = leaseStartDate;
+	}
+
+	public LocalDate getLeaseEndDate() {
+		return leaseEndDate;
+	}
+
+
+	public void setLeaseEndDate(LocalDate leaseEndDate) {
+		this.leaseEndDate = leaseEndDate;
+	}
+
+
+	public String getRentalAddress() {
+		return rentalAddress;
+	}
+
+
+	public void setRentalAddress(String rentalAddress) {
+		this.rentalAddress = rentalAddress;
+	}
+
+
+	public int getRentDueDay() {
+		return rentDueDay;
+	}
+
+
+	public void setRentDueDay(int rentDueDay) {
+		this.rentDueDay = rentDueDay;
+	}
+
+	public BigDecimal getRentAmount() {
+		return rentAmount;
+	}
+
+
+	public void setRentAmount(BigDecimal rentAmount) {
 		this.rentAmount = rentAmount;
+	}
+
+
+	public BigDecimal getLateFee() {
+		return lateFee;
+	}
+
+
+	public void setLateFee(BigDecimal lateFee) {
 		this.lateFee = lateFee;
 	}
-	
-	
-	
-    public User getTenant() {
+
+
+
+	public Company getCompany() {
+		return company;
+	}
+
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+
+
+	public List<MaintenanceRequest> getRequests() {
+		return requests;
+	}
+
+	public void setRequests(List<MaintenanceRequest> requests) {
+		this.requests = requests;
+	}
+
+	public List<ImageAsset> getPropertyImages() {
+		return propertyImages;
+	}
+
+	public void setPropertyImages(List<ImageAsset> propertyImages) {
+		this.propertyImages = propertyImages;
+	}
+
+
+	public User getTenant() {
 		return tenant;
 	}
 
@@ -74,107 +170,8 @@ public class Property {
 		this.tenant = tenant;
 	}
 
-	public Long getId() {
-        return id;
-}
-public void setId(Long id) {
-        this.id = id;
-}
-
-public String getName() {
-        return name;
-}
-
-public void setName(String name) {
-        this.name = name;
-}
-
-	public String getLeaseEndDate() {
-		return leaseEndDate;
-	}
-	public void setLeaseEndDate(String leaseDate) {
-		this.leaseEndDate = leaseDate;
-	}
-	public String getRentAddress() {
-		return rentAddress;
-	}
-	public void setRentAddress(String rentAddress) {
-		this.rentAddress = rentAddress;
-	}
-	public String getScheduleRepairs() {
-		return scheduleRepairs;
-	}
-	public void setScheduleRepairs(String scheduleRepairs) {
-		this.scheduleRepairs = scheduleRepairs;
-	}
-	public String getThumbnail() {
-		return thumbnail;
-	}
-	public void setThumbnail(String thumbnail) {
-		this.thumbnail = thumbnail;
-	}
-	/*public List<Expenses> getExpenses() {
-		return expenses;
-	}
-	public void setExpenses(List<Expenses> expenses) {
-		this.expenses = expenses;
-	}*/
-	public int getRentDueDate() {
-		return rentDueDate;
-	}
-	public void setRentDueDate(int rentDueDate) {
-		this.rentDueDate = rentDueDate;
-	}
-	public double getRentAmount() {
-		return rentAmount;
-	}
-	public void setRentAmount(double rentAmount) {
-		this.rentAmount = rentAmount;
-	}
-	public double getLateFee() {
-		return lateFee;
-	}
-	public void setLateFee(double lateFee) {
-		this.lateFee = lateFee;
-	}
-	
-	
-	
 
 
-public RealEstateApp.Pojo.Company getCompany() {
-        return company;
-}
-
-public void setCompany(RealEstateApp.Pojo.Company company) {
-        this.company = company;
-}
-
-
-	
-/* 
-	//Check the due date and add late fee if past due.
-	public static double amountDue( User user, LocalDateTime myObj) {
-		
-		DateTimeFormatter myFormatObj2 = DateTimeFormatter.ofPattern("dd");
-	    String formattedDate2 = myObj.format(myFormatObj2);
-	    
-	    double amount=0;
-	    
-	    
-	  if(Integer.valueOf( formattedDate2) <= user.getProperty().getRentDueDate()) {
-	    	amount=  user.getProperty().getRentAmount();
-	    }
-	    else if(Integer.valueOf( formattedDate2) > user.getProperty().getRentDueDate()) {
-		   amount = user.getProperty().getRentAmount()+ user.getProperty().getLateFee(); 
-		}
-		
-		
-		return amount;
-	}*/
-	    
-	    
-		
 	// convert price input from string to double
 	public static double convertAmount  (String price) {
 		double  amount=0;

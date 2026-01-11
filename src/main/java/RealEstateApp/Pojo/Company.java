@@ -1,5 +1,6 @@
 package RealEstateApp.Pojo;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,32 @@ public class Company {
 
     private String backgroundImageUrl;
     
-    @OneToMany(mappedBy = "company")
+    private Integer lateNoticeDaysAfterDue; //amount of days after duedate
+    
+    @Column(length=60)
+    private String timeZone;  
+    
+ 
+    
+
+    
+    public Integer getLateNoticeDaysAfterDue() {
+		return lateNoticeDaysAfterDue;
+	}
+
+	public void setLateNoticeDaysAfterDue(Integer lateNoticeDaysAfterDue) {
+		this.lateNoticeDaysAfterDue = lateNoticeDaysAfterDue;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	@OneToMany(mappedBy = "company")
     private List<User> users = new ArrayList<>();
     
     @OneToMany(mappedBy = "company")

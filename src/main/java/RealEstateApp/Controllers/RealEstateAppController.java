@@ -89,12 +89,7 @@ public class RealEstateAppController {
 	
 	//Associate Methods	
 	
-	@RequestMapping("/viewroster")
-	public String listEmployees (Model model) {
-		List<User>users= userDao.findAllByAccessStatus("level2");
-		 model.addAttribute("employee", users);
-	return "employeeroster";
-	}
+	
 	
 	
 	@RequestMapping("/user/update{id}")
@@ -202,14 +197,7 @@ public class RealEstateAppController {
 	}
 	
 
-	@RequestMapping("/propertylist")
-	public String viewPropertyList(Model model) {
-		
-		List<Property> prop= propDao.findAll();
-		
-		model.addAttribute("property", prop);
-		return "propertychart";
-	}
+	
 	
 	@RequestMapping("/property/add")
     public String addPropertyForm(Model model) {
@@ -223,7 +211,7 @@ public class RealEstateAppController {
 	@RequestMapping("/property/delete{id}")
 		public String removeProperty (@RequestParam("id") Long id) {
 		propDao.deleteById(id);
-		return "redirect:/propertylist";
+		return "redirect:/landlord/propertylist";
 	}
 	
 	
@@ -259,19 +247,20 @@ public class RealEstateAppController {
 	   @PostMapping("/updateproperty")
 	   public String updateProperty(@RequestParam ("id") Long id, 
 			   @RequestParam ("tenant")User user,
-			   @RequestParam ("leaseEndDate") String leaseEndDate,
+			   @RequestParam ("leaseEndDate") LocalDate leaseEndDate,
 			   @RequestParam ("dueDate")int rentDueDate,
-	          @RequestParam ("rentAmount") Double rentAmount,
-              @RequestParam ("lateFeeAmount") Double lateFee) {
+	          @RequestParam ("rentAmount") BigDecimal rentAmount,
+              @RequestParam ("lateFeeAmount") BigDecimal lateFee) {
 	   
 	   Property prop= propDao.findPropertyById(id);
 	   prop.setLeaseEndDate(leaseEndDate);
 	   prop.setLateFee(lateFee);
 	   prop.setRentAmount(rentAmount);
-	   prop.setRentDueDate(rentDueDate);
+	   prop.setRentDueDay(rentDueDate);
+	   prop.setTenant(user);
 	   
 	   propDao.save(prop);
-	   user.setProperty(prop);
+	   
 	   
 	   userDao.save(user);
 	   return "redirect:/propertylist";

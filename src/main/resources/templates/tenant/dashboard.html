@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
 </head>
 <body class="bg-light">
+	<div th:replace="~{navbar :: navbar}"></div>
+
 <div class="container py-4">
     <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -21,41 +23,65 @@
 				<div class="profile-image-section" style="text-align:center; margin-bottom:20px;">
 
 				    <!-- PROFILE IMAGE & PLACEHOLDER -->
-					<div style="width:140px; height:140px; margin:0 auto 10px auto;">
-					    <img
-					        th:src="${tenantProfile != null and tenantProfile.profileImageUrl != null
-						    ? tenantProfile.profileImageUrl + '?v=' + #dates.createNow().time
-						    : '/images/profile-placeholder.png'}"
-					        alt="Profile Image"
-					        style="width:140px;
-					               height:140px;
+					<form th:action="@{/tenant/profile/image}"
+					      method="post"
+					      enctype="multipart/form-data"
+					      id="profileImageForm"
+					      style="text-align:center;">
+
+					    <label for="profileImageInput"
+					           style="
+					             display:inline-block;
+					             width:140px;
+					             height:140px;
+					             border-radius:50%;
+					             overflow:hidden;
+					             cursor:pointer;
+					             position:relative;
+					             border:2px solid #ddd;
+					           ">
+
+					        <!-- Profile image -->
+					        <img th:src="${tenantProfile != null and tenantProfile.profileImageUrl != null
+					                ? tenantProfile.profileImageUrl + '?v=' + #strings.randomAlphanumeric(8)
+					                : '/images/profile-placeholder.png'}"
+					             alt="Profile Image"
+					             style="
+					               width:100%;
+					               height:100%;
 					               object-fit:cover;
-					               border-radius:50%;
-					               border:2px solid #ddd;" />
-					</div>
+					               display:block;
+					             "/>
 
-				    <!-- UPLOAD FORM -->
-				    <form th:action="@{/tenant/profile/image}"
-				          method="post"
-				          enctype="multipart/form-data"
-				          style="margin-top:10px;">
+					        <!-- Hover overlay -->
+					        <div style="
+					             position:absolute;
+					             inset:0;
+					             background:rgba(0,0,0,0.45);
+					             color:#fff;
+					             display:flex;
+					             align-items:center;
+					             justify-content:center;
+					             font-size:13px;
+					             opacity:0;
+					             transition:opacity .2s;
+					           "
+					           class="avatar-overlay">
+					           Change
+					        </div>
+					    </label>
 
-				        <input type="file"
-				               name="file"
-				               accept="image/*"
-				               required
-				               style="margin-bottom:8px;"/>
-
-				        <br/>
-
-				        <button type="submit"
-				                style="padding:6px 14px; border-radius:4px; border:none; background:#222; color:#fff;">
-				            Update Profile Image
-				        </button>
-				    </form>
+					    <!-- Hidden file input -->
+					    <input type="file"
+					           id="profileImageInput"
+					           name="file"
+					           accept="image/*"
+					           hidden
+					           onchange="document.getElementById('profileImageForm').submit();"/>
+					</form>
 
 				</div>
-                <a class="btn btn-light btn-sm text-primary fw-semibold" href="/admin/dashboard">Admin view</a>
+                <p>Click Image to Update Profile Photo.</p>
             </div>
         </div>
     </div>
@@ -81,7 +107,7 @@
                    <!-- <span class="badge bg-warning text-dark" th:text="${requests.size()}">0</span>-->
                 </div>
                 <p class="small text-muted">Submit new work orders with photos and track updates.</p>
-                <a class="btn btn-outline-primary w-100" href="/maintenance">Request service</a>
+                <a class="btn btn-outline-primary w-100" href="/tenant/maintenance/request">Request service</a>
             </div>
         </div>
         <div class="col-md-4">
@@ -128,6 +154,7 @@
 			<a class="btn btn-primary w-100" href="/showpayments">View All Pay History</a>
         </div>
     </div>
+	
 
     <div class="card dashboard-card p-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -141,6 +168,7 @@
                     <th>File name</th>
                     <th>Type</th>
                     <th>Uploaded</th>
+					<th>Submitted By</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -151,13 +179,14 @@
                     <td th:text="${doc.originalFileName}">Lease.pdf</td>
                     <td th:text="${doc.contentType}">LEASE</td>
                     <td th:text="${doc.uploadedAt}">Today</td>
+					<td th:text="${doc.user.role }"> Role </td>
                 </tr>
                 </tbody>
             </table>
 			<form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
 			   <label>Select file:</label>
 			   <input type="file" name="file" required />
-			   <button type="submit">Upload</button>
+			   <button type="submit">Submit Document</button>
 			 </form>
         </div>
     </div>

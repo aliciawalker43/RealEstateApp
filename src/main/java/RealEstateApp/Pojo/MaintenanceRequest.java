@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "maintenance_request")
@@ -37,6 +38,8 @@ public class MaintenanceRequest {
     private String title;
 
     private String description;
+    
+  
 
     @Enumerated(EnumType.STRING)
     private MaintenanceStatus status = MaintenanceStatus.OPEN;
@@ -47,8 +50,12 @@ public class MaintenanceRequest {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt;
+    
+    
+    
+  
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 

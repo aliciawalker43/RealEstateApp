@@ -51,11 +51,28 @@ public class ImageAsset {
 
     @Column(nullable=false)
     private Instant uploadedAt = Instant.now();
+    
+    @ManyToOne
+    @JoinColumn(name="property_id")
+    private Property property;
 
     // getters/setters
+    
     public Long getId() { return id; }
 
-    public Company getCompany() { return company; }
+    public Property getProperty() {
+		return property;
+	}
+
+	public void setProperty(Property property) {
+		this.property = property;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Company getCompany() { return company; }
     public void setCompany(Company company) { this.company = company; }
 
     public User getUser() { return user; }

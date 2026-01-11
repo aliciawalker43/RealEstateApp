@@ -68,7 +68,9 @@ public String getProfileImageUrl() {
 public void setProfileImageUrl(String profileImageUrl) {
 	this.profileImageUrl = profileImageUrl;
 }
-  
-  
-  
+
+
 }
+  
+  
+  
