@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>S.Reklaw Real Estate App - Staff Profile</title>
+
+<!-- Bootstrap CSS from CDN -->
+   <link rel="stylesheet" 
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+         integrity="sha384-..." 
+         crossorigin="anonymous">
+   <!-- Font Awesome for icons -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+ 
+   <link rel="stylesheet" th:href="@{/styles.css}" />
+   
+   <style>
+   .profile-container {
+       max-width: 900px;
+       margin: 40px auto;
+       padding: 20px;
+   }
+   
+   .profile-header {
+       background: linear-gradient(135deg, #d6b656 0%, #c9a84a 100%);
+       color: white;
+       padding: 40px;
+       border-radius: 15px 15px 0 0;
+       text-align: center;
+       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+   }
+   
+   .profile-header .profile-icon {
+       font-size: 80px;
+       margin-bottom: 15px;
+   }
+   
+   .profile-header h2 {
+       margin: 0;
+       font-size: 32px;
+       font-weight: bold;
+   }
+   
+   .profile-header .position-badge {
+       display: inline-block;
+       background: rgba(255,255,255,0.3);
+       padding: 8px 20px;
+       border-radius: 20px;
+       margin-top: 10px;
+       font-size: 16px;
+   }
+   
+   .profile-body {
+       background: white;
+       padding: 30px;
+       border-radius: 0 0 15px 15px;
+       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+   }
+   
+   .info-section {
+       margin-bottom: 30px;
+   }
+   
+   .info-section h4 {
+       color: #d6b656;
+       border-bottom: 2px solid #d6b656;
+       padding-bottom: 10px;
+       margin-bottom: 20px;
+       font-weight: bold;
+   }
+   
+   .info-row {
+       display: flex;
+       padding: 15px 0;
+       border-bottom: 1px solid #f0f0f0;
+   }
+   
+   .info-row:last-child {
+       border-bottom: none;
+   }
+   
+   .info-label {
+       flex: 0 0 200px;
+       font-weight: 600;
+       color: #555;
+   }
+   
+   .info-value {
+       flex: 1;
+       color: #333;
+   }
+   
+   .action-buttons {
+       display: flex;
+       gap: 15px;
+       margin-top: 30px;
+       flex-wrap: wrap;
+   }
+   
+   .btn-custom {
+       flex: 1;
+       min-width: 200px;
+       padding: 12px 24px;
+       border: none;
+       border-radius: 8px;
+       font-weight: 600;
+       text-decoration: none;
+       text-align: center;
+       transition: all 0.3s ease;
+   }
+   
+   .btn-primary-custom {
+       background-color: #d6b656;
+       color: white;
+   }
+   
+   .btn-primary-custom:hover {
+       background-color: #c9a84a;
+       transform: translateY(-2px);
+       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+       color: white;
+   }
+   
+   .btn-secondary-custom {
+       background-color: #6c757d;
+       color: white;
+   }
+   
+   .btn-secondary-custom:hover {
+       background-color: #5a6268;
+       transform: translateY(-2px);
+       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+       color: white;
+   }
+   
+   .quick-links {
+       background: #f8f9fa;
+       padding: 20px;
+       border-radius: 10px;
+       margin-top: 20px;
+   }
+   
+   .quick-links h5 {
+       color: #333;
+       margin-bottom: 15px;
+       font-weight: bold;
+   }
+   
+   .quick-links a {
+       display: block;
+       padding: 10px 15px;
+       margin-bottom: 8px;
+       background: white;
+       color: #333;
+       text-decoration: none;
+       border-radius: 6px;
+       transition: all 0.3s ease;
+   }
+   
+   .quick-links a:hover {
+       background: #d6b656;
+       color: white;
+       padding-left: 25px;
+   }
+   
+   .quick-links i {
+       margin-right: 10px;
+       width: 20px;
+   }
+   </style>
+</head>
+
+<body class="body">
+
+<div th:replace="~{navbar :: navbar}"></div>
+
+<div class="profile-container">
+<div th:each="user : ${user}">
+<!-- Profile Header -->
+<div class="profile-header">
+<div class="profile-icon">
+<i class="fas fa-user-circle"></i>
+</div>
+<h2>
+<span th:text="${user.firstname}">John</span> 
+<span th:text="${user.lastname}">Doe</span>
+</h2>
+<div class="position-badge">
+<i class="fas fa-briefcase"></i>
+<span th:text="${user.position}">Position</span>
+</div>
+</div>
+
+<!-- Profile Body -->
+<div class="profile-body">
+
+<!-- Personal Information Section -->
+<div class="info-section">
+<h4><i class="fas fa-user"></i> Personal Information</h4>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-id-card"></i> Full Name:
+</div>
+<div class="info-value">
+<span th:text="${user.firstname}">John</span> 
+<span th:text="${user.lastname}">Doe</span>
+</div>
+</div>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-envelope"></i> Email:
+</div>
+<div class="info-value">
+<span th:text="${user.email}">email@example.com</span>
+</div>
+</div>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-user-tag"></i> Username:
+</div>
+<div class="info-value">
+<span th:text="${user.username}">username</span>
+</div>
+</div>
+</div>
+
+<!-- Employment Information Section -->
+<div class="info-section">
+<h4><i class="fas fa-building"></i> Employment Information</h4>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-briefcase"></i> Position:
+</div>
+<div class="info-value">
+<span th:text="${user.position}">Position</span>
+</div>
+</div>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-calendar-alt"></i> Hire Date:
+</div>
+<div class="info-value">
+<span th:text="${user.hireDate}">01/01/2020</span>
+</div>
+</div>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-dollar-sign"></i> Pay Rate:
+</div>
+<div class="info-value">
+$<span th:text="${user.payRate}">0.00</span> / hour
+</div>
+</div>
+<div class="info-row">
+<div class="info-label">
+<i class="fas fa-shield-alt"></i> Access Level:
+</div>
+<div class="info-value">
+<span th:text="${user.accessStatus}">level2</span>
+</div>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<div class="action-buttons">
+<a th:href="@{/updateinfo}" class="btn-custom btn-primary-custom">
+<i class="fas fa-edit"></i> Update Profile
+</a>
+<a th:href="@{/index2}" class="btn-custom btn-secondary-custom">
+<i class="fas fa-home"></i> Back to Dashboard
+</a>
+</div>
+
+<!-- Quick Links Section -->
+<div class="quick-links">
+<h5><i class="fas fa-link"></i> Quick Access</h5>
+<a th:href="@{/propertylist}">
+<i class="fas fa-building"></i> Property/Tenant List
+</a>
+<a th:href="@{/view/payments}">
+<i class="fas fa-credit-card"></i> View Payments
+</a>
+<a th:href="@{/view/expense}">
+<i class="fas fa-receipt"></i> View Expenses
+</a>
+<a th:href="@{/recordexpense}">
+<i class="fas fa-plus-circle"></i> Record Expense
+</a>
+<a th:href="@{/viewroster}">
+<i class="fas fa-users"></i> Associate Roster
+</a>
+<a th:href="@{/logout}">
+<i class="fas fa-sign-out-alt"></i> Logout
+</a>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>
