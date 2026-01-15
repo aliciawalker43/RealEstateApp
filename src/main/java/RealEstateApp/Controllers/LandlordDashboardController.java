@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.stripe.param.InvoiceListParams.Status;
 
 import RealEstateApp.dao.PropertyDao;
+import RealEstateApp.dao.TenantProfileDao;
 import RealEstateApp.dao.UserDao;
 import jakarta.servlet.http.HttpSession;
 import RealEstateApp.Pojo.Company;
@@ -43,8 +44,10 @@ import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.Role;
 import RealEstateApp.Pojo.TenantProfile;
 import RealEstateApp.Pojo.User;
+import RealEstateApp.Service.CalendarService;
 import RealEstateApp.Service.ImageUploadService;
 import RealEstateApp.Service.MessagingService;
+
 import RealEstateApp.dao.CompanyDao;
 import RealEstateApp.dao.ConversationDao;
 import RealEstateApp.dao.DocumentDao;
@@ -71,6 +74,8 @@ public class LandlordDashboardController {
     private final ConversationDao conversationDao;
     private final MessagingService messagingService;
     private final EmployeeProfileDao employeeProfileDao;
+    private final TenantProfileDao tenantProfileDao;
+    private final CalendarService calendarService;
 
     public LandlordDashboardController(CompanyDao companyDao, PropertyDao propertyDao,
                                     PaymentDao paymentDao,
@@ -83,7 +88,11 @@ public class LandlordDashboardController {
                                     ImageAssetDao imageAssetDao,
                                     ImageUploadService imageUploadService,
                                     EmployeeProfileDao employeeProfileDao,
-                                    MaintenanceRequestImageDao maintenanceRequestImageDao) {
+                                    TenantProfileDao tenantProfileDao,
+                                    MaintenanceRequestImageDao maintenanceRequestImageDao,
+                                    CalendarService calendarService) {
+    	this. calendarService= calendarService;
+    	this.tenantProfileDao =tenantProfileDao;
     	this.imageUploadService =imageUploadService;
     	this.imageAssetDao= imageAssetDao;
     	this. documentDao= documentDao;
@@ -123,7 +132,8 @@ public class LandlordDashboardController {
         model.addAttribute("payments", paymentDao.findAllByCompanyId(c));
         model.addAttribute("openMaintenanceCount", maintenanceRequestDao.count());
         
-         
+        calendarService.add7DayCalendarToModel(model, user.getCompany()); 
+        
         return "landlord/dashboard";
     }
     
@@ -295,17 +305,31 @@ public class LandlordDashboardController {
 		   return "landlord/updatepropertyform";
 	   }
 
-    @PostMapping("/property/update{id}")
+    @PostMapping("/property/update")
 	   public String updatePropertyForm(Model model,HttpSession session,
 			            @RequestParam ("tenant")User user,
+			            @RequestParam ("leaseEndDate") LocalDate startEndDate,
 			            @RequestParam ("leaseEndDate") LocalDate leaseEndDate,
 			            @RequestParam ("dueDate")Integer rentDueDay,
 	                    @RequestParam ("rentAmount") BigDecimal rentAmount,
                         @RequestParam ("lateFeeAmount") BigDecimal lateFee,
-			            @RequestParam ("id") Long id) { 
+			            @RequestParam ("id") Long propertyId) { 
 			  
-	   Property prop= propertyDao.findPropertyById(id);
+    	Property prop= propertyDao.findPropertyById(propertyId);
+    	
+    	TenantProfile tp = tenantProfileDao.findByUserId(user.getId());
+
+    	if (tp == null) {
+    	    tp = new TenantProfile();
+    	    tp.setUser(user);
+    	}
+    	tp.setProperty(prop);
+    	tp.setMailingAddress(prop.getRentalAddress());
+
+    	tenantProfileDao.save(tp);
 	   
+	   prop.setTenant(user);
+	   prop.setLeaseStartDate(startEndDate);
 	   prop.setLeaseEndDate(leaseEndDate);
 	   prop.setLateFee(lateFee);
 	   prop.setRentAmount(rentAmount);
@@ -316,7 +340,7 @@ public class LandlordDashboardController {
 		
 		model.addAttribute( "user", user);
         model.addAttribute("property", prop);
-	   return "updatepropertyform";
+	   return "redirect:/landlord/propertyList";
 }
     
     
@@ -456,7 +480,7 @@ public class LandlordDashboardController {
         model.addAttribute("error", error);
         model.addAttribute("conversation", convo);
         model.addAttribute("messages", messagingService.getMessages(conversationId));
-        return "company/thread"; // templates/company/thread.html
+        return "landlord/messages"; // templates/company/thread.html
     }
 
     @PostMapping("/messages/{conversationId}/reply")
@@ -518,6 +542,9 @@ public class LandlordDashboardController {
 		
 	return "/landlord/maintenance";
 	}
+    
+    
+
     
     
 }

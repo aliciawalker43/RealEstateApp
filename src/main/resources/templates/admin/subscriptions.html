@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous">
+    <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>Subscription Data</title>
+</head>
+<body>
+	
+
+	<th:block th:replace="~{admin/navbar :: navbar}"></th:block>
+<p th:if="${error}" th:text="${error}"></p>
+<p th:if="${success}" th:text="${success}"></p>
+
+<div class="container py-4">
+    <div class="dashboard-hero mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div>
+                <p class="mb-1 text-white-50">Property List</p>
+                
+                <p class="mb-0">Property and Tenant Information. To add tenant update property.</p>
+				<a class="btn btn-light btn-sm text-primary fw-semibold" href="/admin/dashboard">Return Dashboard</a>
+            </div>
+	  
+	  
+			</div>
+			</div>
+			
+      <div class="table-responsive">
+     <div class="container mt-4">
+    
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Company Name</th>
+			<th>Plan Type</th>
+			<th>Start Date</th>
+			<th>Plan Price</th>
+			<th>Plan Limits</th>
+			<th>Billing Cycle Date</th> 
+			<th>Plan Status </th>
+			<!--<th># Users </td>-->
+			<th colspan="2">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${company}">
+            <td th:text=" ${c.name}">Company Name </td>
+            <td th:text="${c.plan}"> Plan Name</td>
+			<td th:text="${c.subscriptionStartDate}"> Plan Start Date</td>
+            <td th:text="${c.monthlyUsd}">Plan Monthly Price</td>
+			<td th:text="${c.maxPropertyLimit}">Property Limit</td>
+            <td th:text="${c.billingDate}">Bill Cycle Date</td>
+            <td th:text="${c.subscriptionStatus}">Plan Status</td>
+			<!--<td th:text="${c.status}">Number of Users</td>-->
+            <td><a th:href="@{'/admin/subscription/update'(id=${c.id})}">Update</a></td>
+            <td><a th:href="@{'/admin/subscription/delete'(id=${c.id})}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+   
+   
+</div>
+</div>
+
+ 
+<div class="footer"><a th:href="@{/admin/dashboard}">Return to Dashboard</a></div>
+<div class="footer"><a th:href="@{/logout}">logout</a></div>
+</div>
+</div>
+</body>

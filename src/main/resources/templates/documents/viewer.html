@@ -1,0 +1,59 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${doc.originalFileName}">Document Viewer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+     <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/company-theme.css}">
+
+</head>
+
+<body>
+	<th:block th:replace="~{navbar :: navbar}"></th:block>
+<div class="page">
+
+  <div class="topbar">
+    <div>
+      <div class="title" th:text="${doc.originalFileName}">Lease.pdf</div>
+      <div class="muted">
+        <span th:text="${doc.contentType}">application/pdf</span>
+        • <span th:text="${#numbers.formatDecimal(doc.sizeBytes/1024.0, 1, 1)}"></span> KB
+      </div>
+    </div>
+
+    <div class="actions">
+		<a class="btn" th:href="${dashboardUrl}">
+		  <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+		</a>
+		
+      <a class="btn" th:href="@{/documents}">
+        <i class="fa-solid fa-arrow-left"></i> Back
+      </a>
+
+      <a class="btn btn-primary" th:href="${downloadUrl}">
+        <i class="fa-solid fa-download"></i> Download
+      </a>
+    </div>
+  </div>
+
+  <div class="viewer">
+    <!-- For PDFs, images, and many browser-supported formats -->
+    <object th:data="${inlineUrl}" th:type="${doc.contentType}" class="viewer-inner">
+      <div class="fallback">
+        <p class="muted">Preview not available for this file type.</p>
+        <a class="btn btn-primary" th:href="${downloadUrl}">
+          <i class="fa-solid fa-download"></i> Download File
+        </a>
+      </div>
+    </object>
+  </div>
+
+</div>
+
+<!-- Font Awesome (only if not already globally loaded) -->
+<script src="https://kit.fontawesome.com/YOUR_KIT.js" crossorigin="anonymous"></script>
+</body>
+</html>

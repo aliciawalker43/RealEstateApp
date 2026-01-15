@@ -5,12 +5,13 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
           crossorigin="anonymous">
-    <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+		  <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+		  <link rel="stylesheet" th:href="@{/css/company-theme.css}">
     <meta charset="UTF-8">
     <title>Property List</title>
 </head>
 <body>
-	<div th:replace="~{navbar :: navbar}"></div>
+	<th:block th:replace="~{navbar :: navbar}"></th:block>
 
 
 <p th:if="${error}" th:text="${error}"></p>
@@ -42,7 +43,7 @@
         <tbody>
         <tr th:each="prop : ${property}">
             <td>
-                <span th:each="use : ${prop.tenant}" th:text="${use.tenant.firstname} + ' ' + ${use.tenant.lastname}"></span>
+                <span th:each="use : ${prop.tenant}" th:text="${use.firstname} + ' ' + ${use.lastname}"></span>
             </td>
             <td th:text="${prop.rentalAddress}"></td>
 			<td th:text="${prop.leaseStartDate}"></td>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Properties Without the Chaos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/salespage.css}">
+</head>
+
+<body>
+	<th:block th:replace="~{admin/navbar :: navbar}"></th:block>
+	
+  <!-- HERO -->
+  <section class="hero container">
+    <h1>Property Management Without the Stress</h1>
+    <p>
+      Stop juggling spreadsheets, texts, emails, and payment apps.
+      Manage tenants, properties, payments, documents, and communication —
+      all in one place, designed for real-life landlords and growing companies.
+    </p>
+
+    <div class="cta">
+		
+      <a href="/subscribe" class="btn-primary">Start Your Account</a>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="section container">
+    <h2>The Problem Most Property Owners Face</h2>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>Scattered Information</h3>
+        <p class="muted">
+          Lease documents in email, payments in PayPal, messages in text,
+          maintenance requests forgotten.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Missed Payments & Follow-Ups</h3>
+        <p class="muted">
+          Late rent notices sent too late — or not at all —
+          because reminders aren’t automated.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>No Professional Experience</h3>
+        <p class="muted">
+          Tenants don’t see a branded portal or clear communication —
+          just informal messages and confusion.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="section container">
+    <h2>How Our App Changes Everything</h2>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>One Central Dashboard</h3>
+        <ul>
+          <li>All tenants, properties, and employees in one place</li>
+          <li>Clear payment history and balances</li>
+          <li>Organized documents per tenant & property</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Built-In Communication</h3>
+        <ul>
+          <li>Tenant ↔ Company messaging</li>
+          <li>Maintenance requests with photos</li>
+          <li>Company-wide message inbox</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Automated & Professional</h3>
+        <ul>
+          <li>Automatic invoices & reminders</li>
+          <li>Custom company branding</li>
+          <li>Clean portals tenants actually trust</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing">
+    <div class="container">
+      <h2>Simple, Transparent Pricing</h2>
+      <p class="muted" style="text-align:center;">
+        No hidden fees. Scale as your company grows.
+      </p>
+
+      <div class="grid-3" style="margin-top:40px;">
+
+        <div class="card">
+          <h3>Starter</h3>
+          <div class="price">$30 / month</div>
+          <ul>
+            <li>Up to 10 properties</li>
+            <li>Tenant portal & payments</li>
+            <li>Document storage</li>
+            <li>Basic branding</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Growth</h3>
+          <div class="price">$60 / month</div>
+          <ul>
+            <li>Up to 30 properties</li>
+            <li>Employees & roles</li>
+            <li>Maintenance workflows</li>
+            <li>Email automation</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Pro</h3>
+          <div class="price">$150 / month</div>
+          <ul>
+            <li>100+ properties</li>
+            <li>Unlimited staff</li>
+            <li>Advanced automation</li>
+            <li>Priority support</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    Built for landlords, property managers, and growing real estate companies.
+    <br/>Professional. Organized. Scalable.
+  </footer>
+
+</body>
+</html>

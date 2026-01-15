@@ -14,109 +14,141 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-	@Entity
-	@Table(name = "calendar_event")
-	public class CalendarEvent {
+@Entity
+@Table(name = "calendar_event")
+public class CalendarEvent {
 
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	    @Enumerated(EnumType.STRING)
-	    private CalendarEventType type = CalendarEventType.OTHER;
+    @ManyToOne(optional = false)
+    @JoinColumn(name="company_id", nullable=false)
+    private Company company;
 
-	    @ManyToOne
-	    @JoinColumn(name = "company_id")
-	    private Company company;
+    // Optional links (keep nullable for flexibility)
+    @ManyToOne
+    @JoinColumn(name="property_id")
+    private Property property;
 
-	    @ManyToOne
-	    @JoinColumn(name = "tenant_id")
-	    private User relatedTenant;
+    @ManyToOne
+    @JoinColumn(name="assigned_user_id")
+    private User assignedUser; // employee or tenant if needed
 
-	    @ManyToOne
-	    @JoinColumn(name = "property_id")
-	    private Property relatedProperty;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false, length=40)
+    private CalendarEventType type = CalendarEventType.OTHER;
 
-	    @ManyToOne
-	    @JoinColumn(name = "employee_id")
-	    private Employee relatedEmployee;
+    @Column(nullable=false, length=120)
+    private String title;
 
-	    private LocalDateTime startDateTime;
+    @Column(length=2000)
+    private String description;
 
-	    private LocalDateTime endDateTime;
+    @Column(nullable=false)
+    private LocalDateTime startAt;
 
-	    private String description;
+    @Column(nullable=false)
+    private LocalDateTime endAt;
 
-	    public Long getId() {
-	        return id;
-	    }
+    @Column(nullable=false)
+    private boolean allDay = false;
 
-	    public void setId(Long id) {
-	        this.id = id;
-	    }
+    @Column(nullable=false)
+    private boolean active = true;
 
-	    public CalendarEventType getType() {
-	        return type;
-	    }
+	public Long getId() {
+		return id;
+	}
 
-	    public void setType(CalendarEventType type) {
-	        this.type = type;
-	    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-	    public Company getCompany() {
-	        return company;
-	    }
+	public Company getCompany() {
+		return company;
+	}
 
-	    public void setCompany(Company company) {
-	        this.company = company;
-	    }
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 
-	    public User getRelatedTenant() {
-	        return relatedTenant;
-	    }
+	public Property getProperty() {
+		return property;
+	}
 
-	    public void setRelatedTenant(User relatedTenant) {
-	        this.relatedTenant = relatedTenant;
-	    }
+	public void setProperty(Property property) {
+		this.property = property;
+	}
 
-	    public Property getRelatedProperty() {
-	        return relatedProperty;
-	    }
+	public User getAssignedUser() {
+		return assignedUser;
+	}
 
-	    public void setRelatedProperty(Property relatedProperty) {
-	        this.relatedProperty = relatedProperty;
-	    }
+	public void setAssignedUser(User assignedUser) {
+		this.assignedUser = assignedUser;
+	}
 
-	    public Employee getRelatedEmployee() {
-	        return relatedEmployee;
-	    }
+	public CalendarEventType getType() {
+		return type;
+	}
 
-	    public void setRelatedEmployee(Employee relatedEmployee) {
-	        this.relatedEmployee = relatedEmployee;
-	    }
+	public void setType(CalendarEventType type) {
+		this.type = type;
+	}
 
-	    public LocalDateTime getStartDateTime() {
-	        return startDateTime;
-	    }
+	public String getTitle() {
+		return title;
+	}
 
-	    public void setStartDateTime(LocalDateTime startDateTime) {
-	        this.startDateTime = startDateTime;
-	    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-	    public LocalDateTime getEndDateTime() {
-	        return endDateTime;
-	    }
+	public String getDescription() {
+		return description;
+	}
 
-	    public void setEndDateTime(LocalDateTime endDateTime) {
-	        this.endDateTime = endDateTime;
-	    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-	    public String getDescription() {
-	        return description;
-	    }
+	public LocalDateTime getStartAt() {
+		return startAt;
+	}
 
-	    public void setDescription(String description) {
-	        this.description = description;
-	    }
+	public void setStartAt(LocalDateTime startAt) {
+		this.startAt = startAt;
+	}
+
+	public LocalDateTime getEndAt() {
+		return endAt;
+	}
+
+	public void setEndAt(LocalDateTime endAt) {
+		this.endAt = endAt;
+	}
+
+	public boolean isAllDay() {
+		return allDay;
+	}
+
+	public void setAllDay(boolean allDay) {
+		this.allDay = allDay;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+    
+    
+    
 }
+

@@ -5,12 +5,13 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
           crossorigin="anonymous">
-    <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+		  <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+		  <link rel="stylesheet" th:href="@{/css/company-theme.css}">
     <meta charset="UTF-8">
     <title>Update Property</title>
 </head>
 <body>
-<div th:replace="~{navbar :: navbar}"></div>
+<th:block th:replace="~{navbar :: navbar}"></th:block>
 
 <div class="container py-4">
     <div class="dashboard-hero mb-4">
@@ -34,52 +35,54 @@
 	<div class="card shadow-sm">
 	 <div class="card-body p-4">
 		
-<div class="container">
+<div class="container">      s
     <h2>Update Property</h2>
-    <form th:action="@{/landlord/updateproperty}" method="post">
+    <form th:action="@{/landlord/property/update}" method="post">
 		
 		<div class="mb-3">
 		 <label class="form-label">Choose Tenant </label>
         <input type="hidden" name="id" th:value="${property.id}" />
         
         <select name="tenant" class="form-select">
-            <option th:each="user : ${user}" th:value="${user.id}" th:text="${user.firstname} + ' ' + ${user.lastname}"></option>
+            <option th:each="user : ${user}" th:value="${user.id}" 
+			th:text="${user.firstname} + ' ' + ${user.lastname}"></option>
         </select>
 		
 		</div>
 		
 		<div class="mb-3">
 			 <label class="form-label">Lease Start Date</label>
-		     <input type="text" name="leaseStartDate" th:value="${property.leaseStartDate}" />
+		     <input type="Date" name="leaseStartDate"  />
 		</div>
 			 
 		<div class="mb-3">
 			  <label class="form-label">Lease End Date</label>
-        <input type="text" name="leaseEndDate" th:value="${property.leaseEndDate}" />
+        <input type="Date" name="leaseEndDate" />
 		</div>
 		
 		
 		<div class="mb-3">
 			  <label class="form-label">Due Date</label>
         
-        <input type="number" name="dueDate" th:value="${property.rentDueDay}" />
+        <input type="number" name="dueDate" />
         
 		</div>
 		
 		<div class="mb-3">
 			            <label class="form-label">Rent Amount</label>
 		
-        <input type="number" step="0.01" name="rentAmount" th:value="${property.rentAmount}" />
+        <input type="number" step="0.01" name="rentAmount" />
 		
 		</div>
 		
 		
 		<div class="mb-3">
 			 <label class="form-label">Late Fee Amount</label>
-        <input type="number" step="0.01" name="lateFeeAmount" th:value="${property.lateFee}" />
+        <input type="number" step="0.01" name="lateFeeAmount"  />
 		</div>
 		
-        <button class="btn btn-light btn-sm text-primary fw-semibold" type="submit">Update</button>
+        <button class="btn btn-light btn-sm text-primary fw-semibold" 
+		type="submit">Update</button>
     </form>
 	</div>
 	</div>

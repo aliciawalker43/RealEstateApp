@@ -19,5 +19,7 @@ public interface PropertyDao extends JpaRepository< Property, Long> {
 	@Query("select p from Property p where p.tenant is not null and p.company is not null")
 	List<Property> findAllWithTenant();
 
+	Object findByCompanyId(Long id);
+
 	
 }

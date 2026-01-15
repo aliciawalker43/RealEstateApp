@@ -173,10 +173,10 @@ public class ImageUploadService {
         if (!destination.startsWith(targetDir)) throw new IllegalArgumentException("Invalid file path.");
 
         // 1) Look up existing asset BEFORE writing new file (so we can delete old after success)
-        ImageAsset existingOpt =
+        Optional<ImageAsset> existingOpt =
                 imageAssetDao.findTopByCompanyIdAndUserIdAndCategoryOrderByUploadedAtDesc(
-                                company.getId(), currentUser.getId(), category
-                        );
+                        company.getId(), currentUser.getId(), category
+                );
 
         ImageAsset existing = existingOpt.orElse(null);
         String oldStoragePath = (existing != null) ? existing.getStoragePath() : null;

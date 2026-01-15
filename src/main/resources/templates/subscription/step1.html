@@ -42,12 +42,14 @@
         </div>
       </div>
 
-      <label>Plan</label>
-      <select th:field="*{plan}" required>
-        <option th:value="STARTER">Starter (1–10 units)</option>
-        <option th:value="GROWTH">Growth (11–50 units)</option>
-        <option th:value="PRO">Pro (51–200 units)</option>
-      </select>
+	  <label class="label">Subscription Plan</label>
+	  <select name="plan" class="input" required>
+	    <option value="" disabled selected>Select a plan</option>
+	    <option th:each="p : ${plans}"
+	            th:value="${p.name()}"
+	            th:text="${p.displayName + ' — ' + p.priceLabel + ' (up to ' + p.maxProperties + ' properties)'}">
+	    </option>
+	  </select>
 
       <div class="plans">
         <div class="plan">

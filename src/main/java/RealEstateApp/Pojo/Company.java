@@ -1,5 +1,6 @@
 package RealEstateApp.Pojo;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +40,71 @@ public class Company {
     @Column(length=60)
     private String timeZone;  
     
- 
+    private LocalDate subscriptionStartDate;
     
+    private LocalDate billingDate;
+    
+    private  int monthlyUsd;          // 30, 60, 150
+    
+    private  int maxPropertyLimit; 
 
+    @OneToMany(mappedBy = "company")
+    private List<User> users = new ArrayList<>();
     
-    public Integer getLateNoticeDaysAfterDue() {
+    @OneToMany(mappedBy = "company")
+    private List<Property> properties = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
+    private SubscriptionPlan plan = SubscriptionPlan.STARTER;
+
+    @Column(nullable=false)
+    private String subscriptionStatus = "PENDING"; // PENDING, ACTIVE, PAST_DUE, CANCELED
+
+    private String stripeCustomerId;
+    private String stripeSubscriptionId;
+    
+    
+    
+    
+    
+    
+   
+	public LocalDate getSubscriptionStartDate() {
+		return subscriptionStartDate;
+	}
+
+	public void setSubscriptionStartDate(LocalDate subscriptionStartDate) {
+		this.subscriptionStartDate = subscriptionStartDate;
+	}
+
+	public LocalDate getBillingDate() {
+		return billingDate;
+	}
+
+	public void setBillingDate(LocalDate billingDate) {
+		this.billingDate = billingDate;
+	}
+
+	public int getMonthlyUsd() {
+		return monthlyUsd;
+	}
+
+	public void setMonthlyUsd(int monthlyUsd) {
+		this.monthlyUsd = monthlyUsd;
+	}
+
+	
+
+	public int getMaxPropertyLimit() {
+		return maxPropertyLimit;
+	}
+
+	public void setMaxPropertyLimit(int maxPropertyLimit) {
+		this.maxPropertyLimit = maxPropertyLimit;
+	}
+
+	public Integer getLateNoticeDaysAfterDue() {
 		return lateNoticeDaysAfterDue;
 	}
 
@@ -59,21 +120,7 @@ public class Company {
 		this.timeZone = timeZone;
 	}
 
-	@OneToMany(mappedBy = "company")
-    private List<User> users = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "company")
-    private List<Property> properties = new ArrayList<>();
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    private SubscriptionPlan plan = SubscriptionPlan.STARTER;
-
-    @Column(nullable=false)
-    private String subscriptionStatus = "PENDING"; // PENDING, ACTIVE, PAST_DUE, CANCELED
-
-    private String stripeCustomerId;
-    private String stripeSubscriptionId;
+	
     
 
     

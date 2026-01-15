@@ -6,12 +6,14 @@
 	        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	        crossorigin="anonymous">
 	  <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+	  
+      <link rel="stylesheet" th:href="@{/css/company-theme.css}">
 	  <meta charset="UTF-8">
 	  <title>Maintenance Request Form</title>
 </head>
 
 <body class="body">
-	<div th:replace="~{navbar :: navbar}"></div>
+	<th:block th:replace="~{navbar :: navbar}"></th:block>
 
 
 	<div class="container py-4">
@@ -43,7 +45,7 @@
 	            <label class="form-label">Title</label>
 	            <input type="text"
 	                   class="form-control"
-	                   name="Title"
+	                   name="title"
 	                   placeholder="Title"
 	                   required>
 	          </div>

@@ -123,7 +123,6 @@ public class AutoInvoiceScheduler {
         log.setType(type);
         log.setBody(body);
         log.setSubject(subject);
-        log.setAudience(EmailAudience.TENANT);
         log.setSentAt(Instant.now());
         
         return log;

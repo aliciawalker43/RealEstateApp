@@ -15,6 +15,8 @@ import RealEstateApp.dao.UserDao;
 import jakarta.servlet.http.HttpSession;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -45,6 +47,7 @@ public class SubscriptionController {
                               @RequestParam(value="error", required=false) String error) {
     model.addAttribute("error", error);
     model.addAttribute("form", new SubscriptionRegistrationForm());
+    model.addAttribute("plans", SubscriptionPlan.values());
     return "subscription/step1";
   }
   
@@ -95,11 +98,17 @@ public class SubscriptionController {
           return "redirect:/subscribe/billing?error=Phone%20required";
 
 
+      
+      
       // 1) Create Company (PENDING)
       Company company = new Company();
       company.setName(draft.getCompanyName());
       company.setPlan(draft.getPlan());
       company.setSubscriptionStatus("PENDING");
+      company.setSubscriptionStartDate(LocalDate.now());
+      company.setBillingDate(LocalDate.now());
+      company.setMaxPropertyLimit(draft.getPlan().getMaxProperties());
+      company.setMonthlyUsd(draft.getPlan().getMonthlyUsd());
       company = companyDao.save(company);
       
       String encoded = Base64.getEncoder()

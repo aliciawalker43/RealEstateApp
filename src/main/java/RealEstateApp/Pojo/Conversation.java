@@ -31,6 +31,11 @@ public class Conversation {
 
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
+    
+    
+    
+    
+    
 
 	public Long getId() {
 		return id;

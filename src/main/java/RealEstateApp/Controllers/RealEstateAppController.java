@@ -47,48 +47,16 @@ public class RealEstateAppController {
 	
 	
 	@RequestMapping("/")
+	public String showSalesPage() {
+		return "admin/salesinfopage";
+	}
+	
+	@RequestMapping("/homelogin")
 	public String showLogin() {
 		return "homelogin";
 	}
 	
 
-	
-	@RequestMapping("/index")
-	public String showLoginHome(Model model) {
-		User currentUser= (User)session.getAttribute("user");
-		Long id =  currentUser.getId();
-		List<User> user= userDao.findAllById(id);
-		model.addAttribute("user", user);
-		
-		return "tenanthomepage";
-	}
-	
-	@RequestMapping("/index2")
-	public String showEmployeeHome(Model model) {
-		User currentUser= (User)session.getAttribute("user");
-		Long id =  currentUser.getId();
-		List<User> user= userDao.findAllById(id);
-		model.addAttribute("user", user);
-		
-		List<User> comment= userDao.findAll();
-		model.addAttribute("comment", comment);
-		
-		return "employeehome";
-	}
-	
-	
-	// Tenant Methods
-	
-	@PostMapping("/comments")
-	public String addComments(Model model, @RequestParam ("comments") String comments) {
-		User current = (User)session.getAttribute("user");
-		current.setComments(comments);
-		userDao.save(current);
-		return "redirect:index";
-	}
-	
-	//Associate Methods	
-	
 	
 	
 	
@@ -110,39 +78,13 @@ public class RealEstateAppController {
 			   @RequestParam ("accessstatus") String accessStatus) {
 	
 		User use= userDao.findUserById(id);
-	use.setPayRate(payRate);
-	use.setHireDate(hireDate);
-	use.setPosition(position);
-	use.setAccessStatus(accessStatus);
+	
 	userDao.save(use);
 	
 	//System.out.println(use);
 	return "redirect:/viewroster";
 }
-	@RequestMapping("/user/add")
-	public String addEmployeeForm(User user) {
-	return "addemployee";	
-	}
 	
-	@PostMapping("/addemployee")
-	public String addEmployee( @RequestParam ("firstname") String first,
-			@RequestParam ("lastname") String last,
-			@RequestParam ("hiredate") String date,
-			@RequestParam ("accessstatus")String status,
-			@RequestParam ("position")String position,
-			@RequestParam ("payrate") Double payrate) {
-		
-		User use= new User();
-		use.setAccessStatus(status);
-		use.setLastname(last);
-		use.setFirstname(first);
-		use.setPayRate(payrate);
-		use.setHireDate(date);
-		use.setPosition(position);
-		
-		userDao.save(use);
-	return "redirect:/viewroster";	
-	}
 	
 	@RequestMapping("/user/delete{id}")
 	public String removeUser(@RequestParam("id") Long id) {
@@ -199,38 +141,7 @@ public class RealEstateAppController {
 
 	
 	
-	@RequestMapping("/property/add")
-    public String addPropertyForm(Model model) {
-		List<User> user= userDao.findAll();
-		
-		model.addAttribute( "user", user);
-		return "propertyaddform";
-	}
-	
-	
-	@RequestMapping("/property/delete{id}")
-		public String removeProperty (@RequestParam("id") Long id) {
-		propDao.deleteById(id);
-		return "redirect:/landlord/propertylist";
-	}
-	
-	
-	@PostMapping("/addproperty")
-	public String addProperty(@RequestParam ("property") String address,
-			@RequestParam ("tenant") User user,
-			@RequestParam ("Lease Date") String leaseDate) {
-	
-		
-		Property prop= new Property();
-		prop.setLeaseEndDate(leaseDate);
-		prop.setRentAddress(address);
-		propDao.save(prop);
-		
-		user.setProperty(prop);
-		userDao.save(user);
-		
-		return "redirect:/propertylist";
-	}
+
 	
 	   @RequestMapping("/property/update{id}")
 		   public String updatePropertyForm(Model model, @RequestParam ("id") Long id) { 
@@ -244,27 +155,7 @@ public class RealEstateAppController {
 	   }
 	   
 	   
-	   @PostMapping("/updateproperty")
-	   public String updateProperty(@RequestParam ("id") Long id, 
-			   @RequestParam ("tenant")User user,
-			   @RequestParam ("leaseEndDate") LocalDate leaseEndDate,
-			   @RequestParam ("dueDate")int rentDueDate,
-	          @RequestParam ("rentAmount") BigDecimal rentAmount,
-              @RequestParam ("lateFeeAmount") BigDecimal lateFee) {
-	   
-	   Property prop= propDao.findPropertyById(id);
-	   prop.setLeaseEndDate(leaseEndDate);
-	   prop.setLateFee(lateFee);
-	   prop.setRentAmount(rentAmount);
-	   prop.setRentDueDay(rentDueDate);
-	   prop.setTenant(user);
-	   
-	   propDao.save(prop);
-	   
-	   
-	   userDao.save(user);
-	   return "redirect:/propertylist";
-	   }
+	 
 	   
 	
 @RequestMapping("/calendar")

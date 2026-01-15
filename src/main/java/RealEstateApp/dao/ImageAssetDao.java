@@ -24,7 +24,9 @@ public interface ImageAssetDao extends JpaRepository<ImageAsset, Long> {
 	ImageAsset findTopByCompanyAndUserAndCategoryOrderByUploadedAtDesc(Company company, User currentUser,
 			ImageCategory category);
 
-	ImageAsset findTopByCompanyIdAndUserIdAndCategoryOrderByUploadedAtDesc(Long id, Long id2, ImageCategory category);
+	Optional<ImageAsset> findTopByCompanyIdAndUserIdAndCategoryOrderByUploadedAtDesc(
+		    Long companyId, Long userId, ImageCategory category
+		);
 
 	Optional<ImageAsset> findTopByCompanyIdAndUserIdAndCategoryAndContextIdOrderByUploadedAtDesc(Long id, Long id2,
 			ImageCategory category, Long contextId);

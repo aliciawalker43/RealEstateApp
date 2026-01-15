@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Company Calendar</title>
+  <link rel="stylesheet" href="/css/saas-dashboard.css">
+
+  <!-- FullCalendar CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+</head>
+<body>
+
+<th:block th:replace="~{navbar :: navbar}"></th:block>
+
+<main class="container py-3">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0"><i class="fa-regular fa-calendar-days"></i> Calendar</h2>
+
+    <a class="btn btn-primary" href="#createEvent">
+      <i class="fa-solid fa-plus"></i> New Event
+    </a>
+  </div>
+
+  <div class="card p-3">
+    <div id="calendar"></div>
+  </div>
+
+  <div class="card p-3 mt-3" id="createEvent">
+    <h3 class="mb-2"><i class="fa-solid fa-plus"></i> Add Event</h3>
+
+    <form th:action="@{/landlord/calendar/create}" method="post" class="row g-2">
+      <div class="col-12 col-md-6">
+        <label class="form-label">Title</label>
+        <input class="form-control" name="title" required placeholder="Maintenance appointment">
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label">Type</label>
+        <select class="form-select" name="type" required>
+          <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label">Property (optional)</label>
+        <select class="form-select" name="propertyId">
+          <option value="">None</option>
+          <option th:each="p : ${properties}" th:value="${p.id}" th:text="${p.rentalAddress}"></option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label">Assign to Employee (optional)</label>
+        <select class="form-select" name="assignedUserId">
+          <option value="">Unassigned</option>
+          <option th:each="u : ${employees}" th:value="${u.id}"
+                  th:text="${u.firstname} + ' ' + ${u.lastname}"></option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label">Start</label>
+        <input class="form-control" type="datetime-local" name="startAt" required>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label">End</label>
+        <input class="form-control" type="datetime-local" name="endAt" required>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Notes (optional)</label>
+        <textarea class="form-control" name="description" rows="3"></textarea>
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary">
+          <i class="fa-solid fa-check"></i> Save Event
+        </button>
+        <a class="btn btn-outline-secondary" th:href="@{/landlord/dashboard}">
+          Back
+        </a>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const el = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(el, {
+      initialView: 'dayGridMonth',
+      height: 'auto',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: {
+        url: '/landlord/calendar/events',
+        failure: function() { alert('Could not load events'); }
+      },
+      eventClick: function(info) {
+        const type = info.event.extendedProps?.type || '';
+        const prop = info.event.extendedProps?.property || '';
+        alert(info.event.title + "\n" + type + (prop ? ("\n" + prop) : ""));
+      }
+    });
+    calendar.render();
+  });
+</script>
+
+</body>
+</html>

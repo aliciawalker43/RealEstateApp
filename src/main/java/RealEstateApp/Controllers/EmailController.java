@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import RealEstateApp.Pojo.Company;
+import RealEstateApp.Pojo.EmailLog;
 import RealEstateApp.Pojo.EmployeeProfile;
 import RealEstateApp.Pojo.InvoiceEmailLog;
+import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.Role;
 import RealEstateApp.Pojo.TenantProfile;
 import RealEstateApp.Pojo.User;
 import RealEstateApp.Service.EmailService;
+import RealEstateApp.dao.EmailLogDao;
 import RealEstateApp.dao.EmployeeProfileDao;
 import RealEstateApp.dao.InvoiceEmailLogDao;
 import RealEstateApp.dao.PropertyDao;
@@ -36,7 +39,7 @@ public class EmailController {
   private final UserDao userDao;
   private final EmailService emailService;
   private final PropertyDao propertyDao;
-  private final InvoiceEmailLogDao logDao;
+  private final EmailLogDao emailLogDao;
   private final TenantProfileDao tenantDao;
   private final EmployeeProfileDao employeeDao;
   
@@ -44,7 +47,7 @@ public class EmailController {
   public EmailController(UserDao userDao, 
 		  EmailService emailService, 
 		  PropertyDao propertyDao,
-		  InvoiceEmailLogDao logDao,
+		 EmailLogDao emailLogDao,
 		  EmployeeProfileDao employeeDao,
 		  TenantProfileDao tenantDao
 		  ) {
@@ -53,7 +56,7 @@ public class EmailController {
     this.userDao = userDao;
     this.emailService = emailService;
     this.propertyDao= propertyDao;
-    this.logDao=logDao;
+    this.emailLogDao=emailLogDao;
   }
 
   @GetMapping
@@ -63,7 +66,7 @@ public class EmailController {
 
     Long companyId = currentUser.getCompany().getId();
     
-    model.addAttribute("recentEmails", logDao.findAllByCompanyId(companyId));
+    model.addAttribute("recentEmails", emailLogDao.findAllByCompanyId(companyId));
     model.addAttribute("properties", propertyDao.findAllByCompany(currentUser.getCompany()));
     model.addAttribute("company", currentUser.getCompany());
     model.addAttribute("tenants", userDao.findByCompanyIdAndRole(companyId, Role.TENANT));
@@ -138,15 +141,21 @@ public class EmailController {
               throw new IllegalArgumentException("No recipients had a valid email address.");
           }
           // Log the email for Email Center view
-          InvoiceEmailLog log = new InvoiceEmailLog();
+          EmailLog log = new EmailLog();
           log.setCompany(company);
+          log.setFrom(currentUser);
           log.setAudience(recipients);
           log.setSubject(subject);
           log.setBody(body);
-          log.setForMonth(LocalDate.now());
           log.setSentAt(Instant.now());
           log.setRecipientCount(sentCount);
-            logDao.save(log);
+          
+
+if (propertyId != null) {
+    Property p = propertyDao.findById(propertyId).orElse(null);
+    log.setProperty(p);
+}
+            emailLogDao.save(log);
 
           ra.addFlashAttribute("success", "Email sent to " + sentCount + " recipient(s).");
           return "redirect:/landlord/email";
