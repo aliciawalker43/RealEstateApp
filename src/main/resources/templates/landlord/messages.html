@@ -12,8 +12,9 @@
 </head>
 
 <body class="company">
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
-
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+	
 <div class="app">
 
   <div class="topbar">
@@ -64,5 +65,8 @@
   const el = document.getElementById('chatScroll');
   if (el) el.scrollTop = el.scrollHeight;
 </script>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
 </body>
 </html>

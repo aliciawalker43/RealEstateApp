@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
@@ -11,21 +12,20 @@
     <title>Property List</title>
 </head>
 <body>
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
-
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
 
 <p th:if="${error}" th:text="${error}"></p>
 <p th:if="${success}" th:text="${success}"></p>
 
-<div class="container py-4">
+<div class="container p-4 py-4">
     <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div>
-                <p class="mb-1 text-white-50">Property List</p>
+                <h2 class="mb-1 text-white-50">Property List</h2p>
                 
                 <p class="mb-0">Property and Tenant Information. To add tenant update property.</p>
-				<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/dashboard">Return Dashboard</a>
-            </div>
+			 </div>
 	  
 	  
 			</div>
@@ -37,19 +37,19 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Tenants</th><th>Property Address</th><th>Lease End Date</th><th>Rent Amount</th><th>Day Due</th><th colspan="2">Actions</th>
+            <th>Tenants</th><th>Property Address</th><th>Lease Start</th><th>Lease End</th><th>Rent Amount</th><th>Day Due</th><th colspan="2">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="prop : ${property}">
             <td>
-                <span th:each="use : ${prop.tenant}" th:text="${use.firstname} + ' ' + ${use.lastname}"></span>
+                <span th:each="use : ${prop.tenant}" th:text="${use.firstname} + ' ' + ${use.lastname}">Tenants</span>
             </td>
-            <td th:text="${prop.rentalAddress}"></td>
-			<td th:text="${prop.leaseStartDate}"></td>
-            <td th:text="${prop.leaseEndDate}"></td>
-            <td th:text="${prop.rentAmount}"></td>
-            <td th:text="${prop.rentDueDay}"></td>
+            <td th:text="${prop.rentalAddress}">Property Address</td>
+			<td th:text="${prop.leaseStartDate}">Lease Start </td>
+            <td th:text="${prop.leaseEndDate}">Lease End</td>
+            <td th:text="${prop.rentAmount}">Rent Amount</td>
+            <td th:text="${prop.rentDueDay}">Day Due</td>
             <td><a th:href="@{'/landlord/property/update'(id=${prop.id})}">Update</a></td>
             <td><a th:href="@{'/landlord/property/delete'(id=${prop.id})}">Delete</a></td>
         </tr>
@@ -74,5 +74,8 @@
 <div class="footer"><a th:href="@{/logout}">logout</a></div>
 </div>
 </div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
 </body>
 </html>

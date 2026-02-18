@@ -47,7 +47,7 @@
 	    <option value="" disabled selected>Select a plan</option>
 	    <option th:each="p : ${plans}"
 	            th:value="${p.name()}"
-	            th:text="${p.displayName + ' — ' + p.priceLabel + ' (up to ' + p.maxProperties + ' properties)'}">
+	            th:text="${p.displayName + ' — '+ '$' + p.monthlyUsd + '.00/ monthly rate '+ ' (up to ' + p.maxProperties + ' properties)'}">
 	    </option>
 	  </select>
 

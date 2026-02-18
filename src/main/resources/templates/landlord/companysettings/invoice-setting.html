@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta charset="UTF-8">
+    <title>Update Invoice Schedule</title>
+
+    <!-- Shared SaaS Dashboard Styles -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	   <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+
+<body class="body">
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+
+
+<div class="app-shell">
+	<div class="container py-4">
+	    <div class="dashboard-hero mb-4">
+	        <div class="d-flex align-items-center justify-content-between flex-wrap">
+	            <div>
+	                <p class="mb-1 text-white-50">Auto-Invoice Settings</p>
+	                <h2> Update Invocing Timeline</h2>
+	                <p class="mb-0">Set amount of time to past before implementing auto-invoicing.</p>
+					<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/company/profile">Return to Settings</a>
+	            </div>
+				</div>
+				</div>
+			
+				
+				
+				<div class="col-12 col-md-4">
+				    <div class="card dashboard-card p-3 h-100">
+
+				      <div class="card-header">
+				        <h2 class="mb-0">Update Details</h2>
+				        <small class="muted">Submit new information.</small>
+				      </div>
+
+       <form th:action="@{/landlord/company/billing-settings}" method="post" class="mt-3">
+	    <label class="form-label">Send late invoice after (days past due)</label>
+	    <input class="form-control" type="number" name="lateDays" min="0"
+	           th:value="${company.lateNoticeDaysAfterDue != null ? company.lateNoticeDaysAfterDue : 3}" required>
+	    <small class="text-muted d-block mt-1">Example: 3 means invoices go out on the 3rd day after rent due date if balance remains.</small>
+	    <button class="btn btn-outline-primary mt-3 w-100" type="submit">Save</button>
+	  </form>
+	  
+	  </div>
+      </div>
+    </div>
+	
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+	    </body>
+	 </html>

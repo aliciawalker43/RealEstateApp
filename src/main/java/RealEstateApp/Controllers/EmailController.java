@@ -69,8 +69,8 @@ public class EmailController {
     model.addAttribute("recentEmails", emailLogDao.findAllByCompanyId(companyId));
     model.addAttribute("properties", propertyDao.findAllByCompany(currentUser.getCompany()));
     model.addAttribute("company", currentUser.getCompany());
-    model.addAttribute("tenants", userDao.findByCompanyIdAndRole(companyId, Role.TENANT));
-    model.addAttribute("employees", userDao.findByCompanyIdAndRole(companyId, Role.EMPLOYEE));
+    model.addAttribute("tenants", userDao.findUsersByCompanyIdAndRole(companyId, Role.TENANT));
+    model.addAttribute("employees", userDao.findUsersByCompanyIdAndRole(companyId, Role.EMPLOYEE));
 
     return "landlord/emailcenter";
   }
@@ -80,7 +80,8 @@ public class EmailController {
   private static final Long ALL_USERS = 88888L;
 
   @PostMapping("/send")
-  public String sendEmail(@RequestParam("audienceId") Long audienceId,
+  public String sendEmail(@RequestParam(value="audienceId", required =false) Long audienceId,
+		                  @RequestParam(value = "customRecipient", required = false) String customRecipient,
                           @RequestParam(value="propertyId", required=false) Long propertyId,
                           @RequestParam("subject") String subject,
                           @RequestParam("message") String body,
@@ -94,12 +95,25 @@ public class EmailController {
       Long companyId = company.getId();
 
       try {
-          // Load lists
-          List<User> tenants = userDao.findByCompanyIdAndRole(companyId, Role.TENANT);
-          List<User> employees = userDao.findByCompanyIdAndRole(companyId, Role.EMPLOYEE);
+    	    List<User> recipients = new ArrayList<>();
+            Set<String> seen = new HashSet<>();
+            int sentCount = 0;
 
-         List<User> recipients;
-          
+            if (customRecipient != null && !customRecipient.isBlank()) {
+                String[] emails = customRecipient.split(",");
+                for (String email : emails) {
+                    String to = email.trim().toLowerCase();
+                    if (to.isBlank() || !to.contains("@")) continue; // basic validation
+                    if (!seen.add(to)) continue;
+                    emailService.sendCompanyEmail(to, subject, body);
+                    sentCount++;
+                }
+            }else if (audienceId != null) {
+    	  
+          // Load lists
+          List<User> tenants = userDao.findUsersByCompanyIdAndRole(companyId, Role.TENANT);
+          List<User> employees = userDao.findUsersByCompanyIdAndRole(companyId, Role.EMPLOYEE);
+
           if (ALL_EMPLOYEES.equals(audienceId)) {
         	  recipients =  employees;
 
@@ -124,19 +138,14 @@ public class EmailController {
               recipients = List.of(u);
           }
 
-          int sentCount = 0;
-          Set<String> seen = new HashSet<>();
-
           for (User u : recipients) {
               if (u.getEmail() == null || u.getEmail().isBlank()) continue;
-
-              String to = u.getEmail().trim().toLowerCase();
+               String to = u.getEmail().trim().toLowerCase();
               if (!seen.add(to)) continue;
-
               emailService.sendCompanyEmail(to, subject, body); // ✅ send to recipient
               sentCount++;
-          }
-
+              }
+            }
           if (sentCount == 0) {
               throw new IllegalArgumentException("No recipients had a valid email address.");
           }
@@ -150,22 +159,43 @@ public class EmailController {
           log.setSentAt(Instant.now());
           log.setRecipientCount(sentCount);
           
-
 if (propertyId != null) {
     Property p = propertyDao.findById(propertyId).orElse(null);
     log.setProperty(p);
-}
-            emailLogDao.save(log);
-
+          }
+           emailLogDao.save(log);
           ra.addFlashAttribute("success", "Email sent to " + sentCount + " recipient(s).");
           return "redirect:/landlord/email";
-
+          
       } catch (Exception e) {
-          ra.addFlashAttribute("error", e.getMessage());
-          
-          
-          return "redirect:/landlord/email";
+    	  ra.addFlashAttribute("error", e.getMessage());
+          return "redirect:/landlord/email"; 
       }
   }
+  
+  //Pre-fill endpoints for quick send 
+  
+  @PostMapping("/prefill-invite")
+  public String prefillTenantInvite(HttpSession session, Model model) {
+      User currentUser = (User) session.getAttribute("user");
+      if (currentUser == null || currentUser.getCompany() == null) return "redirect:/login";
+
+      Long companyId = currentUser.getCompany().getId();
+      String token = java.util.UUID.randomUUID().toString();
+      String signupUrl = String.format(
+          "https://yourdomain.com/signup?token=%s&company=%d&role=TENANT",
+          token, companyId
+      );
+
+      String subject = "You're Invited to Create an Account as a Tenant";
+      String body = "Hello,\n\nPlease use the following link to sign up as a tenant:\n" + signupUrl + "\n\nThank you!";
+
+      model.addAttribute("prefillSubject", subject);
+      model.addAttribute("prefillBody", body);
+
+      return "landlord/emailcenter";
+  }
+  
+  
 
 }

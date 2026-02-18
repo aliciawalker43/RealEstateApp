@@ -43,6 +43,23 @@ public class Document {
 
 	    @Column(nullable=false)
 	    private Instant uploadedAt = Instant.now();
+	    
+	   
+	    @ManyToOne (optional=false)
+	    @JoinColumn(name="uploaded_by")
+	    private User uploadedBy;
+	    
+	    
+	    
+	    
+		
+		public User getUploadedBy() {
+			return uploadedBy;
+		}
+
+		public void setUploadedBy(User uploadedBy) {
+			this.uploadedBy = uploadedBy;
+		}
 
 		public Long getId() {
 			return id;

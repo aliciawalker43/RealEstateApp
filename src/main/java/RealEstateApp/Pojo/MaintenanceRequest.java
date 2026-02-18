@@ -2,6 +2,7 @@ package RealEstateApp.Pojo;
 
 import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,9 +11,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,9 +42,47 @@ public class MaintenanceRequest {
 
     private String description;
     
-  
-
+    @OneToMany 
+    private List<ImageAsset> imageAssets = new ArrayList<>();
+     
+    
     @Enumerated(EnumType.STRING)
+    @Column(nullable=false, length=50)
+     private MaintenanceStatus maintenancestatus;
+    
+    private Boolean viewedByCompany = false;
+   
+    
+    
+	
+    
+	
+
+	public Boolean getViewedByCompany() {
+		return viewedByCompany;
+	}
+
+	public void setViewedByCompany(Boolean viewedByCompany) {
+		this.viewedByCompany = viewedByCompany;
+	}
+
+	public MaintenanceStatus getMaintenancestatus() {
+		return maintenancestatus;
+	}
+
+	public void setMaintenancestatus(MaintenanceStatus maintenancestatus) {
+		this.maintenancestatus = maintenancestatus;
+	}
+
+	public List<ImageAsset> getImageAssets() {
+		return imageAssets;
+	}
+
+	public void setImageAssets(List<ImageAsset> imageAssets) {
+		this.imageAssets = imageAssets;
+	}
+
+	@Enumerated(EnumType.STRING)
     private MaintenanceStatus status = MaintenanceStatus.OPEN;
 
     @Enumerated(EnumType.STRING)

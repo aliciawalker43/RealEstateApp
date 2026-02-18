@@ -17,4 +17,8 @@ public interface MaintenanceRequestDao extends JpaRepository<MaintenanceRequest,
 	List<MaintenanceRequest> findAllByCompanyId(Long id);
 	
 	List<MaintenanceRequest> findByCompanyIdOrderByCreatedAtDesc(Long companyId);
+
+	List<MaintenanceRequest> findAllByCompanyIdAndUserId(Long id, Long id2);
+
+	int countByViewedByCompanyFalse();
 }

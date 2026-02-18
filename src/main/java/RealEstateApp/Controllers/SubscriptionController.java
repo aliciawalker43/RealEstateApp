@@ -1,8 +1,12 @@
 package RealEstateApp.Controllers;
 
+import java.util.Arrays;
 import java.util.Base64;
 import com.stripe.Stripe;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import RealEstateApp.Pojo.Company;
@@ -16,9 +20,16 @@ import jakarta.servlet.http.HttpSession;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDate;import com.stripe.model.Account;
+
+import com.stripe.model.Customer;
+import com.stripe.param.AccountCreateParams;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.model.AccountSession;
+import com.stripe.param.AccountSessionCreateParams;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +56,10 @@ public class SubscriptionController {
   @GetMapping
   public String subscribePage(Model model,
                               @RequestParam(value="error", required=false) String error) {
-    model.addAttribute("error", error);
+    
+	  System.out.println("values= " + Arrays.toString(SubscriptionPlan.values() ));
+	  
+	  model.addAttribute("error", error);
     model.addAttribute("form", new SubscriptionRegistrationForm());
     model.addAttribute("plans", SubscriptionPlan.values());
     return "subscription/step1";
@@ -98,7 +112,7 @@ public class SubscriptionController {
           return "redirect:/subscribe/billing?error=Phone%20required";
 
 
-      
+      ///check if company exist
       
       // 1) Create Company (PENDING)
       Company company = new Company();
@@ -114,6 +128,8 @@ public class SubscriptionController {
       String encoded = Base64.getEncoder()
     	        .encodeToString(draft.getPassword().getBytes(StandardCharsets.UTF_8));
      
+      
+      //check email duplicates
 
       // 2) Create Owner User (LANDLORD)
       User owner = new User();
@@ -133,7 +149,32 @@ public class SubscriptionController {
       session.setAttribute("PENDING_USER_ID", owner.getId());
 
       // 3) Create Stripe Checkout Session for subscription
+      
       Stripe.apiKey = stripeSecretKey;
+
+      // 3a) Create Stripe Customer for SaaS subscription billing (PLATFORM account)
+      CustomerCreateParams custParams = CustomerCreateParams.builder()
+          .setEmail(draft.getOwnerEmail())
+          .setName(draft.getCompanyName())
+          .putMetadata("companyId", String.valueOf(company.getId()))
+          .build();
+
+      Customer customer = Customer.create(custParams);
+
+      // 3b) Create Stripe Connected Account (Express) for this business (tenant payments later)
+      AccountCreateParams acctParams = AccountCreateParams.builder()
+          .setType(AccountCreateParams.Type.EXPRESS)
+          .setEmail(draft.getOwnerEmail())
+          .putMetadata("companyId", String.valueOf(company.getId()))
+          .build();
+
+      Account connected = Account.create(acctParams);
+
+      // 3c) Persist Stripe IDs on company
+      company.setStripeCustomerId(customer.getId());
+      company.setStripeConnectedAccountId(connected.getId());
+      companyDao.save(company);
+
 
       // IMPORTANT: priceId must be created in Stripe dashboard (recurring price)
       String priceId = mapPlanToStripePriceId(draft.getPlan());
@@ -149,14 +190,18 @@ public class SubscriptionController {
                       .setQuantity(1L)
                       .build()
               )
-              // Optional: collect billing address
               .setBillingAddressCollection(SessionCreateParams.BillingAddressCollection.REQUIRED)
-              .setCustomerEmail(draft.getOwnerEmail())
-              // Helpful metadata (shows up in Stripe + webhook)
+
+              // IMPORTANT: use the created customer so subscription is attached cleanly
+              .setCustomer(customer.getId())
+
+              // Helpful metadata
               .putMetadata("companyId", String.valueOf(company.getId()))
               .putMetadata("ownerUserId", String.valueOf(owner.getId()))
               .putMetadata("plan", draft.getPlan().name())
+              .putMetadata("connectedAccountId", connected.getId())
               .build();
+      
       Session checkoutSession = Session.create(params);
 
       return "redirect:" + checkoutSession.getUrl();
@@ -167,41 +212,77 @@ public class SubscriptionController {
   }
 
   @GetMapping("/success")
-  public String success(@RequestParam("session_id") String sessionId, HttpSession session) {
-    // For MVP: mark company ACTIVE here.
-    // Best practice: do this in Stripe webhook (see section 5) so it's secure.
+  public String success(@RequestParam("session_id") String sessionId, Model model) throws StripeException {
+	  Session session = Session.retrieve(sessionId);
 
-    Long companyId = (Long) session.getAttribute("PENDING_COMPANY_ID");
-    Long userId = (Long) session.getAttribute("PENDING_USER_ID");
-    if (companyId == null || userId == null) return "redirect:/login";
-
-    Company company = companyDao.findById(companyId).orElseThrow();
-    company.setSubscriptionStatus("Active");
-    companyDao.save(company);
-
-    // log them in
-    User user = userDao.findById(userId).orElseThrow();
-    session.setAttribute("user", user);
-
-    // cleanup
-    session.removeAttribute("PENDING_COMPANY_ID");
-    session.removeAttribute("PENDING_USER_ID");
-
-    return "redirect:/company/dashboard";
+	  
+	  
+	  model.addAttribute("success", " 'Subscription is' + session.getStatus()+ 'Your payment is ' + session.getPaymentStatus() ");
+	  model.addAttribute("paymentStatus", session.getPaymentStatus()); // "paid", "unpaid"
+	  model.addAttribute("status", session.getStatus());  
+	  
+    return "complete";
   }
   
+
+  @PostMapping("/connect/account-session")
+  @ResponseBody
+  public ResponseEntity<?> createConnectAccountSession(@RequestParam Long companyId) {
+    try {
+      Company company = companyDao.findById(companyId).orElseThrow();
+
+      if (company.getStripeConnectedAccountId() == null) {
+        return ResponseEntity.badRequest().body("Connected account not set for company.");
+      }
+
+      Stripe.apiKey = stripeSecretKey;
+
+      AccountSessionCreateParams params = AccountSessionCreateParams.builder()
+          .setAccount(company.getStripeConnectedAccountId())
+          .setComponents(
+              AccountSessionCreateParams.Components.builder()
+                  .setAccountOnboarding(
+                      AccountSessionCreateParams.Components.AccountOnboarding.builder()
+                          .setEnabled(true)
+                          .build()
+                  )
+                  .build()
+          )
+          .setComponents(
+              AccountSessionCreateParams.Components.builder()
+                  .setNotificationBanner(
+                      AccountSessionCreateParams.Components.NotificationBanner.builder()
+                          .setEnabled(true)
+                          .build()
+                  )
+                  .build()
+          )
+          .build();
+
+      AccountSession session = AccountSession.create(params);
+
+      return ResponseEntity.ok(java.util.Map.of(
+          "clientSecret", session.getClientSecret(),
+          "connectedAccountId", company.getStripeConnectedAccountId()
+      ));
+
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+  }
+
   
   
-  
+  ///Add endpoint to upgrade/cancel of change subscrption
   
   
 
   private String mapPlanToStripePriceId(SubscriptionPlan plan) {
     // Replace with your real Stripe Price IDs (created in Stripe dashboard)
     return switch (plan) {
-      case STARTER -> "price_STARTER";
-      case GROWTH  -> "price_GROWTH";
-      case PRO     -> "price_PRO";
+      case STARTER -> "price_1SzM5uGRGtNQxoblZIexO2QE";
+      case GROWTH  -> "price_1SzM8jGRGtNQxoblA3xrS6DJ";
+      case PRO     -> "price_1SzM9hGRGtNQxoblw9DUjw2Q";
     };
   }
 

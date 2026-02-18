@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 
 
 import RealEstateApp.Pojo.Company;
-import RealEstateApp.Pojo.Payment;
+import RealEstateApp.Pojo.RentPayment;
 import RealEstateApp.Pojo.PaymentMethod;
 import RealEstateApp.Pojo.PaymentSource;
 import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.User;
 import RealEstateApp.dao.CompanyDao;
 import RealEstateApp.dao.InvoiceEmailLogDao;
-import RealEstateApp.dao.PaymentDao;
+import RealEstateApp.dao.RentPaymentDao;
 import RealEstateApp.dao.PropertyDao;
 import jakarta.transaction.Transactional;
 
@@ -26,13 +26,13 @@ public class PaymentService {
 	    private final PropertyDao propertyDao;
 	    private final InvoiceEmailLogDao logDao;
 	    private final CompanyDao companyDao;
-	    private final PaymentDao paymentDao;
+	    private final RentPaymentDao paymentDao;
 
 	    public PaymentService(EmailService emailService,
 	                                PropertyDao propertyDao,
 	                                InvoiceEmailLogDao logDao,
 	                                CompanyDao companyDao,
-	                                PaymentDao paymentDao) {
+	                                RentPaymentDao paymentDao) {
 	        this.emailService = emailService;
 	        this.propertyDao = propertyDao;
 	        this.logDao = logDao;
@@ -41,7 +41,7 @@ public class PaymentService {
 	    }
 
 	        @Transactional
-	        public Payment recordPayment(Company company,
+	        public RentPayment recordPayment(Company company,
 	                                     Property property,
 	                                     User tenant,
 	                                     BigDecimal amount,
@@ -55,7 +55,7 @@ public class PaymentService {
 	            if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
 	                throw new IllegalArgumentException("Amount must be > 0");
 
-	            Payment p = new Payment();
+	            RentPayment p = new RentPayment();
 	            p.setCompany(company);
 	            p.setProperty(property);
 	            p.setUser(tenant); // if your Payment has tenant; if not, skip
@@ -65,7 +65,7 @@ public class PaymentService {
 	            p.setSource(source != null ? source : PaymentSource.MANUAL);
 	            p.setTransactionId(externalTxnId);
 
-	            Payment saved = paymentDao.save(p);
+	            RentPayment saved = paymentDao.save(p);
 
 	            // Email tenant receipt
 	            if (tenant != null && tenant.getEmail() != null && !tenant.getEmail().isBlank()) {
@@ -94,7 +94,7 @@ public class PaymentService {
 	                    : "Property #" + p.getId();
 	        }
 
-	        private String buildTenantReceipt(Company c, User t, Property prop, Payment pay) {
+	        private String buildTenantReceipt(Company c, User t, Property prop, RentPayment pay) {
 	            return """
 	            Hello %s,
 
@@ -117,7 +117,7 @@ public class PaymentService {
 	            );
 	        }
 
-	        private String buildCompanyPaymentNotice(Company c, User tenant, Property prop, Payment pay) {
+	        private String buildCompanyPaymentNotice(Company c, User tenant, Property prop, RentPayment pay) {
 	            String tenantLine = (tenant != null)
 	                    ? (displayName(tenant) + " (" + tenant.getEmail() + ")")
 	                    : "Unknown tenant";

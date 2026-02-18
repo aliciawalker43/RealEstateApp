@@ -3,9 +3,10 @@
 	
 }
 .homebody{
-	background-image: url("/images/Sreklawheaderphoto.jpg");
+	background-image: url("/images/app-background-2.png");
 	background-size: cover;
 	background-border: solid;
+	background-position: center ;
 	background-color:#d6b656;
 	background-repeat: no-repeat;
 	

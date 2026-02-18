@@ -34,6 +34,8 @@ public class Expense{
     private LocalDate date;
 
     private String vendor;
+    
+    private String paymentMethod;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -43,7 +45,18 @@ public class Expense{
     @JoinColumn(name = "property_id")
     private Property property;
 
-    public Long getId() {
+    
+    
+    
+    public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public Long getId() {
         return id;
     }
 

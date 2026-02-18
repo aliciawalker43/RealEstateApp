@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,11 +34,14 @@ import RealEstateApp.Pojo.Company;
 import RealEstateApp.Pojo.Conversation;
 import RealEstateApp.Pojo.Document;
 import RealEstateApp.Pojo.EmployeeProfile;
+import RealEstateApp.Pojo.Expense;
+import RealEstateApp.Pojo.ExpenseType;
 import RealEstateApp.Pojo.ImageAsset;
 import RealEstateApp.Pojo.ImageCategory;
 import RealEstateApp.Pojo.MaintenanceRequest;
-import RealEstateApp.Pojo.MaintenanceRequestImage;
-import RealEstateApp.Pojo.Payment;
+import RealEstateApp.Pojo.MaintenanceStatus;
+import RealEstateApp.Pojo.Message;
+import RealEstateApp.Pojo.RentPayment;
 import RealEstateApp.Pojo.PaymentMethod;
 import RealEstateApp.Pojo.PaymentStatus;
 import RealEstateApp.Pojo.Property;
@@ -47,38 +51,42 @@ import RealEstateApp.Pojo.User;
 import RealEstateApp.Service.CalendarService;
 import RealEstateApp.Service.ImageUploadService;
 import RealEstateApp.Service.MessagingService;
-
+import RealEstateApp.Service.SMSService;
 import RealEstateApp.dao.CompanyDao;
 import RealEstateApp.dao.ConversationDao;
 import RealEstateApp.dao.DocumentDao;
 import RealEstateApp.dao.EmployeeProfileDao;
+import RealEstateApp.dao.ExpenseDao;
 import RealEstateApp.dao.ImageAssetDao;
 import RealEstateApp.dao.MaintenanceRequestDao;
-import RealEstateApp.dao.MaintenanceRequestImageDao;
+
 import RealEstateApp.dao.MessageDao;
-import RealEstateApp.dao.PaymentDao;
+import RealEstateApp.dao.RentPaymentDao;
 
 @Controller
 @RequestMapping("/landlord")
 public class LandlordDashboardController {
 
 	private final UserDao userDao;
+	    private final MessageDao messageDao;
 	 private final ImageUploadService imageUploadService;
 	 private final ImageAssetDao imageAssetDao;
 	private final DocumentDao documentDao;
     private final CompanyDao companyDao;
     private final PropertyDao propertyDao;
-    private final PaymentDao paymentDao;
+    private final RentPaymentDao paymentDao;
     private final MaintenanceRequestDao maintenanceRequestDao;
-    private final MaintenanceRequestImageDao maintenanceRequestImageDao;
+    private final ExpenseDao expenseDao;
     private final ConversationDao conversationDao;
     private final MessagingService messagingService;
     private final EmployeeProfileDao employeeProfileDao;
     private final TenantProfileDao tenantProfileDao;
     private final CalendarService calendarService;
+    private final SMSService smsService;
 
-    public LandlordDashboardController(CompanyDao companyDao, PropertyDao propertyDao,
-                                    PaymentDao paymentDao,
+    public LandlordDashboardController(CompanyDao companyDao, SMSService smsService, 
+    		                        PropertyDao propertyDao,
+                                    RentPaymentDao paymentDao,
                                     MaintenanceRequestDao maintenanceRequestDao,
                                     MessageDao messageDao,
                                     ConversationDao conversationDao,
@@ -89,8 +97,11 @@ public class LandlordDashboardController {
                                     ImageUploadService imageUploadService,
                                     EmployeeProfileDao employeeProfileDao,
                                     TenantProfileDao tenantProfileDao,
-                                    MaintenanceRequestImageDao maintenanceRequestImageDao,
-                                    CalendarService calendarService) {
+                                    ExpenseDao expenseDao,
+                                    CalendarService calendarService
+                                    ) {
+    	 this.messageDao = messageDao;
+    	this.smsService =smsService;
     	this. calendarService= calendarService;
     	this.tenantProfileDao =tenantProfileDao;
     	this.imageUploadService =imageUploadService;
@@ -102,7 +113,7 @@ public class LandlordDashboardController {
         this.propertyDao = propertyDao;
         this.paymentDao= paymentDao;
         this.maintenanceRequestDao = maintenanceRequestDao;
-        this.maintenanceRequestImageDao = maintenanceRequestImageDao;
+       this.expenseDao =expenseDao;
         this.conversationDao = conversationDao;
         this.messagingService = messagingService;
     }
@@ -124,6 +135,8 @@ public class LandlordDashboardController {
 		  Long c = user.getCompany().getId();
 		   System.out.println("company=" + c);	
 		   
+		model.addAttribute("maintenanceCount", maintenanceRequestDao.countByViewedByCompanyFalse());  
+		model.addAttribute("unreadMessage", messageDao.countByReadByCompanyFalse());  
 		model.addAttribute("user", user);    
 		model.addAttribute("documents", d);
 		model.addAttribute("employeeProfile", employeeProfile);
@@ -136,6 +149,68 @@ public class LandlordDashboardController {
         
         return "landlord/dashboard";
     }
+    
+    @GetMapping("/profile")
+    public String updateProfile(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getCompany() == null) {
+            return "redirect:/login";
+        }
+        Company company = companyDao.findById(user.getCompany().getId())
+                .orElseThrow();
+    
+        model.addAttribute("company", company);
+        model.addAttribute("user", userDao.findByCompanyIdAndRole(user.getCompany().getId(), Role.LANDLORD));
+
+        return "landlord/companysettings/updateprofile";
+    }
+    
+    @PostMapping("/update/company/profile")	
+	public String updateCompanyProfile(@RequestParam("companyName") String companyName,
+			                           @RequestParam("address") String address, 
+			                           @RequestParam("phone") String phone, 
+			                           @RequestParam("password") String password, 
+			                           @RequestParam("passwordconfirm") String passwordConfirm,
+			                           @RequestParam("email") String email, 
+			                           @RequestParam("username") String username,
+			                           HttpSession session,
+			                           RedirectAttributes ra) {
+		User user = (User) session.getAttribute("user");
+		if (user == null || user.getCompany() == null) {
+			return "redirect:/login";
+		}
+		Company company = companyDao.findById(user.getCompany().getId()).orElseThrow();
+        User u= userDao.findByCompanyIdAndRole(user.getCompany().getId(), Role.LANDLORD);
+		
+        if
+		(password != null && !password.isBlank()) {
+			if (!password.equals(passwordConfirm)) {
+				ra.addFlashAttribute("error", "Passwords do not match.");
+				return "redirect:/landlord/profile";
+			}
+			String encodedPasscode = Base64.getEncoder().encodeToString(password.getBytes());
+			u.setPasscode(encodedPasscode);
+		}
+        if (StringUtils.hasText(username)) {
+            u.setUsername(username);
+        }
+        if (StringUtils.hasText(phone)) {
+        	u.setPhoneNumber(phone);
+        }
+        if (StringUtils.hasText(address)) {
+        	u.setBillingAddress(address);
+        }
+        if (StringUtils.hasText(email)) {
+        	 u.setEmail(email);
+        }
+        if (StringUtils.hasText(companyName)) {
+		company.setName(companyName);
+        }
+        userDao.save(u);
+		companyDao.save(company);
+		ra.addFlashAttribute("success", "Company profile updated.");
+		return "redirect:/landlord/profile";
+	}
     
     @GetMapping("/company/profile")
     public String companyProfile(Model model, HttpSession session) {
@@ -153,8 +228,22 @@ public class LandlordDashboardController {
         model.addAttribute("company", company);
         model.addAttribute("employees", employees);
 
-        return "landlord/company-profile";
+        return "landlord/companysettings/company-profile";
     }
+    
+    
+    @RequestMapping("/invoice/setting")
+	public String showInvoiceSettingsPage(Model model, HttpSession session) {
+		User currentUser = (User) session.getAttribute("user");
+		if (currentUser == null || currentUser.getCompany() == null) {
+			return "redirect:/login";
+		}
+		Company company = companyDao.findById(currentUser.getCompany().getId())
+				.orElseThrow(() -> new IllegalStateException("Company not found"));
+
+		model.addAttribute("company", company);
+		return "landlord/companysettings/invoice-setting";
+	}
     
     //Company Details End point
     
@@ -208,6 +297,20 @@ public class LandlordDashboardController {
             ra.addFlashAttribute("error", "Upload failed: " + e.getMessage());
             return "redirect:/landlord/dashboard";
         }
+    }
+    
+    @RequestMapping("/branding")
+    public String showBrandingPage(Model model, HttpSession session) {
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null || currentUser.getCompany() == null) {
+            return "redirect:/login";
+        }
+        Company company = companyDao.findById(currentUser.
+        getCompany().getId())
+                .orElseThrow(() -> new IllegalStateException("Company not found"));
+         
+        model.addAttribute("company", company);
+        return "landlord/companysettings/branding";
     }
     
     @PostMapping("/branding/color")
@@ -308,7 +411,7 @@ public class LandlordDashboardController {
     @PostMapping("/property/update")
 	   public String updatePropertyForm(Model model,HttpSession session,
 			            @RequestParam ("tenant")User user,
-			            @RequestParam ("leaseEndDate") LocalDate startEndDate,
+			            @RequestParam ("leaseStartDate") LocalDate startEndDate,
 			            @RequestParam ("leaseEndDate") LocalDate leaseEndDate,
 			            @RequestParam ("dueDate")Integer rentDueDay,
 	                    @RequestParam ("rentAmount") BigDecimal rentAmount,
@@ -416,7 +519,21 @@ public class LandlordDashboardController {
 
 	
 	
-	///Add Payments Manually
+	/// Payments Endpoints
+
+	@RequestMapping("/payments/view")
+	public String showAllPayments(HttpSession session, Model model) {
+	    User currentUser = (User) session.getAttribute("user");
+	    if (currentUser == null || currentUser.getCompany() == null) {
+	        return "redirect:/login";
+	    }
+	  
+	    model.addAttribute("properties", propertyDao.findAllByCompany(currentUser.getCompany()));
+	    model.addAttribute("payments",  paymentDao.findAllByCompanyId(currentUser.getCompany().getId()));
+		return "landlord/paymenthistory";
+	}
+	
+	
 	 @PostMapping("/addPayment")
 	    public String addPaymentForm(Model model, HttpSession session,
 	    		                     @RequestParam ("paymentAmount") BigDecimal amount,
@@ -435,9 +552,9 @@ public class LandlordDashboardController {
 	    	        
 	    	 System.out.println("property=" + propId);
 	    	 
-	    	        Payment pay = new Payment();
+	    	        RentPayment pay = new RentPayment();
 	    	        pay.setCompany(company); // ✅ company id comes from session user
-	    	        pay.setAmount(amount);
+	    	        pay.setAmountPaid(amount);
 	    	        pay.setPaymentDate(date);
 	    	        pay.setMethod(PaymentMethod.OTHER);
 	    	        pay.setProperty(property);
@@ -447,19 +564,40 @@ public class LandlordDashboardController {
 	    	 
 	    	        return "redirect:/landlord/dashboard";
 	    	 }
+	 
+	 @RequestMapping("/payment/delete{id}")
+	 String deletePayment (@RequestParam("id") Long id) {
+		 paymentDao.deleteById(id);
+		 return "redirect:/landlord/payments/view";
+	 }
+	 
+	 
 	    	 
     @GetMapping("/messages")
     public String companyInbox(Model model, HttpSession session) {
         User staff = (User) session.getAttribute("user");
         if (staff == null) return "redirect:/login";
 
-        // only company users should access (LANDLORD/EMPLOYEE)
-        // if (staff.getRole() == Role.TENANT) return "redirect:/tenant/dashboard";
+    Long companyId = staff.getCompany().getId();
+    List<Conversation> conversations = conversationDao.findByCompanyIdOrderByCreatedAtDesc(companyId);
 
-        Long companyId = staff.getCompany().getId();
-        model.addAttribute("conversations", conversationDao.findByCompanyIdOrderByCreatedAtDesc(companyId));
-        return "landlord/inbox";
-    }
+    // Map userId to profile image URL
+    Map<Long, String> profileImages = new HashMap<>();
+    for (Conversation convo : conversations) {
+		User tenant = convo.getTenant();
+		TenantProfile tenantProfile = tenantProfileDao.findByUserId(tenant.getId());
+		if (tenantProfile != null && tenantProfile.getProfileImageUrl() != null) {
+			profileImages.put(tenant.getId(), tenantProfile.getProfileImageUrl());
+		} else {
+			profileImages.put(tenant.getId(), "/images/default-profile.png"); // default image
+		}
+	}
+
+    model.addAttribute("conversations", conversations);
+    model.addAttribute("profileImages", profileImages);
+    return "landlord/inbox";
+}
+
 
     @GetMapping("/messages/{conversationId}")
     public String companyThread(@PathVariable Long conversationId,
@@ -476,6 +614,13 @@ public class LandlordDashboardController {
         if (!convo.getCompany().getId().equals(staff.getCompany().getId())) {
             throw new IllegalStateException("Unauthorized conversation access");
         }
+        for (Message msg : messagingService.getMessages(conversationId)) {
+            if (!msg.isReadByCompany()) {
+                msg.setReadByCompany(true);
+                messageDao.save(msg);
+            }
+        }
+        
 
         model.addAttribute("error", error);
         model.addAttribute("conversation", convo);
@@ -499,7 +644,7 @@ public class LandlordDashboardController {
             }
 
             messagingService.sendMessage(staff, convo, content);
-            return "redirect:/company/messages/" + conversationId;
+            return "redirect:/landlord/messages/" + conversationId;
 
         } catch (Exception e) {
             return "redirect:/company/messages/" + conversationId + "?error=" +
@@ -515,36 +660,177 @@ public class LandlordDashboardController {
     	
     	Company company = currentUser.getCompany();
     	if (company == null) return "redirect:/login";
-    	
-    	
-        // 1) Requests for this company
-        List<MaintenanceRequest> requests =
-                maintenanceRequestDao.findByCompanyIdOrderByCreatedAtDesc(company.getId());
-
-        // 2) Pull all request IDs
-        List<Long> requestIds = requests.stream()
-                .map(MaintenanceRequest::getId)
-                .toList();
-
-        // 3) Fetch images in one query (avoids N+1)
-        Map<Long, List<MaintenanceRequestImage>> imagesByRequestId = new HashMap<>();
-        if (!requestIds.isEmpty()) {
-            List<MaintenanceRequestImage> allImages =
-                    maintenanceRequestImageDao.findByRequestIdIn(requestIds);
-
-            imagesByRequestId = allImages.stream()
-                    .collect(Collectors.groupingBy(img -> img.getRequest().getId()));
-        }
-
-        model.addAttribute("company", company);
-        model.addAttribute("requests", requests);
-        model.addAttribute("imagesByRequestId", imagesByRequestId);
-		
+    	       
+      List<MaintenanceRequest> requests= maintenanceRequestDao.findAllByCompanyId(company.getId());	
+         
+      for (MaintenanceRequest m : requests) {
+          if (m.getViewedByCompany().equals(false)) {
+              m.setViewedByCompany(true);
+             maintenanceRequestDao.save(m);
+          }
+      
+      }
+    	model.addAttribute("company", company);
+    	 model.addAttribute("requests", requests);
+       
 	return "/landlord/maintenance";
 	}
     
+    @PostMapping("/maintenance/update-status/{id}")
+    public String updateMaintenanceStatus(Model model, HttpSession session,
+                                    @RequestParam ("id") Long id,
+                                    @RequestParam ("status") MaintenanceStatus status) {
+    	User currentUser= (User)session.getAttribute("user");
+    	if (currentUser == null) return "redirect:/login";
+    	
+    	Company company = currentUser.getCompany();
+    	if (company == null) return "redirect:/login";
+    	
+    	MaintenanceRequest request= maintenanceRequestDao.findById(id).orElseThrow();
+    	
+    	request.setStatus(status);
+    	maintenanceRequestDao.save(request);
+        return "redirect:/landlord/maintenance";
+    }
     
+// Expense Endpoints
+	@RequestMapping("/expense")
+	public String showExpenses(HttpSession session, Model model) {
+	    User currentUser = (User) session.getAttribute("user");
+	    if (currentUser == null || currentUser.getCompany() == null) {
+	        return "redirect:/login";
+	    }
+	    model.addAttribute("properties", propertyDao.findAllByCompany(currentUser.getCompany()));
+	    model.addAttribute("company", currentUser.getCompany());
+	    model.addAttribute("expense", expenseDao.findAllByCompanyId(currentUser.getCompany().getId()));
+		return "landlord/expense";
+	}
+	
+	@PostMapping("/expense/add")
+	public String addExpenseForm(Model model, HttpSession session, @RequestParam ("propertyId") Long propertyId,
+			                       @RequestParam("amount") BigDecimal amount,  
+			                       @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+		                          @RequestParam("description") String description,
+		                          @RequestParam("notes") String notes,
+		                          @RequestParam("type") String type,
+		                          @RequestParam("vendor") String vendor,
+		                       	RedirectAttributes ra) {
 
+		User currentUser = (User) session.getAttribute("user");
+		if (currentUser == null)
+			return "redirect:/login";
+
+		Company company = currentUser.getCompany();
+		if (company == null)
+			return "redirect:/login";
+		
+	
+		Property property = propertyDao.findPropertyById(propertyId);
+		Expense expense = new Expense();
+		expense.setCompany(company); // ✅ company id comes from session user
+		expense.setAmount(amount);
+		expense.setDate(date);
+		expense.setDescription(description + " - NOTES: " + notes);
+		 expense.setProperty(property);
+		 expense.setType(ExpenseType.OTHER); 
+		 expense.setVendor(vendor); 
+		
+
+		expenseDao.save(expense);
+
+		return "redirect:/landlord/expense";
+	}
     
-    
+	@RequestMapping("/documents")
+	public String showDocuments(HttpSession session, Model model) {
+	    User currentUser = (User) session.getAttribute("user");
+	    if (currentUser == null || currentUser.getCompany() == null) {
+	        return "redirect:/login";
+	    }
+	    
+	    model.addAttribute("tenant", userDao.findByCompanyIdAndRole(currentUser.getCompany().getId(), Role.TENANT));
+	    model.addAttribute("documents", documentDao.findAllByCompany(currentUser.getCompany()));
+		return "landlord/documents";
+	}
+	
+	
+	@GetMapping("/text")
+	public String showSmsForm(Model model, HttpSession session) {
+		User staff = (User) session.getAttribute("user");
+		if (staff == null)
+			return "redirect:/login";
+		Company company = staff.getCompany();
+
+		List<User> tenants = userDao.findUsersByCompanyIdAndRole(company.getId(), Role.TENANT);
+		model.addAttribute("tenants", tenants);
+		model.addAttribute("company", company);
+		return "landlord/smstext";
+	}
+	
+	/*@PostMapping("/sms/send")
+	public String sendSmsToTenant(@RequestParam("tenantId") Long tenantId, 
+			                      @RequestParam("number") String number,
+			                      @RequestParam("message") String message,
+			                      HttpSession session, RedirectAttributes ra) {
+		try {
+			User staff = (User) session.getAttribute("user");
+			if (staff == null)
+				return "redirect:/login";
+
+		   User tenant = userDao.findById(tenantId)
+					.orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
+
+			if (!tenant.getCompany().getId().equals(staff.getCompany().getId())) {
+				throw new IllegalStateException("Unauthorized tenant access");
+			}
+
+				
+			smsService.sendSms(tenant.getPhoneNumber(), message);
+			ra.addFlashAttribute("success", "SMS sent to tenant.");
+			return "redirect:/landlord/text";
+
+	} catch (Exception e) {
+			ra.addFlashAttribute("error", "Failed to send SMS: " + e.getMessage());
+			return "redirect:/landlord/messages";
+		}
+	}*/
+	
+	
+	
+	//test sms delete after
+	
+	// Add these fields to your controller
+	private final boolean testMode = true; // Set to false in production
+	private final String testNumber = "+18777804236"; // Your Twilio virtual/test number
+
+	@PostMapping("/sms/send")
+	public String sendSmsToTenantTest(@RequestParam("tenantId") Long tenantId,
+	                              @RequestParam("number") String number,
+	                              @RequestParam("message") String message,
+	                              HttpSession session, RedirectAttributes ra) {
+	    try {
+	        User staff = (User) session.getAttribute("user");
+	        if (staff == null)
+	            return "redirect:/login";
+
+	        User tenant = userDao.findById(tenantId)
+	            .orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
+
+	        if (!tenant.getCompany().getId().equals(staff.getCompany().getId())) {
+	            throw new IllegalStateException("Unauthorized tenant access");
+	        }
+
+	        String body= "DO NOT REPLY TO THIS MESSAGE: " + message;
+	        String recipient = testMode ? testNumber : tenant.getPhoneNumber();
+	        smsService.sendSms(recipient, body);
+
+	        ra.addFlashAttribute("success", "SMS sent to tenant.");
+	        return "redirect:/landlord/text";
+
+	    } catch (Exception e) {
+	        ra.addFlashAttribute("error", "Failed to send SMS: " + e.getMessage());
+	        return "redirect:/landlord/text";
+	    }
+	
+	}
 }

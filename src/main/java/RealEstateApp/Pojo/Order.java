@@ -1,6 +1,8 @@
 package RealEstateApp.Pojo;
 
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,18 +15,19 @@ import lombok.ToString;
 public class Order {
 
 	
-	private double price;
+	private BigDecimal price;
 	private String currency;
 	private String method;
 	private String intent;
 	private String description;
 	
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+	
 	public String getCurrency() {
 		return currency;
 	}

@@ -15,5 +15,6 @@ public interface DocumentDao extends JpaRepository<Document, Long> {
 	List<Document> findByUser (User user);
 	Object findByCompanyOrderByUploadedAtDesc(Company company);
 	List<Document> findAllByCompany(Company company);
+	
 }
 

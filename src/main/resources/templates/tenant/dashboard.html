@@ -11,19 +11,22 @@
 	 <link rel="stylesheet" th:href="@{/css/company-theme.css}">
     <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
 </head>
-<body class="bg-light">
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
+<body class="body">
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/tenant-sidebar :: sidebar}"></th:block> 
 	
+	<p th:if="${message}" th:text="${message}"></p>
 	<p th:if="${error}" th:text="${error}"></p>
 	<p th:if="${success}" th:text="${success}"></p>
 
-<div class="container py-4">
+<div class="container p-4 py-4">
     <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div>
                 <p class="mb-1 text-white-50">Welcome back  <span th:text=${user.firstname}></span></p>
                 <h2 class="fw-bold mb-1">Tenant Dashboard</h2>
                 <p class="mb-0">Pay rent, track maintenance, and keep documents in one place.</p>
+				<a class="btn btn-primary fw-semibold" href="/tenant/profile"> <i class="fa-solid fa-building-user"></i>Update Profile</a>
             </div>
             <div class="text-end">
 				<div class="profile-image-section" style="text-align:center; margin-bottom:20px;">
@@ -52,11 +55,8 @@
 					                ? tenantProfile.profileImageUrl + '?v=' + #strings.randomAlphanumeric(8)
 					                : '/images/profile-placeholder.png'}"
 					             alt="Profile Image"
-					             style="
-					               width:100%;
-					               height:100%;
-					               object-fit:cover;
-					               display:block;
+					             class="
+					              profile-img
 					             "/>
 
 					        <!-- Hover overlay -->
@@ -98,13 +98,13 @@
             <div class="card dashboard-card p-3 h-100">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted mb-1">Upcoming rent</p>
-                        <h4 class="fw-bold mb-0" th:text="${#lists.isEmpty(payments) ? '$0.00' : payments[0].amount}">$0.00</h4>
+                        <p class="text-muted mb-1">Upcoming rent due:</p>
+                        <h4 class="fw-bold mb-0" th:text=" ${month} +' $'+ ${amountDue}">$0.00</h4>
                     </div>
                     <span class="status-pill bg-success text-white">Secure pay</span>
                 </div>
                 <p class="small text-muted mt-2">Pay online with Stripe or PayPal and get instant receipts.</p>
-                <a class="btn btn-primary w-100" href="/makepayment">  Make a payment</a>
+                <a class="btn btn-primary w-100" href="/tenant/makepayment">  Make a payment</a>
             </div>
         </div>
         <div class="col-md-4">
@@ -121,7 +121,7 @@
             <div class="card dashboard-card p-3 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="mb-0"> <i class="fa-solid fa-comments"></i>  Messages</h6>
-                    <span class="badge bg-info" th:text="${messageCount}">0</span>
+                    <span class="badge bg-info" th:text="${unread}+' '+ 'NEW'">0</span>
                 </div>
                 <p class="small text-muted">Chat with your management team for quick updates.</p>
                 <a class="btn btn-outline-primary w-100" href="/tenant/messages">Open messenger</a>
@@ -149,7 +149,7 @@
                     <td colspan="4" class="text-center text-muted">No payments recorded yet.</td>
                 </tr>
                 <tr th:each="payment : ${payments}">
-                    <td th:text="${payment.amount}">$0.00</td>
+                    <td th:text="${payment.amountPaid}">$0.00</td>
                     <td th:text="${payment.method}">STRIPE</td>
                     <td>
                         <span class="status-pill bg-success-subtle text-success" th:text="${payment.status}">PAID</span>
@@ -176,6 +176,7 @@
                     <th>Type</th>
                     <th>Uploaded</th>
 					<th>Submitted By</th>
+				    <th>Role</th>
 					<th>View</th>
 					<th>Download</th>
                 </tr>
@@ -188,7 +189,9 @@
                     <td th:text="${doc.originalFileName}">Lease.pdf</td>
                     <td th:text="${doc.contentType}">LEASE</td>
                     <td th:text="${doc.uploadedAt}">Today</td>
-					<td th:text="${doc.user.role }"> Role </td>
+					<td th:text="${doc.uploadedBy != null ? doc.uploadedBy.firstname + ' ' + doc.uploadedBy.lastname : '—'
+					}"> Submitted By </td>
+					<td th:text="${doc.uploadedBy != null ? doc.uploadedBy.role : 'Landlord'}"> Role </td>
 					<td><a class="btn-outline" th:href="@{/documents/{id}/view(id=${doc.id})}">
 					 <i class="fa-solid fa-eye"></i> Open </a></td>
 

@@ -1,15 +1,18 @@
 package RealEstateApp.Service;
 
-import java.net.URI;
+
 import java.util.List;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
+
+
+
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Payer;
 import com.paypal.api.payments.Payment;
@@ -20,15 +23,18 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 
 
+
 @Service
 public class PayPalService {
-
 	
+	
+
 	@Autowired
 	private APIContext apiContext;
 	
+	
 	public Payment createPayment(
-			Double total, 
+			BigDecimal total, 
 			String currency, 
 			String method,
 			String intent,
@@ -37,7 +43,6 @@ public class PayPalService {
 			String successUrl) throws PayPalRESTException{
 		Amount amount = new Amount();
 		amount.setCurrency(currency);
-		total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
 		amount.setTotal(String.format("%.2f", total));
 
 		Transaction transaction = new Transaction();

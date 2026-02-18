@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Add New Event</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+     <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+<body class="body">
+	
+	
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+
+	<div class="container p-4 py-4">
+	 <div class="dashboard-hero mb-4">
+	 <div class="d-flex align-items-center justify-content-between flex-wrap">	
+	        <h1> Add Event to Calender</h1>
+	        <p>Enter details of the event and post it to calender so team.</p>
+	    </div>
+	   
+
+	</div>
+	</div>
+
+	
+	
+<div class="col-12 col-md-4">
+	 <div class="card dashboard-card p-3 h-100">
+         <div class="card-header">
+	           <h2 class="mb-0">Add Event</h2>
+	           <small class="muted">Schedule events on calendar like maintenance, meetings, and lease renewals. Get reminder notifications to your phone.</small>
+	      </div>
+	
+      <form th:action="@{/landlord/calendar/create}" method="post" class="card p-3">
+      
+		
+		<div class="mb-3">
+        <label class="form-label">Description</label>
+        <input class="form-control" 
+		type="text"
+		name="title" 
+		required placeholder= "Ex. Repair Sink.">
+       </div>
+
+      <div class="mb-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" name="type" required>
+          <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Property (optional)</label>
+        <select class="form-select" name="propertyId">
+          <option value="">None</option>
+          <option th:each="p : ${properties}" th:value="${p.id}" th:text="${p.rentalAddress}"></option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Assign to Employee (optional)</label>
+        <select class="form-select" name="assignedUserId">
+          <option value="">Unassigned</option>
+          <option th:each="u : ${employees}" th:value="${u.id}"
+                  th:text="${u.firstname} + ' ' + ${u.lastname}"></option>
+        </select>
+      </div>
+
+     <div class="mb-3">
+        <label class="form-label">Start</label>
+        <input class="form-control" 
+		type="datetime-local" 
+		name="startAt" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">End</label>
+        <input class="form-control" 
+		type="datetime-local" 
+		name="endAt" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Notes
+			 (optional)</label>
+        <textarea class="form-control" 
+		name="description" rows="3"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <button class="btn btn-primary" with="100%" type="submit">
+          <i class="fa-solid fa-check"></i> Save Event
+        </button>
+      </div>
+    </form>
+	
+  </div>
+  </div>
+  
+  
+  
+  
+  
+
+  
+  
+  
+
+  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+  </body>	
+  </html>

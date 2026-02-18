@@ -18,7 +18,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "payment")
-public class Payment {
+public class RentPayment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,13 +37,17 @@ public class Payment {
     private Company company;
 
     @Column(precision = 10, scale = 2)
-    private BigDecimal amount;
+    private BigDecimal amountDue;  //rent amount
 
     private String currency = "USD";
 
     private LocalDate paymentDate;
-
-    private LocalDate dueDate;
+    
+    
+    @Column(precision = 10, scale = 2)
+    private BigDecimal amountPaid;  //amount of rent paid
+    
+    private BigDecimal monthBalanceDue; //balance after payment received
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
@@ -62,7 +66,38 @@ public class Payment {
     @Column(length = 2000)
     private String notes;
 
-    public Long getId() {
+    
+    
+    
+    
+    
+    
+ 
+	public BigDecimal getAmountDue() {
+		return amountDue;
+	}
+
+	public void setAmountDue(BigDecimal amountDue) {
+		this.amountDue = amountDue;
+	}
+
+	public BigDecimal getAmountPaid() {
+		return amountPaid;
+	}
+
+	public void setAmountPaid(BigDecimal amountPaid) {
+		this.amountPaid = amountPaid;
+	}
+
+	public BigDecimal getMonthBalanceDue() {
+		return monthBalanceDue;
+	}
+
+	public void setMonthBalanceDue(BigDecimal monthBalanceDue) {
+		this.monthBalanceDue = monthBalanceDue;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -94,13 +129,7 @@ public class Payment {
         this.company = company;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 
     public String getCurrency() {
         return currency;
@@ -118,13 +147,6 @@ public class Payment {
         this.paymentDate = paymentDate;
     }
 
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
 
     public PaymentStatus getStatus() {
         return status;

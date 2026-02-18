@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Expenses</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	  <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+	  	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+<body>
+<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+
+<p th:if="${error}" th:text="${error}"></p>
+<p th:if="${success}" th:text="${success}"></p>
+
+<div class="container p-4 py-4">
+    <div class="dashboard-hero mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div>
+                <h2 class="mb-1 text-white-50">Expense Log</h2p>
+                
+                <p class="mb-0">Track and add expenses all in one place.</p>
+			 </div>
+	  
+	  
+			</div>
+			</div>
+
+<div class="container">
+    <h2>Expenses</h2>
+    <table class="table">
+        <thead>
+        <tr><th>Property</th><th>Expense Type</th><th>Amount</th><th>Date</th><th>Description</th><th>Vendor</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="ex : ${expense}">
+            <td th:text="${ex.property.rentalAddress}">Property</td>
+            <td th:text="${ex.type}">Expense Type</td>
+            <td th:text="${ex.amount}"> Amount </td>
+			<td th:text="${ex.date}">Date</td>
+            <td th:text="${ex.description}"> Description</td>
+			<td th:text="${ex.vendor}"> Vendor</td>
+            <td><a th:href="@{'/expense/delete'(id=${ex.id})}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+  
+</div>
+
+
+
+
+
+<div class="container">
+    <h2>Add New Expense</h2>
+    <form th:action="@{/landlord/expense/add}" method="post">
+		
+		<div class="form-group">
+		           <label for="date">Date:</label>
+		           <input type="date" id="date" name="date" class="form-control" required />	
+				          </div>
+		
+        <div class="form-group">
+            <label for="property">Property:</label>
+            <select id="property" name="propertyId" class="form-control" required>
+                <option th:each="prop : ${properties}" 
+                        th:value="${prop.id}" 
+                        th:text="${prop.rentalAddress}"></option>
+            </select>
+        </div>
+		        <div class="form-group">
+            <label for="expenseType">Expense Type:</label>
+		    <select id="expenseType" name="type" class="form-control" required>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Property Management">Property Management</option>
+                <option value="Taxes">Taxes</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Other">Other</option>
+            </select>
+			</div>
+				        <div class="form-group">
+            <label for="expenseAmount">Expense Amount:</label>
+            <input type="number" step="0.01" id="amount" name="amount" class="form-control" required />	
+			          </div>
+					  <div class="form-group">
+					  <label for="paymentMethod">Payment Method:</label>
+					  <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+				 <option value="Cash">Cash</option>
+                <option value="Check">Check</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+					  
+			<div class="form-group">
+				<label for="vendor">Vendor:</label>
+			    <input type="text" id="vendor" name="vendor" class="form-control" required />	
+			    </div>
+			       
+					   
+					  
+        <div class="form-group	">
+            <label for="expenseName">Expense Description:</label>
+            <input type="text" id="description" name="description" class="form-control" required />	
+            </div>
+			
+			  
+            <div class="form-group">
+			<label for="notes" > Notes:</label>
+            <input type="text" id="notes" name="notes" class="form-control"  />	
+            </div>
+			
+        <button type="submit" class="btn btn-primary">Add Expense</button>
+    </form>
+</div>
+
+
+
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

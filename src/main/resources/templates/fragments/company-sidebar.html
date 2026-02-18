@@ -1,0 +1,41 @@
+
+
+<div th:fragment="sidebar">
+   <!-- Sidebar content here -->
+ 
+<!-- Add this inside <body> before your main content -->
+<div class="sidebar bg-white border-end" style="width:220px; position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:1040;">
+  <div class="p-3">
+    <h5 class="mb-4">Quick Access</h5>
+    <ul class="nav flex-column">
+	
+				  
+		  <li class="nav-item mb-2">
+		    <a class="nav-link" th:href="@{${dashboardUrl}}">
+		      <i class="fa fa-home me-2"></i>
+		      <span th:text="${currentUser != null ? currentUser.role : 'Dashboard'} + ' Dashboard'"></span>
+		    </a>
+		  </li>
+		
+    
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/landlord/propertyList"><i class="fa fa-building me-2"></i>Properties</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/landlord/maintenance"><i class="fa fa-wrench me-2"></i>Maintenance</a>
+      </li>
+	  <li class="nav-item mb-2">
+	         <a class="nav-link" href="/landlord/email"><i class="fa fa-wrench me-2"></i>Email Center</a>
+	       </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/landlord/messages"><i class="fa fa-comments me-2"></i>Messages</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/landlord/expense"><i class="fa fa-receipt me-2"></i>Expenses</a>
+      </li>
+      <!-- Add more links as needed -->
+    </ul>
+  </div>
+</div>
+</div>
+

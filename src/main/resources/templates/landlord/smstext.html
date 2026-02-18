@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Send SMS - Company Dashboard</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	<link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+<body>
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+	
+	<p th:if="${message}" th:text="${message}"></p>
+	<p th:if="${error}" th:text="${error}"></p>
+	<p th:if="${success}" th:text="${success}"></p>
+
+	<div class="dashboard-hero mb-4">
+	       <div class="d-flex align-items-center justify-content-between flex-wrap">
+	           <div calss="d-flex align-items-center gap-3">
+				<div>
+	               <p class="mb-1 text-white-50">Send External Text</p>
+	               <h2 class="fw-bold mb-1"><h2 th:text="${company.name}">Dashboard</h2>
+	               <p class="mb-0">Send text alerts for immediate response.</p>
+				<a class="btn btn-primary fw-semibold" href="/landlord/dashboard">Return to Dashboard</a>
+				
+			</div>
+			</div>
+		 </div>
+	 </div>
+	
+	
+	 
+	<div class="row justify-content-center mt-4">
+	  <div class="col-12 col-md-6 col-lg-4">
+          <div class="card shadow-sm">
+	          <div class="card-body p-4">
+    
+       <div> 
+		<div class="btn btn-primary" ><h2>Send SMS</h2></div>
+		<small class="text-muted">Maximum 160 characters</small>
+		</div>
+	    
+        <form th:action="@{/landlord/sms/send}" method="post" th:object="${smsForm}">
+            <div class="container">
+                
+			    <div class="form-group">
+                <div><label >Enter Phone Number:</label></div>
+                <div><input type="text"  name= "number" placeholder="+1234567890" required= false></div>
+             </div>
+			
+			<div text= "center">OR</div> 
+			
+			<div>
+			<div><label>Choose Tenant from List:</label></div>
+			
+			<div><select name="tenantId" class="form-select" required= false> 
+				<option value="" disabled selected>Select From Tenant List</option>
+				<th:block th:each="tenant : ${tenants}">
+                <option th:value="${tenant.id}" th:text="${tenant.firstname} +' '+ ${tenant.lastname} +' (' + ${tenant.phoneNumber} + ')'"></option>
+			</select>
+			</div>
+			</div>
+			
+            <div class="form-group">
+                <div><label for="body">Message:</label></div>
+                <div><textarea name="message" id="body" type= "text" rows="4" maxlength="160" placeholder="Enter your message" required></textarea></div>
+            </div>
+            <div><button type="submit" class="btn btn-primary">Send SMS</button></div>
+        </form>
+    </div>
+	</div>
+	 </div>
+	  </div>
+	   
+	
+
+
+	  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+	
+</body>
+</html>

@@ -11,8 +11,10 @@
 </head>
 
 <body>
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
-
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+	
+<div class="container p-4 py-4">
 <div class="dashboard-wrapper">
 
 	<div class="app-shell">
@@ -25,7 +27,6 @@
 						       <i class="fa-solid fa-paper-plane"></i> Send Email </h2>
 		                
 		                <p class="mb-0">Send indivdual and group emails directly through the app.</p>
-						<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/dashboard">Return Dashboard</a>
 						</div>
 						<!-- AI button placeholder for later -->
 						     <button type="button" class="btn-outline"
@@ -71,8 +72,16 @@
 		  <label class="label">
 		    <i class="fa-solid fa-users"></i> Send To
 		  </label>
-
-		  <select name="audienceId" class="input" required>
+<div class="mb-2">
+		  <label class="label">
+		    <i class="fa-solid fa-envelope"></i> Enter email address(s) separat by ",". Leave blank to select from list.
+		  </label>
+		  <input type="email" name="customRecipient" class="input" placeholder="someone@email.com">
+           
+		   <label class="label">
+           <i class="fa-solid fa-users"></i> Select Recipient (choose from dropdown))	
+		  
+		  <select name="audienceId" class="input" >
 		    <option value="" selected disabled>Select recipient</option>
 
 		    <!-- Bulk options -->
@@ -97,7 +106,9 @@
 		      </option>
 		    </optgroup>
 		  </select>
-
+       </div>
+	   
+	   <div class="mb-2">
 		  <!-- Optional: target property -->
 		  <label class="label">
 		    <i class="fa-solid fa-building"></i> Filter by Property (optional)
@@ -110,19 +121,25 @@
 		            th:text="${p.rentalAddress}">
 		    </option>
 		  </select>
-
+    </div>
+	<br>
 		  <!-- Subject -->
-		  <label class="label">
+		 
+		   <label class="label">
 		    <i class="fa-solid fa-heading"></i> Subject
 		  </label>
-		  <input type="text" name="subject" class="input" placeholder="Example: Rent Reminder" required>
+
+		  <input type="text" name="subject" class="input"
+		         th:value="${prefillSubject}" placeholder="Example: Rent Reminder" required>
+
 
 		  <!-- Message -->
 		  <label class="label">
 		    <i class="fa-solid fa-pen-to-square"></i> Message
 		  </label>
 		  <textarea name="message" class="input textarea" rows="8"
-		            placeholder="Write your message here..." required></textarea>
+		            th:text="${prefillBody}" placeholder="Write your message here..." 
+					required></textarea>
 
 		  <!-- Actions -->
 		  <div class="actions-row">
@@ -130,7 +147,7 @@
 		      <i class="fa-solid fa-paper-plane"></i> Send Email
 		    </button>
 
-		    <a class="btn-outline" href="/landlord/emailcenter">
+		    <a class="btn-outline" href="/landlord/email">
 		      <i class="fa-solid fa-rotate-right"></i> Reset
 		    </a>
 		  </div>
@@ -151,13 +168,16 @@
             <div class="template-icon">
               <i class="fa-solid fa-calendar-day"></i>
             </div>
+			
             <div class="template-body">
-              <h4>Rent Reminder</h4>
-              <p class="muted small">Friendly reminder before rent due date.</p>
+              <h4>Invite Link Prefill</h4>
+              <p class="muted small">Populate email with invite email and link.</p>
             </div>
-            <button type="button" class="btn-outline small-btn" disabled>
-              Use
+			<form th:action="@{/landlord/email/prefill-invite}" method= "post">
+            <button type="submit" class="btn-outline small-btn">
+              INVITE
             </button>
+			</form>
           </div>
 
           <div class="template-item">
@@ -247,12 +267,17 @@
 
   </main>
 
+
+        </div>
+    </div>	
 </div>
 
 <!-- tiny inline helper (optional) -->
 <script>
   // keeps page light; your SaaS css handles layout
 </script>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 </body>
 </html>

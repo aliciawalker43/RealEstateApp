@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet"
 	        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
@@ -13,13 +15,13 @@
 </head>
 
 <body class="body">
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/tenant-sidebar :: sidebar}"></th:block> 
 
-
-	<div class="container py-4">
+	<div class="container p-4 py-4">
 	 <div class="dashboard-hero mb-4">
 	 <div class="d-flex align-items-center justify-content-between flex-wrap">	
-	        <h1>Submit a Maintenance Request</h1>
+	        <h1><i class="fa-solid fa-screwdriver-wrench"></i>Submit a Maintenance Request</h1>
 	        <p>Enter details of the request include images for clarity.</p>
 	    </div>
 	    <a th:href="@{/tenant/dashboard}" class="btn btn-secondary">← Back to Dashboard</a>
@@ -61,8 +63,8 @@
 
 	          
 
-	            <div class="mb-3">
-    <label class="form-label">Upload Photos (optional)</label>
+	    <div class="mb-3">
+    <label class="form-label"> <i class="fa-solid fa-camera"></i> Upload Photos (optional)</label>
     <input class="form-control"
            type="file"
            name="images"
@@ -77,9 +79,54 @@
 
 	         </form>
 
-	          </div>
+	     </div>
 	    </div>
+	    </div>	
+					<div class="col-12 col-md-8 mt-5">
+					<div th:if="${requests == null or requests.isEmpty()}"
+					     class="text-center text-muted py-5">
+					  <h5>No maintenance requests at this time</h5>
+					  <p class="small">When tenants submit requests, they will appear here.</p>
+					</div>
+                     <h2> Prior Requests </h2>
+					 <p>When you make a request is will display here.</p>
+					<div th:if="${requests != null and !requests.isEmpty()}">
+					<div th:each="req : ${requests}" class="card p-3 mb-3" >
 
+					  <div class="d-flex justify-content-between">
+					    <div>
+					      <h5 class="mb-1" th:text="${req.title}">Leaking faucet</h5>
+					      <div class="text-muted small">
+					        Tenant:
+					        <span th:text="${req.user.firstname + ' ' + req.user.lastname}">Tenant Name</span>
+					        •
+					        <span th:text="${req.property != null ? req.property.rentalAddress : 'Unassigned'}">Address</span>
+					      </div>
+					    </div>
+
+					    <span class="badge bg-warning text-dark" th:text="${req.status}">OPEN</span>
+					  </div>
+
+					  <p class="mt-2 mb-2" th:text="${req.description}">Description...</p>
+
+					  
+					  <!-- Images -->
+					  <div class="row g-2">
+					  <div class="col-4"  
+					      th:each ="imgs : ${req.imageAssets}">
+						   
+						   <a th:href="@{${imgs.storagePath}}" target="_blank">
+						      <img class="img-fluid rounded"
+						           style="max-height: 100px; object-fit: cover;"
+						           th:src="@{${imgs.storagePath}}"
+						           alt="Maintenance photo"/>
+						    </a>
+					    </div>
+					  </div>
+
+					</div>
+		
+		</div>
 	  </div>
 	</div>
 

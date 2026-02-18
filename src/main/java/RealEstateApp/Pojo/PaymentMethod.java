@@ -7,5 +7,6 @@ public enum PaymentMethod {
 	    CHECK,
 	    ZELLE,
 	    CASHAPP,
+	    PAYPAL,
 	    OTHER
 	}

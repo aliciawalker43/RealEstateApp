@@ -1,0 +1,138 @@
+
+<!-- File: src/main/resources/templates/app-forums/feedback-form.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>App Feedback Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">App Feedback</h4>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/feedback/submit}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">1. How easy is it to navigate the app?</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="navigation" id="nav1" value="Very Easy" required>
+                            <label class="form-check-label" for="nav1">Very Easy</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="navigation" id="nav2" value="Easy">
+                            <label class="form-check-label" for="nav2">Easy</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="navigation" id="nav3" value="Average">
+                            <label class="form-check-label" for="nav3">Average</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="navigation" id="nav4" value="Difficult">
+                            <label class="form-check-label" for="nav4">Difficult</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">2. How satisfied are you with the app's performance?</label>
+                    <select class="form-select" name="performance" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="Very Satisfied">Very Satisfied</option>
+                        <option value="Satisfied">Satisfied</option>
+                        <option value="Neutral">Neutral</option>
+                        <option value="Unsatisfied">Unsatisfied</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">3. How would you rate the app's design?</label>
+                    <div>
+                        <input type="range" class="form-range" min="1" max="5" name="design" required>
+                        <div class="d-flex justify-content-between">
+                            <small>Poor</small>
+                            <small>Excellent</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">4. Did you encounter any bugs or issues?</label>
+                    <select class="form-select" name="bugs" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="No">No</option>
+                        <option value="Yes, minor">Yes, minor</option>
+                        <option value="Yes, major">Yes, major</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">5. Would you recommend this app to others?</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="recommend" id="rec1" value="Yes" required>
+                            <label class="form-check-label" for="rec1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="recommend" id="rec2" value="No">
+                            <label class="form-check-label" for="rec2">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="comments" class="form-label">Additional feedback or suggestions</label>
+                    <textarea class="form-control" id="comments" name="comments" rows="4"></textarea>
+                </div>
+				
+				<div class="mb-3">
+				    <label class="form-label">6. Would you like to be contacted for more information?</label>
+				    <div>
+				        <div class="form-check form-check-inline">
+				            <input class="form-check-input" type="radio" name="contactInterest" id="contactYes" value="Yes" required>
+				            <label class="form-check-label" for="contactYes">Yes</label>
+				        </div>
+				        <div class="form-check form-check-inline">
+				            <input class="form-check-input" type="radio" name="contactInterest" id="contactNo" value="No">
+				            <label class="form-check-label" for="contactNo">No</label>
+				        </div>
+				    </div>
+				</div>
+				<div id="contactFields" class="mb-3" style="display: none;">
+				    <label class="form-label">Your Name and Email</label>
+				    <input type="text" class="form-control mb-2" name="contactName" placeholder="Full Name">
+				    <input type="email" class="form-control" name="contactEmail" placeholder="Email Address">
+				</div>
+				
+				
+                <button type="submit" class="btn btn-success w-100">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var yesRadio = document.getElementById('contactYes');
+    var noRadio = document.getElementById('contactNo');
+    var contactFields = document.getElementById('contactFields');
+
+    function toggleContactFields() {
+        if (yesRadio.checked) {
+            contactFields.style.display = 'block';
+            contactFields.querySelector('[name="contactName"]').required = true;
+            contactFields.querySelector('[name="contactEmail"]').required = true;
+        } else {
+            contactFields.style.display = 'none';
+            contactFields.querySelector('[name="contactName"]').required = false;
+            contactFields.querySelector('[name="contactEmail"]').required = false;
+        }
+    }
+
+    yesRadio.addEventListener('change', toggleContactFields);
+    noRadio.addEventListener('change', toggleContactFields);
+});
+</script>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

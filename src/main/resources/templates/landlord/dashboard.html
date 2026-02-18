@@ -10,13 +10,15 @@
 	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
 </head>
 <body class="bg-light">
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
-
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
 	
-<div class="container py-4">
+<div class="container p-4 py-4">
+	
     <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
-            <div>
+            <div calss="d-flex align-items-center gap-3">
+				<div>
                 <p class="mb-1 text-white-50">Welcome back</p>
                 <h2 class="fw-bold mb-1"><h2 th:text="${company.name}">Dashboard</h2>
                 <p class="mb-0">Pay rent, track maintenance, and keep documents in one place.</p>
@@ -25,16 +27,17 @@
 			</div>
 			</div>
 			
-            <div class="text-end">
+        
+				
 				<!-- UPLOAD Company Logo FORM -->
 				<form th:action="@{/landlord/branding/logo}" method="post" enctype="multipart/form-data" id="logoUploadForm">
-          <div class="navbar-logo">
+         
 				  <label for="logoFile" style="display:inline-block; position:relative; cursor:pointer;">
 					<img th:if="${company != null and company.logoUrl != null}"
 					     th:src="${company.logoUrl + '?v=' + #strings.randomAlphanumeric(8)}"
-				         alt="Company logo"/>
+				         alt="Company logo" class="comp-logo"/>
 				         
-          </div>
+          
 				    <!-- overlay text/icon -->
 				    <span style="
 				        position:absolute; inset:0;
@@ -51,12 +54,13 @@
 				  <input id="logoFile" type="file" name="file" accept="image/*" hidden
 				         onchange="document.getElementById('logoUploadForm').submit();" />
 				</form>
-				</div>
+			</div>
 		</div>
 	</div>
-	</div>
+</div>
 				
-		<div>
+		<div class="container">
+			<div class="row g-3 mb-3">
 				<section class="card dashboard-card p-3 h-100">
 				  <div class="d-flex align-items-center justify-content-between mb-2">
 				    <div>
@@ -70,7 +74,7 @@
 				      <a class="btn btn-outline-primary btn-sm" th:href="@{/landlord/calendar}">
 				        <i class="fa-solid fa-up-right-from-square"></i> Full Calendar
 				      </a>
-				      <a class="btn btn-primary btn-sm" th:href="@{/landlord/calendar}">
+				      <a class="btn btn-primary btn-sm" th:href="@{/landlord/calendar/event/add}">
 				        <i class="fa-solid fa-plus"></i> Add
 				      </a>
 				    </div>
@@ -80,45 +84,44 @@
 				    No scheduled events in the next 7 days.
 				  </div>
 
+				  <div th:if="${eventsByDay == null or eventsByDay.isEmpty()}" class="muted">
+				    No scheduled events in the next 7 days.
+				  </div>
+
 				  <div th:if="${eventsByDay != null and !eventsByDay.isEmpty()}" class="list-group">
 				    <div th:each="dayEntry : ${eventsByDay}">
 				      <div class="fw-semibold mt-2" th:text="${dayEntry.key}">2026-01-15</div>
-
 				      <a th:each="ev : ${dayEntry.value}"
+				         th:if="${ev != null}"
 				         th:href="@{/landlord/calendar}"
 				         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
- </div>
-						 
 				        <div>
-				          <div class="fw-semibold" th:text="${ev.title}">Maintenance</div>
+				          <div class="fw-semibold" th:if="${ev.title != null}" th:text="${ev.title}">Maintenance</div>
 				          <div class="muted small">
-				            <span th:text="${#temporals.format(ev.startAt, 'h:mm a')}">9:00 AM</span>
+				            <span th:if="${ev.startAt != null}" th:text="${#temporals.format(ev.startAt, 'h:mm a')}">9:00 AM</span>
+				            <span th:if="${ev.startAt == null}" class="text-muted">No time</span>
 				            <span> • </span>
 				            <span th:text="${ev.type}">MAINTENANCE</span>
 				            <span th:if="${ev.property != null}"> • </span>
 				            <span th:if="${ev.property != null}" th:text="${ev.property.rentalAddress}">123 Main</span>
 				          </div>
 				        </div>
-
 				        <span class="badge"
-				              style="background: var(--brand-soft); color:#111;"
+				              style="background: var(--brand-soft); color:
+				  #111;"
 				              th:text="${ev.type}">
-				          TYPE
 				        </span>
 				      </a>
 				    </div>
 				  </div>
 				</section>
-
-				
-				
-				
+				</div>
 				
 				
 				
 				
     <div class="row g-3 mb-3">
-		<div class="col-md-4">
+		<div class="col-md-6">
 		           <div class="card dashboard-card p-3 h-100">
 		               <div class="d-flex justify-content-between align-items-center mb-2">
 		                   <h6 class="mb-0"> <i class="fa-solid fa-house"></i> Properties</h6>
@@ -129,144 +132,124 @@
 		           </div>
         </div>
 		
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card dashboard-card p-3 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="mb-0"> <i class="fa-solid fa-screwdriver-wrench"></i> Maintenance</h6>
-                    <!-- <span class="badge bg-warning text-dark" th:text="${requests.size()}">0</span>-->
+					<span class="badge bg-info" th:text="${maintenanceCount} +' '+ 'NEW'">0</span>
                 </div>
                 <p class="small text-muted">View maintenance request from tenants.</p>
                 <a class="btn btn-outline-primary w-100" href="/landlord/maintenance">View Request</a>
             </div>
         </div>
-        <div class="col-md-4">
+		
+		<div class="row g-3 mb-3">
+			<div class="col-md-6">
+			           <div class="card dashboard-card p-3 h-100">
+			               <div class="d-flex justify-content-between align-items-center mb-2">
+			                   <h6 class="mb-0"> <i class="fa-solid fa-receipt"></i>  Expense Log</h6>
+			                  
+			               </div>
+			               <p class="small text-muted">Track and add expenses all in one place.</p>
+			               <a class="btn btn-outline-primary w-100" href="/landlord/expense">Expense Log</a>
+			           </div>
+		      </div>
+		
+        <div class="col-md-6">
             <div class="card dashboard-card p-3 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="mb-0"> <i class="fa-solid fa-comments"></i> Message Inbox</h6>
-                    <span class="badge bg-info" th:text="${messageCount}">0</span>
+                    <h6 class="mb-0"> <i class="fa-solid fa-comments"></i> Instant Chat Inbox</h6>
+                    <span class="badge bg-info" th:text="${unreadMessage}+' '+ 'NEW'">0</span>
                 </div>
-                <p class="small text-muted">Instant tenant and management conversations.</p>
+                <p class="small text-muted">Instant message communication between tenants and management.</p>
                 <a class="btn btn-outline-primary w-100" href="/landlord/messages">Open messenger</a>
             </div>
         </div>
     </div>
 
-    <div class="card dashboard-card p-3 mb-3">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-			
-            <h6 class="mb-0"> <i class="fa-solid fa-credit-card"></i> Payment History</h6>
-			<p class="small text-muted">Track incoming payments and automate late fees and invoices. </p>
-            <span class="status-pill bg-light text-muted">Stripe / PayPal/ Manual</span>
-        </div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead>
-                <tr class="text-muted small">
-                    <th>Property</th>
-					<th>Amount</th> 
-                    <th>Method</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:if="${#lists.isEmpty(payments)}">
-                    <td colspan="4" class="text-center text-muted">No payments recorded yet.</td>
-                </tr>
-                <tr th:each="payment : ${payments}">
-					<td th:text="${payment.property.rentalAddress}">Address</td>
-                    <td th:text="${payment.amount}">$0.00</td>
-                    <td th:text="${payment.method}">STRIPE</td>
-                    <td>
-                        <span class="status-pill bg-success-subtle text-success" th:text="${payment.status}">PAID</span>
-                    </td>
-                    <td th:text="${payment.paymentDate}">—</td>
-                </tr>
-                </tbody>
-            </table>
-			</div>
-			</div>
-			
-			<div class="card dashboard-card p-3" id="manualpay">
-			<div class="d-flex justify-content-between align-items-center mb-2">
-			<div class="container mt-4">
-				<div class="manualpay">
-			<form th:action="@{/landlord/addPayment}" method="post">
-			      <label>Enter new manual payment below from check, cashapp, zelle or other.</label>
-				 <div>
-				  <label> </i>Property</label>
-				           <select name="property" class="form-select" required>
-							<option value="" disabled selected>Select a property...</option>
-				            <option th:each="prop : ${properties}" 
-							th:value="${prop.id}" 
-							th:text="${prop.rentalAddress}"></option>
-				    </select>
-					</div>
-			      <input type="number" step="0.01" name="paymentAmount" placeholder="$500.00" required   />
-				  <input type="text" name="method" required placeholder="Enter Payment method (check, cashapp)"/>
-				  <input type="localDate" name="date"placeholder="Enter Payment Date"  required  />
-			      <button class="btn btn-primary" width="100" type="submit">Add Payment Manually</button>
-			  </form>
-			  </div>
-			  </div>
-             </div>
-	         </div>
-</br>
-	<div class="card dashboard-card p-3">
-	       <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="mb-0"><i class="fa-solid fa-folder-open"></i> Documents</h6>
-			<p class="small text-muted">Track documents communications between tenant and company. </p>
-            <span class="status-pill bg-primary text-white">Secure storage</span>
-           </div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead>
-                <tr class="text-muted small">
-                    <th>File name</th>
-                    <th>Type</th>
-                    <th>Uploaded</th>
-					<th>Submitted By</th>
-					<th>Role</th>
-					<th>View</th>
-					<th>Download</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:if="${#lists.isEmpty(documents)}">
-                    <td colspan="3" class="text-center text-muted">No documents uploaded yet.</td>
-                </tr>
-                <tr th:each="doc : ${documents}">
-                    <td th:text="${doc.originalFileName}">Lease.pdf</td>
-                    <td th:text="${doc.contentType}">LEASE</td>
-                    <td th:text="${doc.uploadedAt}">Today</td>
-					<td th:text="${doc.user != null ? doc.user.firstname + ' ' + doc.user.lastname : '—'}">
-					    Submitted By
-					</td>
-					<td th:text="${doc.user.role }"> Role </td>
-					<td><a class="btn-outline" th:href="@{/documents/{id}/view(id=${doc.id})}">
-					 <i class="fa-solid fa-eye"></i> Open </a></td>
-
-					<td><a class="btn-outline" th:href="@{/documents/{id}/download(id=${doc.id})}">
-					 <i class="fa-solid fa-download"></i> Download </a></td>
-					
-                </tr>
-                </tbody>
-            </table>
-			<br>
-			<div class="container">
-				<p> Click below to choose a file to upload and submit.</p>
-					
-			<form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
-						   <label>Select file:</label>
-						   <input class="form-control" type="file" name="file" required />
-						   <button class="btn btn-primary" width="100" type="submit">Upload</button>
-						 </form>
-			 </div>
-          </div>
-       </div>
-   </div>
+    
+	<!-- New Tabs-->
 	
+	<div class="row g-3 mb-3">
+		<div class="col-md-6">
+		           <div class="card dashboard-card p-3 h-100">
+		               <div class="d-flex justify-content-between align-items-center mb-2">
+		                   <h6 class="mb-0"> <i class="fa-solid fa-credit-card"></i>  Payment History</h6>
+		                   <!-- <span class="badge bg-warning text-dark" th:text="${requests.size()}">0</span>-->
+		               </div>
+		               <p class="small text-muted">View payment history and enter manual payments.</p>
+		               <a class="btn btn-outline-primary w-100" href="/landlord/payments/view">View Payments</a>
+		           </div>
+	       </div>
+		
+	       <div class="col-md-6">
+	           <div class="card dashboard-card p-3 h-100">
+	               <div class="d-flex justify-content-between align-items-center mb-2">
+	                   <h6 class="mb-0"> <i class="fa-solid fa-file"></i> Documents</h6>
+	                   
+	               </div>
+	               <p class="small text-muted">View documents submissions and upload new documents and asign to tenants.</p>
+	               <a class="btn btn-outline-primary w-100" href="/landlord/documents">View Documents</a>
+	           </div>
+	       </div>
+		
+		<div class="row g-3 mb-3">
+			<div class="col-md-6">
+			           <div class="card dashboard-card p-3 h-100">
+			               <div class="d-flex justify-content-between align-items-center mb-2">
+			                   <h6 class="mb-0"> <i class="fa-solid fa-gear"></i>  Company Settings</h6>
+			                  
+			               </div>
+			               <p class="small text-muted">Customize App features and tailor to your company.</p>
+			               <a class="btn btn-outline-primary w-100" href="/landlord/company/profile">Update Settings</a>
+			           </div>
+		      </div>
+			   
+		
+	       <div class="col-md-6">
+	           <div class="card dashboard-card p-3 h-100">
+	               <div class="d-flex justify-content-between align-items-center mb-2">
+	                   <h6 class="mb-0"> <i class="fa-solid fa-envelope"></i> Email Center</h6>
+	                  <!-- <span class="badge bg-info" th:text="${messageCount}">0</span>-->
+	               </div>
+	               <p class="small text-muted">Send direct emails to single tenant employees or groups.</p>
+	               <a class="btn btn-outline-primary w-100" href="/landlord/email">  Send Email(s)</a>
+	           </div>
+			</div>
+			   
+			   <div class="col-md-6">
+			              <div class="card dashboard-card p-3 h-100">
+			                  <div class="d-flex justify-content-between align-items-center mb-2">
+			                      <h6 class="mb-0"> <i class="fa-solid fa-envelope"></i> SMS Text Center</h6>
+			                     <!-- <span class="badge bg-info" th:text="${messageCount}">0</span>-->
+			                  </div>
+			                  <p class="small text-muted">Send direct text messages to tenant, employees or groups.</p>
+			                  <a class="btn btn-outline-primary w-100" href="/landlord/text">  Send Phone Text</a>
+			              </div>
+					 	
+	       </div>
+	   </div>
+	   
+<!--New tabs end-->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
 </body>
 </html>

@@ -17,8 +17,10 @@ import jakarta.servlet.http.HttpSession;
 	import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import RealEstateApp.Pojo.User;
+import RealEstateApp.Pojo.Company;
 import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.Role;
+import RealEstateApp.dao.CompanyDao;
 import RealEstateApp.dao.PropertyDao;
 
 import RealEstateApp.dao.UserDao;
@@ -26,59 +28,87 @@ import RealEstateApp.dao.UserDao;
 	@Controller
 	public class UserController {
 
-		@Autowired
-		UserDao userDao;
-		@Autowired
-		private PropertyDao propDao;
-
-
-		@Autowired
-		HttpSession session;
+		
+		private final UserDao userDao;
+		private final CompanyDao companyDao;
+		private final PropertyDao propDao;
+        private final HttpSession session;
+		
+		
+		public UserController(PropertyDao propDao, UserDao userDao, CompanyDao companyDao, HttpSession session) {
+			this.propDao = propDao;
+			this.userDao = userDao;
+			this.companyDao = companyDao;
+			this.session = session;
+		}	
 
 		// SIGNUP METHODS
 		
 		@RequestMapping("/signup")
-		public String signUpHome() {
+		public String signUpTenant( @RequestParam("token") String token,
+				                    @RequestParam("company") Long companyId,
+				                    @RequestParam("role") String role, 
+				                    Model model) {
 			
-			return("newmember");
+			System.out.println("token: " + token);
+			System.out.println("company id: " + companyId);
+			
+			model.addAttribute("token", token);
+			model.addAttribute("company", companyDao.findCompanyById(companyId));
+			model.addAttribute("role", role);
+			return("auth/accept-invite");
 		}
 		
-		@PostMapping("/signup")
+		
+		@PostMapping("/invite/signup")
 		public String submitSignup(User user,@RequestParam("passwordConfirm") String passwordConfirm, 
-				@RequestParam("passcode") String password,@RequestParam("firstname") String name1,
+				@RequestParam("password") String password,@RequestParam("firstname") String name1,
 				@RequestParam("lastname") String name2,
 				@RequestParam("email") String email,
-				@RequestParam("username") String username, Model model) {
+				@RequestParam("username") String username, 
+				@RequestParam("role") String role,
+				@RequestParam("company")Long companyId,
+				Model model) {
 
 			User existingUser = userDao.findByUsername(username);
 			if (existingUser != null) {
-				model.addAttribute("message", "That username already exists. Please choose a different username.");
+				model.addAttribute("error", "That username already exists. Please choose a different username.");
 
-				return "newmember";
+				return "auth/accept-invite";
 
 			}
 			
 			
 			if (!passwordConfirm.contentEquals(password)) {
-				model.addAttribute("message", "The passwords you entered do not match. Please try again.");
-				return "newmember";
+				model.addAttribute("error", "The passwords you entered do not match. Please try again.");
+				return "auth/accept-invite";
 			}
 			if (passwordConfirm.contentEquals(password)) {
 
 			String encodePass = Base64.getEncoder().encodeToString(password.getBytes());
 			user.setPasscode(encodePass);
 		
+		    
+		    user.setFirstname(name1);
+		    user.setLastname(name2);
+		    user.setEmail(email);
+		    user.setUsername(username);
+		    user.setRole(Role.valueOf(role));
+		    Company company = companyDao.findCompanyById(companyId);
+		    user.setCompany(company);
+		        
 		
 			userDao.save(user);
 			
 			session.setAttribute("user", user);
-			model.addAttribute("message", "Thank You for Signing Up.");
+			model.addAttribute("message", "Welcome, Thank You for Signing Up.");
 			
 			}
-			return "redirect:/index";
+			return "/tenant/dashboard";
 			
 		}
 
+		
 		// LOGIN METHODS
 		
 
@@ -94,6 +124,7 @@ import RealEstateApp.dao.UserDao;
 			byte[] decodeByte = Base64.getDecoder().decode(user.getPasscode());
 			String decodePass = new String(decodeByte);
 
+			//System.out.println("decodePass: " + decodePass);
 			if (!password.contentEquals(decodePass)) {
 				model.addAttribute("message", "Incorrect password. Please try again.");
 				return "homelogin";
@@ -101,21 +132,33 @@ import RealEstateApp.dao.UserDao;
 			session.setAttribute("user", user);
 			
 			try { if(user.getRole() == Role.ADMIN){
-				//employee access level
+				//App Only access level
 				return "redirect:/admin/dashboard";
 			}
 			}catch(NullPointerException e) {
 				
 			}
-			try { if(user.getRole() == Role.LANDLORD) {
+			try { if(user.getRole() == Role.EMPLOYEE) {
 				//employee access level
+				return "redirect:/employee/dashboard";
+            }
+                
+			}catch(NullPointerException e) {
+			
+			}
+			try { if(user.getRole() == Role.LANDLORD) {
+				//landlord(company) access level
 				return "redirect:/landlord/dashboard";
 			}
 			}catch(NullPointerException e) {
 				
 			}
+			 {
 		    return "redirect:/tenant/dashboard";
 		}
+		}
+		
+		
 		
 		// LOGOUT METHOD
 		@RequestMapping("/logout")
@@ -123,108 +166,50 @@ import RealEstateApp.dao.UserDao;
 			session.invalidate();
 			redirect.addFlashAttribute("message", "You are now logged out.");
 			
-			return "redirect:/index";
+			return "redirect:/homelogin";
 		}
 
-		@RequestMapping("/updateinfo")
-		public String updateUserForm() {
+		//Forgot Password Methods
+		
+		@RequestMapping("/forgot-password")
+		public String forgotPassword() {
+			return "forgot-password";
+		}
+		
+		@PostMapping("/forgot-password")
+		public String submitForgotPassword(@RequestParam("email") String email, Model model) {
+			User user = userDao.findByEmail(email);
 			
-			return "userprofileupdate";
+			if (user == null) {
+				model.addAttribute("message", "No account found with that email address. Please try again.");
+				return "forgot-password";
+	             }
+			
+			model.addAttribute("user", user);
+			return "update-password";
 		}
 		
 		
-		@RequestMapping("/updateProfile")
-		public String updateProfile(Model model, @RequestParam ("username") String username,
-				@RequestParam ("email") String email,
-				@RequestParam ("password") String password,
-				@RequestParam ("password2") String password2,
-				RedirectAttributes redirect) {
-			
-			User currentUser= (User)session.getAttribute("user");
-			Long id =  currentUser.getId();
-			User user= userDao.findUserById(id);
-			
-			System.out.println(user);
-			if (!password2.contentEquals(password)) {
+		
+		@PostMapping("/update-password")
+		public String submitUpdatePassword(@RequestParam("password") String password,
+				@RequestParam("passwordConfirm") String passwordConfirm, @RequestParam("userId") Long userId,
+				Model model) {
+
+			User user = userDao.findUserById(userId);
+
+			if (!password.contentEquals(passwordConfirm)) {
 				model.addAttribute("message", "The passwords you entered do not match. Please try again.");
-				return "userprofileupdate";
+				model.addAttribute("user", user);
+				return "update-password";
 			}
-			if (password2.contentEquals(password)) {
 
 			String encodePass = Base64.getEncoder().encodeToString(password.getBytes());
 			user.setPasscode(encodePass);
-			
-			}
-			user.setEmail(email);
-			user.setUsername(username);
-			
 			userDao.save(user);
-			session.setAttribute("user", user);
-			model.addAttribute("user", user);
-			return "userprofile";
-	
-	}
-		
-		@RequestMapping("/viewprofile")
-		public String viewprofile(Model model) {
-			User currentUser= (User)session.getAttribute("user");
-			Long id =  currentUser.getId();
-			User user= userDao.findUserById(id);
-			
-			//if(user.getAccessStatus() == "level2") {
-		           
-				model.addAttribute("user", user);
-				return("staffprofile");
-		//	}else 
-		
-			//model.addAttribute("user", user);
-		//	return("userprofile");
-		}
-		
-		@RequestMapping("/makepayment")
-		public String showPaymentForm(Model model) {
-			User currentUser= (User)session.getAttribute("user");
-			Long id =  currentUser.getId();
-			User user= userDao.findUserById(id);
-			
-			LocalDateTime myObj = LocalDateTime.now();
-			DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			String formattedDate = myObj.format(myFormatObj);
-			
-			//Check if Date is after due date, if true add late fee
-			// double amount= Property.amountDue(user, myObj);
-			 
-			 
-		    // look for prior balance due
-			//if partial payment created, deduct from total and add to past due
-		    
-		
-			model.addAttribute("user", user);
-			//model.addAttribute("amount", amount);
-			model.addAttribute("date", formattedDate);
-			
-			
-			
-			return "paymentform";
-		}
-		
-		
-		@RequestMapping("/payAmount")
-		public String chooseAmount(Model model, @RequestParam ("price") String price) {
-			User currentUser= (User)session.getAttribute("user");
-			Long id =  currentUser.getId();
-			User user= userDao.findUserById(id);
-			
-			System.out.println(price);
-	    	double amount= Property.convertAmount(price);
-				
-			//System.out.println(amount);
-			model.addAttribute("user", user);
-			model.addAttribute("amount", amount);
-			
-			return "paymethod";
+
+			model.addAttribute("message", "Your password has been successfully updated. You may now log in.");
+			return "homelogin";
 		}
 	}
-	
-	
 	

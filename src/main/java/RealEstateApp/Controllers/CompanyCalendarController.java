@@ -19,7 +19,7 @@ import RealEstateApp.dao.UserDao;
 
 import java.time.*;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/landlord/calendar")
@@ -35,26 +35,9 @@ public class CompanyCalendarController {
         this.userDao = userDao;
     }
 
-    /** Adds 7-day calendar data to company dashboard model */
-    public void add7DayCalendarToModel(Model model, Company company) {
-        LocalDate today = LocalDate.now();
-        LocalDate endDay = today.plusDays(6);
-
-        LocalDateTime start = today.atStartOfDay();
-        LocalDateTime end = endDay.plusDays(1).atStartOfDay();
-
-        List<CalendarEvent> events = eventDao.findOverlappingRange(company.getId(), start, end);
-
-        Map<LocalDate, List<CalendarEvent>> byDay = events.stream()
-                .collect(Collectors.groupingBy(e -> e.getStartAt().toLocalDate(),
-                        TreeMap::new, Collectors.toList()));
-
-        model.addAttribute("calStart", today);
-        model.addAttribute("calEnd", endDay);
-        model.addAttribute("eventsByDay", byDay);
-        model.addAttribute("weekEvents", events);
-    }
-
+    
+    
+    
     /** Full calendar page (HTML) */
     @GetMapping
     public String calendarPage(Model model, HttpSession session) {
@@ -65,15 +48,16 @@ public class CompanyCalendarController {
         model.addAttribute("company", company);
 
         // Optional dropdowns for create form modal/page
-        model.addAttribute("properties", propertyDao.findByCompanyId(company.getId()));
+        model.addAttribute("properties", propertyDao.findAllByCompany(company));
         model.addAttribute("employees", userDao.findByCompanyIdAndRoleIn(
                 company.getId(), List.of(Role.EMPLOYEE, Role.LANDLORD)
-        ));
+       ));
 
         model.addAttribute("types", CalendarEventType.values());
         return "landlord/calendar";
     }
 
+    
     /** JSON feed for FullCalendar */
     @GetMapping("/events")
     @ResponseBody
@@ -95,10 +79,14 @@ public class CompanyCalendarController {
             m.put("start", e.getStartAt().toString());
             m.put("end", e.getEndAt().toString());
             m.put("allDay", e.isAllDay());
-            m.put("extendedProps", Map.of(
-                    "type", e.getType().name(),
-                    "property", e.getProperty() != null ? e.getProperty().getRentalAddress() : null
-            ));
+
+			Map<String, Object> extendedProps = new HashMap<>();
+			extendedProps.put("type", e.getType().name());
+			if (e.getProperty() != null) {
+				extendedProps.put("property", e.getProperty().getRentalAddress());
+			}
+			m.put("extendedProps", extendedProps);
+          
             return m;
         }).toList();
 
@@ -106,6 +94,26 @@ public class CompanyCalendarController {
     }
 
     /** Create event (simple POST) */
+    @RequestMapping("/event/add")
+	public String showAddEventForm(HttpSession session, Model model) {
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null || currentUser.getCompany() == null) return "redirect:/login";
+
+        Company company = currentUser.getCompany();
+        model.addAttribute("company", company);
+
+        // Optional dropdowns for create form modal/page
+        model.addAttribute("properties", propertyDao.findAllByCompany(company));
+        model.addAttribute("employees", userDao.findByCompanyIdAndRoleIn(
+                company.getId(), List.of(Role.EMPLOYEE, Role.LANDLORD)
+       ));
+
+        model.addAttribute("types", CalendarEventType.values());
+    	
+		return "landlord/calendareventform";
+	}
+    
+    
     @PostMapping("/create")
     public String createEvent(@RequestParam String title,
                               @RequestParam CalendarEventType type,

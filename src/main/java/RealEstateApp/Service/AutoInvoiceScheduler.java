@@ -17,7 +17,7 @@ import RealEstateApp.Pojo.Property;
 import RealEstateApp.Pojo.User;
 import RealEstateApp.dao.CompanyDao;
 import RealEstateApp.dao.InvoiceEmailLogDao;
-import RealEstateApp.dao.PaymentDao;
+import RealEstateApp.dao.RentPaymentDao;
 import RealEstateApp.dao.PropertyDao;
 import jakarta.transaction.Transactional;
 
@@ -28,13 +28,13 @@ public class AutoInvoiceScheduler {
     private final PropertyDao propertyDao;
     private final InvoiceEmailLogDao logDao;
     private final CompanyDao companyDao;
-    private final PaymentDao paymentDao;
+    private final RentPaymentDao paymentDao;
 
     public AutoInvoiceScheduler(EmailService emailService,
                                 PropertyDao propertyDao,
                                 InvoiceEmailLogDao logDao,
                                 CompanyDao companyDao,
-                                PaymentDao paymentDao) {
+                                RentPaymentDao paymentDao) {
         this.emailService = emailService;
         this.propertyDao = propertyDao;
         this.logDao = logDao;

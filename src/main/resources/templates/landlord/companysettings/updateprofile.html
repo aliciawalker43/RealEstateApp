@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta charset="UTF-8">
+    <title>Update Profile</title>
+
+    <!-- Shared SaaS Dashboard Styles -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	   <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+
+<body class="body">
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	
+	<p th:if="${error}" th:text="${error}"></p>
+		<p th:if="${success}" th:text="${success}"></p>
+		<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+	
+	
+	
+<div class="app-shell">
+	<div class="container py-4">
+	    <div class="dashboard-hero mb-4">
+	        <div class="d-flex align-items-center justify-content-between flex-wrap">
+	            <div>
+	                <p class="mb-1 text-white-50">Profile Settings</p>
+	                <h2> Update Profile</h2>
+	                <p class="mb-0">Updat email, password and company information,.</p>
+					<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/company/profile">Return to Settings</a>
+	            </div>
+				</div>
+				</div>
+
+
+				<!-- Company Profile Summary Card -->
+				<div class="card mb-4 shadow-sm">
+				  <div class="btn btn-primary text-white">
+				    <h5 class="mb-0">Company Profile Overview</h5>
+				  </div>
+				  <div class="card-body">
+				    <div class="row text-center">
+				      <div class="col-md-3 mb-2">
+				        <div class="fw-semibold text-muted">Name</div>
+				        <div th:text="${company.name}">Company Name</div>
+				      </div>
+					  <div class="col-md-3 mb-2">
+					  	<div class="fw-semibold text-muted">Owner Name</div>
+					  	 <div th:text="${user.firstname}+ ' ' +${user.lastname}"> Name</div>
+					  	 </div>
+				      <div class="col-md-3 mb-2">
+				        <div class="fw-semibold text-muted">Email</div>
+				        <div th:text="${user.email}">Email</div>
+				      </div>
+				      <div class="col-md-3 mb-2">
+				        <div class="fw-semibold text-muted">Phone</div>
+				        <div th:text="${user.phoneNumber}">Phone</div>
+				      </div>
+				      <div class="col-md-3 mb-2">
+				        <div class="fw-semibold text-muted">Billing Address</div>
+				        <div th:text="${user.billingAddress}">Address</div>
+				      </div>
+					 
+				    </div>
+				  </div>
+				</div>
+
+				<hr>
+				
+							<!-- Subscription Details Card -->	
+							<div class="card mb-4 shadow-sm">
+								<div class="btn btn-primary text-white">
+								 <h5 class="mb-0">App Subscription Overview</h5>
+								</div>
+								
+						   <div class="card-body">
+							 <div class="row text-center">
+			                    <div class="col-md-3 mb-2">
+								 <div class="fw-semibold text-muted">Subcription Start Date</div>
+								  <div th:text="${company. subscriptionStartDate}">Plan Start Date</div>
+								 </div>
+								<div class="col-md-3 mb-2">
+								 <div class="fw-semibold text-muted">Plan Monthly Cost</div>
+								 <div th:text="${company.monthlyUsd}">Plan Price</div>
+								</div>
+									<div class="col-md-3 mb-2">
+									<div class="fw-semibold text-muted">Plan Limit</div>
+									<div th:text="${company.maxPropertyLimit}">Property Limit</div>
+									</div>
+				   <a href="/subscribe" class="btn btn-outline-primary mt-3">Upgrade Subscription</a>
+						 </div>
+					</div>
+			  </div>
+								 
+				
+				
+ <div class="row g-4">
+
+<!-- COMPANY DETAILS -->
+    <div class="col-12 col-md-4">
+      <div class="card dashboard-card p-3 h-100">
+
+        <div class="card-header">
+          <h2 class="mb-0">Update Details</h2>
+          <small class="muted">Submit new information.</small>
+        </div>
+
+        <form th:action="@{/landlord/update/company/profile}" method="post" class="mt-3">
+
+          <div class="mb-3">
+            <label class="form-label">Company Name</label>
+            <input class="form-control"
+                   type="text"
+                   name="companyName"
+                   th:value="${company != null ? company.name : ''}"
+                   >
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control"
+                   type="email"
+                   name="email"
+				   th:value="${user != null ? user.email : ''}"
+                   >
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input class="form-control"
+                   type="text"
+                   name="phone"
+				   th:value="${user != null ? user.phoneNumber : ''}"
+                  >
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Billing Address</label>
+            <input class="form-control"
+                   type="text"
+                   name="address"
+				   th:value="${user != null ? user.billingAddress : ''}"
+                  >
+          </div>
+		  
+		  <div class="mb-3">
+		  	            <label class="form-label">Username</label>
+		  	            <input class="form-control"
+		  	                   type="text"
+		  	                   name="username"
+							  th:value="${user != null ? user.username : ''}"
+		  	                   >
+		  	          </div>
+		  
+		  <div class="mb-3">
+		            <label class="form-label">Password</label>
+		            <input class="form-control"
+		                   type="password"
+		                   name="password"
+						   th:value="${user != null ? user.passcode : ''}"
+		                  >
+		          </div>
+				  
+		<div class="mb-3">
+				  <label class="form-label">Confirm Password</label>
+				  <input class="form-control"
+				          type="password"
+				           name="passwordconfirm"
+				          th:value="${user != null ? user.passcode : ''}"
+						    >
+				          </div>  
+
+          <button type="submit" class="btn btn-primary w-100">
+            Save Changes
+          </button>
+		  </form>
+
+      </div>
+    </div>
+	
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+	    </body>
+	 </html>
+

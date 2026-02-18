@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Accept Invite</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+  <link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+<body>
+	<th:block th:replace="~{navbar :: navbar}"></th:block>
+
+	
+	<div class="dashboard-hero mb-4">
+	      <div class="d-flex align-items-center justify-content-between flex-wrap">
+	          <div calss="d-flex align-items-center gap-3">
+				<div>
+	              <p class="mb-1 text-white-50">Welcome </p>
+	              
+	              <p class="mb-0">Create account to have access to all rental communications and more.</p>
+			</div>
+			</div>
+	     </div>
+	 </div>
+	
+	<div class="container">
+	   <div class="row justify-content-center">
+	      <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+
+	        <div class="card shadow-sm border-0">
+	          <div class="card-body p-4">
+	
+          <h3 class="mb-3 text-center">Complete Your Account Setup</h3>
+      <!-- Errors -->
+        <div class="alert alert-danger py-2" th:if="${error != null}" th:text="${error}">
+          Error message here
+        </div>
+
+        <!-- Password signup form -->
+        <form th:action="@{/invite/complete}" method="post" class="mt-2">
+          <input type="hidden" name="token" th:value="${token}"/>
+		  <input type="hidden" name="company" th:value="${company.id}"/>
+		  <input type="hidden" name="role" th:value="${role}"/>
+
+          <div class="mb-3">
+            <label class="form-label">First name</label>
+            <input class="form-control" type="text" name="firstname" required placeholder="Alicia"/>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Last name</label>
+            <input class="form-control" type="text" name="lastname" required placeholder="Smith"/>
+          </div>
+		  
+		  <div class="mb-3">
+		             <label class="form-label">Username</label>
+		             <input class="form-control" type="text" name="username" required placeholder="Username"/>
+		           </div>
+
+		  <div class="mb-3">
+		            <label class="form-label">Email</label>
+		            <input class="form-control" type="email" name="email" required placeholder="email address"/>
+		          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Create password</label>
+            <input class="form-control" type="password" name="password" required minlength="6"
+                   placeholder="At least 6 characters"/>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Confirm password</label>
+            <input class="form-control" type="password" name="confirmPassword" required minlength="6"
+                   placeholder="Re-enter password"/>
+          </div>
+
+          <button class="btn btn-brand w-100" type="submit">
+            Join Company
+          </button>
+
+          <div class="small-note">
+            By continuing, you’ll be added to the company and as a new <span th:text="${role}"></span> shown above.
+          </div>
+        </form>
+
+        <!-- Optional Google OAuth -->
+        <div class="divider">or</div>
+
+		<a href="/oauth2/authorization/google">
+				<img src="/images/google-login-button.png"
+			 alt="Sign in with Google"
+			class="google-login-btn"
+			style="width: 300px; height: 90px; display: block; margin: 16px auto 0 auto; cursor: pointer;">
+		</a>
+
+        <div class="text-center mt-3">
+          <a class="muted" th:href="@{/login}">Already have an account? Sign in</a>
+        </div>
+
+  
+       </div>
+      </div>
+    
+  </div>
+ </div>
+
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Simple client-side confirm password check (optional)
+    document.querySelector('form')?.addEventListener('submit', function(e) {
+      const pass = this.querySelector('input[name="password"]')?.value || "";
+      const confirm = this.querySelector('input[name="confirmPassword"]')?.value || "";
+      if (pass !== confirm) {
+        e.preventDefault();
+        alert("Passwords do not match.");
+      }
+    });
+  </script>
+</body>
+</html>

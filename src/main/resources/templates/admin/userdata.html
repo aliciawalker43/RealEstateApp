@@ -10,6 +10,7 @@
     <title>User Data</title>
 </head>
 <body>
+	<th:block th:replace="~{admin/navbar :: navbar}"></th:block>
 	
 	<div class="container py-4">
 	    <div class="dashboard-hero mb-4">
@@ -62,4 +63,8 @@
 <div class="footer"><a th:href="@{/logout}">logout</a></div>
 </div>
 </div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
 </body>
+</html>

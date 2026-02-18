@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta charset="UTF-8">
+    <title>Company Profile</title>
+
+    <!-- Shared SaaS Dashboard Styles -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+	   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	   <link rel="stylesheet" th:href="@{/css/saas-dashboard.css}">
+	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
+</head>
+
+<body class="body">
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
+	
+	<p th:if="${error}" th:text="${error}"></p>
+		<p th:if="${success}" th:text="${success}"></p>
+
+
+	
+<div class="app-shell">
+	<div class="container py-4">
+	    <div class="dashboard-hero mb-4">
+	        <div class="d-flex align-items-center justify-content-between flex-wrap">
+	            <div>
+	                <p class="mb-1 text-white-50">Welcome back</p>
+	                <h2 class="fw-bold mb-1"><h2 th:text="${company.name}"> <i class="fa-solid fa-building-user"></i> Company Profile</h2>
+	                <p class="mb-0">Update, invite employees and tenants, check calendar, manage brnading and more.</p>
+					<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/dashboard">Return Dashboard</a>
+	            </div>
+				</div>
+				</div>
+	
+				
+				<!-- New DASHBOARD CARDS -->
+				
+				<div class="row g-3 mb-3">
+					<div class="col-md-6">
+					           <div class="card dashboard-card p-3 h-100">
+					               <div class="d-flex justify-content-between align-items-center mb-2">
+					                   <h6 class="mb-0"> <i class="fa-solid fa-house"></i> Profile Settings</h6>
+					                   <!-- <span class="badge bg-warning text-dark" th:text="${requests.size()}">0</span>-->
+					               </div>
+					               <p class="small text-muted">Update profile information.</p>
+					               <a class="btn btn-outline-primary w-100" href="/landlord/profile">Update Profile</a>
+					           </div>
+				       </div>
+					
+				       <div class="col-md-6">
+				           <div class="card dashboard-card p-3 h-100">
+				               <div class="d-flex justify-content-between align-items-center mb-2">
+				                   <h6 class="mb-0"> <i class="fa-solid fa-screwdriver-wrench"></i> Branding Settings</h6>
+				                   
+				               </div>
+				               <p class="small text-muted">Customize app appearances to match your branding.</p>
+				               <a class="btn btn-outline-primary w-100" href="/landlord/branding">Customize Branding</a>
+				           </div>
+				       </div>
+					
+					<div class="row g-3 mb-3">
+						<div class="col-md-6">
+						           <div class="card dashboard-card p-3 h-100">
+						               <div class="d-flex justify-content-between align-items-center mb-2">
+						                   <h6 class="mb-0"> <i class="fa-solid fa-receipt"></i>  Invoice Settings</h6>
+						                  
+						               </div>
+						               <p class="small text-muted">Customize invoice scheduling and more.</p>
+						               <a class="btn btn-outline-primary w-100" href="/landlord/invoice/setting">Update</a>
+						           </div>
+					      </div>
+					
+				       <div class="col-md-6">
+				           <div class="card dashboard-card p-3 h-100">
+				               <div class="d-flex justify-content-between align-items-center mb-2">
+				                   <h6 class="mb-0"> <i class="fa-solid fa-comments"></i> Payment Settings</h6>
+				               </div>
+				               <p class="small text-muted">Update card payment information.</p>
+				               <a class="btn btn-outline-primary w-100" href="/landlord/messages">Update</a>
+				           </div>
+				       </div>
+				   </div>
+
+				   <div class="col-md-6">
+				   			           <div class="card dashboard-card p-3 h-100">
+				   			               <div class="d-flex justify-content-between align-items-center mb-2">
+				   			                   <h6 class="mb-0"> <i class="fa-solid fa-comments"></i> Notification Settings</h6>
+				   			                   <span class="badge bg-info" th:text="${messageCount}">0</span>
+				   			               </div>
+				   			               <p class="small text-muted">Choose when and how you get notified.</p>
+				   			               <a class="btn btn-outline-primary w-100" href="/landlord/notifications">Update Notifications</a>
+				   			           </div>
+				   			       </div>
+				   			   </div>
+				
+				
+				<!-- DASHBOARD CARDS GRID -->
+				
+				
+    </div>
+	
+    <!-- EMPLOYEES -->
+    <section class="card">
+        <div class="card-header between">
+            <h2> <i class="fa-solid fa-users"></i> Employees</h2>
+            <a th:href="@{/landlord/employees/new}" class="btn btn-primary">+ Add Employee</a>
+        </div>
+
+        <div th:if="${employees.isEmpty()}" class="empty-state">
+            No employees added yet.
+        </div>
+
+        <div th:if="${!employees.isEmpty()}" class="table-wrapper">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Email</th>
+                    
+                    <th>Hire Date</th>
+                    <th>Pay Rate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${employees}">
+                    <td th:text="${e.user.firstname + ' ' + e.user.lastname}"></td>
+                    <td th:text="${e.position}"></td>
+                    <td th:text="${e.user.email}"></td>
+     
+                    <td th:text="${e.hireDate}"></td>
+                    <td th:text="${e.payRate != null ? '$' + e.payRate : '—'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+  
+	<script>
+	  // sync picker -> text
+	  const picker = document.getElementById('brandPrimaryPicker');
+	  const text = document.getElementById('brandPrimaryText');
+	  if (picker && text) {
+	    picker.addEventListener('input', () => text.value = picker.value);
+	  }
+	</script>
+</div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

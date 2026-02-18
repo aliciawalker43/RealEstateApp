@@ -1,0 +1,40 @@
+
+<div th:fragment="sidebar">
+   <!-- Sidebar content here -->
+ 
+<!-- Add this inside <body> before your main content -->
+<div class="sidebar bg-white border-end" style="width:220px; position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:1040;">
+  <div class="p-3">
+    <h5 class="mb-4">Quick Access</h5>
+    <ul class="nav flex-column">
+	
+				  
+		  <li class="nav-item mb-2">
+		    <a class="nav-link" th:href="@{${dashboardUrl}}">
+		      <i class="fa fa-home me-2"></i>
+		      <span th:text="${currentUser != null ? currentUser.role : 'Dashboard'} + ' Dashboard'"></span>
+		    </a>
+		  </li>
+		
+    
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/tenant/profile"><i class="fa fa-building me-2"></i>Profile</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/tenant/payment"><i class="fa fa-wrench me-2"></i>Make Payment</a>
+      </li>
+	  <li class="nav-item mb-2">
+	         <a class="nav-link" href="/tenant/documents"><i class="fa fa-wrench me-2"></i>Check Documents</a>
+	       </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/tenant/maintenance"><i class="fa fa-comments me-2"></i>Submit Maintenance</a>
+      </li>
+      <li class="nav-item mb-2">
+        <a class="nav-link" href="/tenant/messages"><i class="fa fa-receipt me-2"></i>Chat</a>
+      </li>
+      <!-- Add more links as needed -->
+    </ul>
+  </div>
+</div>
+</div>
+

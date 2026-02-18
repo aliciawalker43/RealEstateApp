@@ -11,7 +11,8 @@
     <title>Update Property</title>
 </head>
 <body>
-<th:block th:replace="~{navbar :: navbar}"></th:block>
+<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
 
 <div class="container py-4">
     <div class="dashboard-hero mb-4">
@@ -35,7 +36,7 @@
 	<div class="card shadow-sm">
 	 <div class="card-body p-4">
 		
-<div class="container">      s
+<div class="container">      
     <h2>Update Property</h2>
     <form th:action="@{/landlord/property/update}" method="post">
 		
@@ -92,5 +93,8 @@
 
 	
 </div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
 </body>
 </html>

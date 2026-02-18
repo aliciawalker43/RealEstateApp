@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous">
+    <link th:href="@{/css/saas-dashboard.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>User Data</title>
+</head>
+<body>
+	<th:block th:replace="~{admin/navbar :: navbar}"></th:block>
+	
+	<div class="container py-4">
+	    <div class="dashboard-hero mb-4">
+	        <div class="d-flex align-items-center justify-content-between flex-wrap">
+	            <div>
+	                <h2 class="mb-1 text-black-50"><i class="fa-solid fa-users"> Company List of Payments</h2>
+	                
+	                <p class="mb-0">Payout Company transactions.</p>
+					<a class="btn btn-primary  fw-semibold" href="/admin/dashboard">Return Dashboard</a>
+	            </div>
+		  
+		  
+				</div>
+				</div>
+
+	
+	<div class="table-responsive">
+	 <div class="container mt-4">
+<div>
+<a class="btn btn-primary" th:href="@{/admin/users.csv}">
+  <i class="fa-solid fa-file-csv"></i> Download Users CSV
+</a>
+
+<table class="table">
+  <thead>
+    <tr>
+		<th>Company ID</th>
+      <th>Company</th>
+      <th>Amount</th>
+      <th>Source</th>
+	  <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="p : ${payments}">
+		<td th:text="${p.company.id}">Company</td>
+      <td th:text="${p.company.name}">Company</td>
+	  <td th:text="${p.amountPaid }">Amount</td>
+      <td th:text="${p.source }">Source</td>
+      <td>
+        <a class="btn btn-sm btn-outline-primary"
+           th:href="@{/paid/(paymentId=${p.id})}">
+          Mark Paid Out
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+ 
+  <div class="container"> 
+	<form action ="/view/payments/filter" method="post">
+	<small class="text-muted">Sort by Company:</small>
+	<div class="form-group">
+	<select name="company" class="form-select w-auto d-inline-block mb-3" th:each="p : ${payments}">  >
+		<option> Select a company</option>
+		<option value= "${p.company}">Company 1</option>
+		</select>	            
+    <button type="submit" class="btn btn-success">Sort</button>
+
+	</div>
+	</div>
+	
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

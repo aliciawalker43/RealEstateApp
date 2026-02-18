@@ -69,7 +69,7 @@ public class Conversation {
 		this.createdAt = createdAt;
 	}
     
-    
+	
     
 
 }

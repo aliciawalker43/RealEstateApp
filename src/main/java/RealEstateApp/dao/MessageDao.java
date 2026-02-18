@@ -13,4 +13,8 @@ import RealEstateApp.Pojo.User;
 public interface MessageDao extends JpaRepository<Message, Long> {
    
 	List<Message> findByConversationIdOrderBySentAtAsc(Long conversationId);
+
+	int  countByReadByTenantFalse();
+
+	int  countByReadByCompanyFalse();
 }

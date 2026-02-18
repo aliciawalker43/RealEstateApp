@@ -17,7 +17,9 @@ public interface UserDao extends JpaRepository<User, Long>{
 	
 	List<User> findAllById(Long id);
 
-	Object findByCompanyIdAndRoleIn(Long id, List<Role> of);
+	List<User> findByCompanyIdAndRoleIn(Long id, List<Role> of);
+	
+	List<User> findUsersByCompanyIdAndRole(Long id, Role Tenant);
 
 	 
 
@@ -25,7 +27,7 @@ public interface UserDao extends JpaRepository<User, Long>{
 
 	List<User> findAllByCompanyId(Long id);
 
-	List<User>  findByCompanyIdAndRole(Long companyId, Role tenant);
+	User  findByCompanyIdAndRole(Long companyId, Role tenant);
 	
 	
 	//Admin Data
@@ -42,6 +44,8 @@ public interface UserDao extends JpaRepository<User, Long>{
 		        GROUP BY u.company.id
 		    """)
 		    List<Object[]> countUsersByCompany();
+
+	User findByEmail(String email);
 	
 	
 	

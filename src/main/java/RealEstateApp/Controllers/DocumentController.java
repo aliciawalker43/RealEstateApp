@@ -71,6 +71,24 @@ public class DocumentController {
 	        }
 	    }
 	    
+	    @PostMapping("/landlord/upload")
+	    public String uploadAssign(@RequestParam("tenantId") Long id,
+	    		                   @RequestParam("file") MultipartFile file, 
+	    		                   HttpSession session) {
+	    	User currentUser= (User)session.getAttribute("user");
+			Long userId =  currentUser.getId();
+			
+			 User user = userDao.findUserById(userId);
+		                
+
+	        try {
+	            documentService.uploadForLandlordSessionUser(id, file, session);
+	            return "redirect:/landlord/documents";
+	        } catch (Exception e) {
+	            return "redirect:/documents?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
+	        }
+	    }
+	    
 	    @GetMapping
 	    public String list(Model model, HttpSession session) {
 	    	 User currentUser = (User) session.getAttribute("user");
@@ -183,6 +201,35 @@ public class DocumentController {
 	                .contentLength(Files.size(filePath))
 	                .body(resource);
 	    }
+	    
+	    @GetMapping("/{id}/delete")
+		String deleteDocument(@PathVariable Long id, HttpSession session) {
+			User currentUser = (User) session.getAttribute("user");
+			if (currentUser == null || currentUser.getCompany() == null) {
+				return "redirect:/login";
+			}
+
+			Long companyId = currentUser.getCompany().getId();
+
+			Document doc = documentRepo.findById(id).orElseThrow(() -> new IllegalStateException("Document not found"));
+
+			if (doc.getCompany() == null || !companyId.equals(doc.getCompany().getId())) {
+				return "redirect:/documents?error=not_authorized";
+			}
+
+			// Delete file from storage
+			try {
+				Path filePath = Paths.get(doc.getStoragePath()).normalize();
+				Files.deleteIfExists(filePath);
+			} catch (Exception e) {
+				// Log error if needed
+			}
+
+			// Delete record from DB
+			documentRepo.delete(doc);
+
+			return "redirect:/documents?success=document_deleted";
+		}
 	    
 	    
 	}

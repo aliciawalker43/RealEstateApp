@@ -18,7 +18,8 @@ public class GlobalModelAdvice {
 
 	    return switch (u.getRole()) {
 	      case TENANT -> "/tenant/dashboard";
-	      case LANDLORD, EMPLOYEE -> "/landlord/dashboard";
+	      case LANDLORD -> "/landlord/dashboard";
+	      case EMPLOYEE -> "/employee/dashboard";
 	      case ADMIN -> "/admin/dashboard";
 	    };
 	  }

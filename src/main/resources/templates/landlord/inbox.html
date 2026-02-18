@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
     <meta charset="UTF-8">
     <title>Company Inbox</title>
     <link rel="stylesheet" th:href="@{/css/messages.css}">
@@ -11,10 +13,10 @@
 	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
 </head>
 <body>
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
 
-
-<div class="inbox-container">
+<div class="inbox-container p-4 py-4">
 
     <!-- HEADER -->
     <header class="inbox-header">
@@ -31,7 +33,10 @@
                  class="conversation-item">
 
                 <btn><a th:href="@{/landlord/messages/{id}(id=${conv.id})}">
-                    <div class="conversation-title">
+                    <div class="conversation-avatar">
+                           <img th:src="${profileImages[conv.tenant.id] != null} ? ${profileImages[conv.tenant.id]}: @{/images/default-avatar.png}"
+                                alt="Tenant Avatar">
+					<div class="conversation-title">
                         <strong th:text="${conv.tenant.firstname + ' ' + conv.tenant.lastname}"></strong>
                     </div>
                    
@@ -67,7 +72,7 @@
                 </div>
 
                 <!-- REPLY BOX -->
-                <form th:action="@{/company/messages/send}" method="post" class="reply-form">
+                <form th:action="@{/landlord/messages/send}" method="post" class="reply-form">
                     <input type="hidden" name="conversationId" th:value="${activeConversation.id}">
                     <textarea name="content" placeholder="Type your reply..." required></textarea>
                     <button type="submit">Send</button>
@@ -78,6 +83,8 @@
 
     </div>
 </div>
+
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
 </body>
 </html>

@@ -40,13 +40,16 @@ public class Company {
     @Column(length=60)
     private String timeZone;  
     
+    @Column(name="subscription_start_date", nullable=true)
     private LocalDate subscriptionStartDate;
     
+    @Column(name="billing_date", nullable=true)
     private LocalDate billingDate;
     
     private  int monthlyUsd;          // 30, 60, 150
     
-    private  int maxPropertyLimit; 
+    @Column (name="max_properties")
+    private  int maxPropertyLimit = 1; 
 
     @OneToMany(mappedBy = "company")
     private List<User> users = new ArrayList<>();
@@ -63,6 +66,9 @@ public class Company {
 
     private String stripeCustomerId;
     private String stripeSubscriptionId;
+    private String stripeConnectedAccountId;
+    private Boolean connectChargesEnabled;
+    private Boolean connectPayoutsEnabled;
     
     
     
@@ -70,6 +76,14 @@ public class Company {
     
     
    
+	public String getStripeConnectedAccountId() {
+		return stripeConnectedAccountId;
+	}
+
+	public void setStripeConnectedAccountId(String stripeConnectedAccountId) {
+		this.stripeConnectedAccountId = stripeConnectedAccountId;
+	}
+
 	public LocalDate getSubscriptionStartDate() {
 		return subscriptionStartDate;
 	}
@@ -225,5 +239,7 @@ public class Company {
 		this.subscriptionStatus = subscriptionStatus;
 	}
 
-   
+	public Long getPropertyCount() {
+		return (long) properties.size();
+	}
 }

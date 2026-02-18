@@ -10,21 +10,24 @@
 	<link rel="stylesheet" th:href="@{/css/company-theme.css}">
 </head>
 <body class="bg-light">
-	<th:block th:replace="~{navbar :: navbar}"></th:block>
-
+	<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+	<th:block th:replace="~{fragments/company-sidebar :: sidebar}"></th:block> 
 	
-<div class="container py-4">
+<div class="container p-4 py-4">
     <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div>
-                <p class="mb-1 text-white-50">Maintenance</p>
+                <p class="mb-1 text-white-50"><i class="fa-solid fa-screwdriver-wrench"></i> Maintenance</p>
                 <h2 class="fw-bold mb-1"><h2 th:text="${company.name}">Dashboard</h2>
                 <p class="mb-0">View maintenance request by property.</p>
-				<a class="btn btn-light btn-sm text-primary fw-semibold" href="/landlord/company/profile">Company Profile</a>
-            </div>
+			 </div>
 		</div>
 	</div>
  </div>
+		
+ 
+ <div class="container p-4 py-4">
+			<h3> Maintenance Requests List</h3>
 			
 			
 			<div th:if="${requests == null or requests.isEmpty()}"
@@ -47,23 +50,51 @@
 			      </div>
 			    </div>
 
-			    <span class="badge bg-warning text-dark" th:text="${req.status}">OPEN</span>
+            
+				
+				
+						
+
+
+<form th:action="@{'/landlord/maintenance/update-status/' + ${req.id}}" method="post" style="display:inline;">
+	<input type="hidden" th:name="id" th:value="${req.id}"/>
+	<select name="status"
+           class="form-select form-select-sm d-inline w-auto"
+               onchange="this.form.submit()">
+			   <option  th:text="${req.status}"></span>
+			      </option>
+        <option th:value="OPEN" th:selected="${req.status == 'OPEN'}">OPEN</option>
+        <option th:value="IN_PROGRESS" th:selected="${req.status == 'IN_PROGRESS'}">IN PROGRESS</option>
+        <option th:value="CLOSED" th:selected="${req.status == 'CLOSED'}">CLOSED</option>
+    </select>
+</form></span>
+
 			  </div>
 
 			  <p class="mt-2 mb-2" th:text="${req.description}">Description...</p>
 
+			  
 			  <!-- Images -->
-			  <div class="row g-2"
-			       th:with="imgs=${imagesByRequestId[req.id]}"
-			       th:if="${imgs != null and !imgs.isEmpty()}">
-
-			    <div class="col-4" th:each="ri : ${imgs}">
-			      <img class="img-fluid rounded"
-			           th:src="@{/image-assets/{id}/view(id=${ri.imageAsset.id})}"
-			           alt="Maintenance photo"/>
+			  <div class="row g-2">
+			  <div class="col-4"  
+			      th:each ="imgs : ${req.imageAssets}">
+				   
+				   <a th:href="@{${imgs.storagePath}}" target="_blank">
+				      <img class="img-fluid rounded"
+				           style="max-height: 100px; object-fit: cover;"
+				           th:src="@{${imgs.storagePath}}"
+				           alt="Maintenance photo"/>
+				    </a>
 			    </div>
 			  </div>
-
+	            <div class="text-muted small mt-2">
+                    Submitted on: <span th:text="${req.createdAt!= null ? #temporals.format(req.createdAt, 'yyyy-MM-dd') : '—'}">Date</td>
 			</div>
-
-	
+</div>
+            </div>
+			</div>
+	</div>
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
+	</html>
